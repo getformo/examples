@@ -25,6 +25,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       options={{
         tracking: true,
         flushInterval: 500 * 10, // 5 secs
+        autocapture: true,
+        wagmi: {
+          config,
+          queryClient,
+        },
         logger: {
           enabled: true,
           levels: ["error", "warn", "info"],
