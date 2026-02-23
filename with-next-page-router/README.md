@@ -42,8 +42,6 @@ The **Next.js + SIWE Template** aims to provide developers with a quick and effi
 
 ## 🚀 **Getting Started**
 
-### **Getting Started**
-
 1. **Clone the repository:**
 
    ```bash
