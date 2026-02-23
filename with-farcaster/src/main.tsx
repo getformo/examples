@@ -20,27 +20,27 @@ const WRITE_KEY = import.meta.env.VITE_FORMO_ANALYTICS_WRITE_KEY || "demo_key";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <FormoAnalyticsProvider
-      writeKey={WRITE_KEY}
-      options={{
-        tracking: true,
-        flushInterval: 500 * 10, // 5 secs
-        autocapture: true,
-        wagmi: {
-          config,
-          queryClient,
-        },
-        logger: {
-          enabled: true,
-          levels: ["error", "warn", "info"],
-        },
-      }}
-    >
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <FormoAnalyticsProvider
+          writeKey={WRITE_KEY}
+          options={{
+            tracking: true,
+            flushInterval: 500 * 10, // 5 secs
+            autocapture: true,
+            wagmi: {
+              config,
+              queryClient,
+            },
+            logger: {
+              enabled: true,
+              levels: ["error", "warn", "info"],
+            },
+          }}
+        >
           <App />
-        </QueryClientProvider>
-      </WagmiProvider>
-    </FormoAnalyticsProvider>
+        </FormoAnalyticsProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );
