@@ -27,8 +27,8 @@ This is an example application demonstrating the integration of [Porto](https://
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/getformo/formo-example-porto.git
-cd formo-example-porto
+git clone https://github.com/getformo/examples.git
+cd examples/with-porto
 ```
 
 2. Install dependencies:

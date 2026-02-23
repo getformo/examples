@@ -14,8 +14,8 @@ This is an example React application that demonstrates how to integrate and use 
 
 1. Clone this repository:
 ```bash
-git clone <repository-url>
-cd formo-analytics-example-react
+git clone https://github.com/getformo/examples.git
+cd examples/with-react
 ```
 
 2. Install dependencies:
@@ -133,7 +133,7 @@ This example demonstrates tracking custom events. You can extend it to track var
 
 ## 📚 Learn More
 
-- [Formo Analytics Documentation](https://docs.formo.ai) - Learn about Formo Analytics features
+- [Formo Analytics Documentation](https://docs.formo.so) - Learn about Formo Analytics features
 - [React Documentation](https://reactjs.org/) - Learn React
 - [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started) - Learn about Create React App
 
@@ -161,7 +161,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-- Check the [Formo Analytics documentation](https://docs.formo.ai)
+- Check the [Formo Analytics documentation](https://docs.formo.so)
 - Open an issue in this repository
 - Contact Formo support team
 

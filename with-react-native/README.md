@@ -26,8 +26,8 @@ This is an example React Native app demonstrating the [@formo/react-native-analy
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/getformo/formo-examples-react-native.git
-cd formo-examples-react-native
+git clone https://github.com/getformo/examples.git
+cd examples/with-react-native
 ```
 
 2. Install dependencies:
@@ -81,72 +81,7 @@ pnpm ios
 pnpm android
 ```
 
-## Local SDK Development
-
-If you're developing the `@formo/react-native-analytics` SDK locally, this project is configured to use a linked local package.
-
-### Setup for Local SDK Development
-
-1. Ensure you have the SDK repository cloned as a sibling directory:
-
-```
-parent-directory/
-├── formo-example-react-native/   # This project
-└── sdk-react-native/             # The SDK (https://github.com/getformo/sdk-react-native)
-```
-
-2. Build the SDK first:
-
-```bash
-cd ../sdk-react-native
-pnpm install
-pnpm build
-```
-
-3. Install dependencies in this project (the link will resolve automatically):
-
-```bash
-cd ../formo-example-react-native
-pnpm install
-```
-
-4. When you make changes to the SDK, rebuild it:
-
-```bash
-cd ../sdk-react-native
-pnpm build
-```
-
-Then restart the Metro bundler in this project (press `r` in the terminal or restart with `pnpm start --clear`).
-
-### Switching to Published Package
-
-To use the published npm package instead of the local link, update `package.json`:
-
-```diff
-- "@formo/react-native-analytics": "link:../sdk-react-native",
-+ "@formo/react-native-analytics": "^1.0.0",
-```
-
-Then reinstall dependencies:
-
-```bash
-pnpm install
-```
-
 ## Troubleshooting
-
-### Metro bundler can't find the linked package
-
-If you see errors about the SDK not being found:
-
-1. Make sure the SDK is built (`pnpm build` in the SDK directory)
-2. Clear the Metro cache: `pnpm start --clear`
-3. Delete `node_modules` and reinstall: `rm -rf node_modules && pnpm install`
-
-### "Unable to resolve module" errors
-
-This usually means the SDK hasn't been built. Run `pnpm build` in the SDK directory.
 
 ### iOS build fails
 

@@ -46,8 +46,8 @@ The Formo SDK automatically tracks these Solana events:
 
 ```bash
 # Clone the repository
-git clone https://github.com/getformo/formo-example-solana.git
-cd formo-example-solana
+git clone https://github.com/getformo/examples.git
+cd examples/with-solana
 
 # Install dependencies
 npm install
@@ -88,7 +88,7 @@ npm run build
 npm link
 
 # In this example app directory
-cd /path/to/formo-example-solana
+cd /path/to/examples/with-solana
 npm link @formo/analytics
 
 # Run the app

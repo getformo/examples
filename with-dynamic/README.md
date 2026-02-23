@@ -32,8 +32,8 @@ This example demonstrates how to integrate [Formo SDK 1.26.0](https://github.com
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/getformo/formo-example-dynamic.git
-cd formo-example-dynamic
+git clone https://github.com/getformo/examples.git
+cd examples/with-dynamic
 ```
 
 ### 2. Install dependencies
@@ -66,7 +66,7 @@ Visit `http://localhost:5173` to see the app.
 ## Project Structure
 
 ```
-formo-example-dynamic/
+with-dynamic/
 ├── src/
 │   ├── components/
 │   │   └── WalletDemo.tsx      # Main demo component with wallet actions

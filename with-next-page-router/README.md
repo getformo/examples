@@ -42,23 +42,16 @@ The **Next.js + SIWE Template** aims to provide developers with a quick and effi
 
 ## 🚀 **Getting Started**
 
-### **Use This Template**
+### **Getting Started**
 
-1. **Clone the Template:**
-
-   Click the **"Use this template"** button at the top of this repository to create a new project based on this template.
-
-2. **Clone via CLI:**
-
-   Alternatively, you can clone the repository using the CLI:
+1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/CJskii/next-web3-template.git my-web3-app
-   cd my-web3-app
-
+   git clone https://github.com/getformo/examples.git
+   cd examples/with-next-page-router
    ```
 
-3. **Install Dependencies:**
+2. **Install Dependencies:**
 
 This project uses Bun for managing dependencies. If you don't have Bun installed, follow the installation instructions [here](https://bun.sh/docs/installation).
 
@@ -84,58 +77,10 @@ bun run dev
 
 - Open http://localhost:3000 to view the app.
 
-## 🛠️ How to Contribute
-
-We welcome contributions to improve this template. Here's how you can get involved:
-
-- Fork the repository: Start by forking this repository to your GitHub account.
-
-- Clone your fork: Clone your forked repository to your local machine.
-
-```bash
-git clone https://github.com/yourusername/next-web3-template.git
-cd next-web3-template
-```
-
-- Create a new branch: Create a new branch for your feature or fix.
-
-```bash
-git checkout -b feature/your-feature-name
-```
-
-- Make your changes: Make the necessary changes to the template.
-
-- Commit your changes:
-
-```bash
-git add .
-git commit -m "Add your feature description here"
-```
-
-- Push your changes:
-
-```bash
-git push origin feature/your-feature-name
-```
-
-- Open a pull request: Submit a pull request to the main repository for review.
-
-## 🎯 **Feature Requests**
-
-Have an idea for a new feature? We'd love to hear from you! Please [open an issue](https://github.com/CJskii/next-web3-template/issues) with a detailed description of the feature you'd like to see added to this template.
-
-Feel free to include:
-
-- The use case or problem the feature solves.
-- How it fits within the current goals of the template.
-- Any relevant links or references that may help explain your request.
-
----
-
 ## 🔧 **Project Structure**
 
 ```bash
-next-web3-template/
+with-next-page-router/
 │
 ├── public/                # Public assets (e.g., favicon)
 │   └── favicon.ico
@@ -198,4 +143,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 📢 **Contact**
 
-For any questions or inquiries, feel free to reach out via [GitHub issues](https://github.com/yourusername/next-web3-template/issues) or open a discussion. We're happy to hear from the community and help with any issues you may encounter.
+For any questions or inquiries, feel free to reach out via [GitHub issues](https://github.com/getformo/examples/issues) or open a discussion.

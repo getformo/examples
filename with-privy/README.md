@@ -25,8 +25,8 @@ This is an example Next.js application demonstrating integration between [Privy]
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/getformo/formo-example-privy.git
-   cd formo-example-privy
+   git clone https://github.com/getformo/examples.git
+   cd examples/with-privy
    ```
 
 2. **Install dependencies**

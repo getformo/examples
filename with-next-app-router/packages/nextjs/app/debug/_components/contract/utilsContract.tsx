@@ -101,7 +101,7 @@ const getInitialTupleArrayFormState = (abiTupleParameter: AbiParameterTuple) => 
   const initialForm: Record<string, any> = {};
   if (abiTupleParameter.components.length === 0) return initialForm;
   abiTupleParameter.components.forEach((component, componentIndex) => {
-    const key = getFunctionInputKey("0_" + abiTupleParameter.name || "tuple", component, componentIndex);
+    const key = getFunctionInputKey("0_" + (abiTupleParameter.name || "tuple"), component, componentIndex);
     initialForm[key] = "";
   });
   return initialForm;
