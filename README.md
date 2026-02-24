@@ -2,11 +2,13 @@
 
 A collection of example applications demonstrating [Formo Analytics SDK](https://formo.so) integrations across different frameworks and platforms.
 
+Check out the [SDK docs](https://docs.formo.so/sdks/web) for full installation instructions and configuration options.
+
 ## Web Frameworks
 
-- [with-react](./with-react) - React (Create React App) with Formo Analytics
-- [with-next-app-router](./with-next-app-router) - Next.js App Router (Scaffold-ETH 2) with Formo Analytics
-- [with-next-page-router](./with-next-page-router) - Next.js Pages Router with Formo Analytics
+- [with-react](./with-react) - React (Create React App) app
+- [with-next-app-router](./with-next-app-router) - Next.js with App Router
+- [with-next-page-router](./with-next-page-router) - Next.js with Pages Router
 
 ## Wallet Integrations
 
@@ -22,4 +24,4 @@ A collection of example applications demonstrating [Formo Analytics SDK](https:/
 
 ## Mobile
 
-- [with-react-native](./with-react-native) - React Native (Expo) with Formo Analytics
+- [with-react-native](./with-react-native) - React Native (Expo) app
