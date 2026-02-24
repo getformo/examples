@@ -13,7 +13,7 @@
     "@farcaster/frame-sdk": "latest",
     "@farcaster/frame-wagmi-connector": "latest",
     "@farcaster/miniapp-wagmi-connector": "^1.0.0",
-    "@formo/analytics": "^1.19.7",
+    "@formo/analytics": "^1.27.0",
     "@tanstack/react-query": "5.45.1",
     "buffer": "^6.0.3",
     "react": "^18.3.1",

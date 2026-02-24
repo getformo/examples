@@ -12,7 +12,7 @@
     "format": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "@formo/analytics": "^1.26.0",
+    "@formo/analytics": "^1.27.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
