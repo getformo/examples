@@ -98,7 +98,7 @@ export default function AboutPage() {
             </div>
             <div>
               <h3 className="font-medium text-gray-900">Real-time Event Logging</h3>
-              <p className="text-sm text-gray-600">Debug and verify events in your browser's developer console and network tab.</p>
+              <p className="text-sm text-gray-600">Debug and verify events in your browser&apos;s developer console and network tab.</p>
             </div>
           </div>
           

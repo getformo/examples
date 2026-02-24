@@ -31,7 +31,6 @@ export function Web3Provider({ children }: Web3ProviderProps) {
 export function useWeb3Analytics() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const [{ chains, connectedChain, settingChain }, setChain] = useSetChain()
-  const analytics = useFormo()
 
   const connectWallet = async () => {
     try {

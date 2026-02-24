@@ -448,16 +448,16 @@ function BatchTransactionSection() {
       {data && (
         <div style={{ marginTop: "15px" }}>
           <div style={{ fontWeight: "bold", color: "#059669" }}>✅ Batch ID:</div>
-          <div style={{ 
-            fontFamily: "monospace", 
-            fontSize: "12px", 
+          <div style={{
+            fontFamily: "monospace",
+            fontSize: "12px",
             wordBreak: "break-all",
             backgroundColor: "#f0fdf4",
             padding: "10px",
             borderRadius: "4px",
             marginTop: "5px"
           }}>
-            {data}
+            {data.id}
           </div>
         </div>
       )}

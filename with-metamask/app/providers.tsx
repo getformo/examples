@@ -40,7 +40,7 @@ export function Providers({ children, initialState }: Props) {
       flushInterval: 5000,
       logger: {
         enabled: true,
-        levels: ["debug", "info", "error", "warn"] as const,
+        levels: ["debug", "info", "error", "warn"] as ("debug" | "info" | "error" | "warn")[],
       },
       autocapture: {
         connect: true,

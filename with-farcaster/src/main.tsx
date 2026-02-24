@@ -5,7 +5,7 @@ import { WagmiProvider } from "wagmi";
 import { Buffer } from "buffer";
 
 // Polyfill Buffer for browser compatibility
-window.Buffer = Buffer;
+(window as unknown as { Buffer: typeof Buffer }).Buffer = Buffer;
 
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";

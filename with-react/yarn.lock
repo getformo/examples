@@ -1253,13 +1253,12 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@formo/analytics@^1.19.7":
-  version "1.19.7"
-  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.19.7.tgz#ab43f9462a4375a19534b9a19df36b34317d0925"
-  integrity sha512-g1SPHPXEf1QjazwQ7AThftKj6GzHfmWtkpIv9Mb5YjtRsvZofmVlzpDDaxVXEJp67K8A6Zk/1uFi1ndRZ+y5QQ==
+"@formo/analytics@^1.27.0":
+  version "1.27.0"
+  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.27.0.tgz#6a38e09d32f99034f45c6a15707676f80612c037"
+  integrity sha512-mrM/PBqQEHGNs6qUkCkO/rg1S2DmrviLQ3kvkDlwsM3k6oCjvlZW/DMJzel8vykN4kK2xTeMsqpaDb0BoBgrZA==
   dependencies:
     ethereum-cryptography "3.2.0"
-    fetch-retry "6.0.0"
     mipd "0.0.7"
 
 "@humanwhocodes/config-array@^0.13.0":
@@ -4735,11 +4734,6 @@ fb-watchman@^2.0.0:
   integrity sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==
   dependencies:
     bser "2.1.1"
-
-fetch-retry@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/fetch-retry/-/fetch-retry-6.0.0.tgz#4ffdf92c834d72ae819e42a4ee2a63f1e9454426"
-  integrity sha512-BUFj1aMubgib37I3v4q78fYo63Po7t4HUPTpQ6/QE6yK6cIQrP+W43FYToeTEyg5m2Y7eFUtijUuAv/PDlWuag==
 
 file-entry-cache@^6.0.1:
   version "6.0.1"

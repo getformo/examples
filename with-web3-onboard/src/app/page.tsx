@@ -304,7 +304,7 @@ export default function HomePage() {
           </ul>
           
           <p className="pt-2 text-blue-600">
-            💡 Check your browser's developer console and network tab to see real-time events!
+            💡 Check your browser&apos;s developer console and network tab to see real-time events!
           </p>
         </div>
       </div>

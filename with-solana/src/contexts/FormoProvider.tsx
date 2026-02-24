@@ -57,18 +57,20 @@ export function FormoProvider({ children }: { children: ReactNode }) {
       }
 
       try {
+        // NOTE: The `solana` option requires an SDK build with Solana support.
+        // Using type assertion until @formo/analytics publishes Solana types.
         instance = await FormoAnalytics.init(writeKey, {
           tracking: true,
           logger: {
             enabled: true,
-            levels: ["debug", "info", "warn", "error"],
+            levels: ["debug", "info", "warn", "error"] as ("debug" | "info" | "warn" | "error")[],
           },
           solana: {
             wallet: walletRef.current as any,
             connection,
             cluster: networkConfiguration,
           },
-        });
+        } as any);
 
         if (mounted) {
           setFormo(instance);
@@ -102,11 +104,12 @@ export function FormoProvider({ children }: { children: ReactNode }) {
   }, []); // Initialize once — network/connection updates handled below
 
   // When network changes, update the SDK instead of re-creating it
+  // NOTE: `.solana` requires an SDK build with Solana support (types not yet published)
   useEffect(() => {
-    if (!formo?.solana) return;
+    if (!(formo as any)?.solana) return;
 
-    formo.solana.setCluster(networkConfiguration);
-    formo.solana.setConnection(connection);
+    (formo as any).solana.setCluster(networkConfiguration);
+    (formo as any).solana.setConnection(connection);
     console.log("[Formo] Network updated", {
       cluster: networkConfiguration,
       endpoint: connection.rpcEndpoint,
@@ -117,9 +120,9 @@ export function FormoProvider({ children }: { children: ReactNode }) {
   // The SDK's setWallet() has a fast-path that skips teardown when the
   // inner adapter hasn't changed, so passing the full wallet object is safe.
   useEffect(() => {
-    if (!formo?.solana) return;
+    if (!(formo as any)?.solana) return;
 
-    formo.solana.setWallet(wallet as any);
+    (formo as any).solana.setWallet(wallet);
   }, [formo, wallet]);
 
   // Show toast notifications for wallet events
