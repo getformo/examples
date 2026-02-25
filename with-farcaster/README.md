@@ -21,7 +21,7 @@ This example demonstrates how to integrate [Formo Analytics SDK](https://formo.s
 2. **Install dependencies:**
 
    ```bash
-   yarn install
+   npm install
    ```
 
 3. **Configure environment variables:**
@@ -40,7 +40,7 @@ This example demonstrates how to integrate [Formo Analytics SDK](https://formo.s
 4. **Start the development server:**
 
    ```bash
-   yarn dev
+   npm run dev
    ```
 
 ## `farcaster.json`

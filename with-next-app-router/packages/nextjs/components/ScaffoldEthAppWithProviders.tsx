@@ -58,7 +58,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
             flushInterval: 500 * 10, // 5 secs
             logger: {
               enabled: true,
-              levels: ["error", "warn", "info"],
+              levels: ["debug", "error", "warn", "info"],
             },
             autocapture: {
               connect: true,
