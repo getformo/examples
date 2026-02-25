@@ -1,0 +1,33 @@
+{
+  "name": "react-farcaster",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "biome check src",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@farcaster/frame-sdk": "latest",
+    "@farcaster/frame-wagmi-connector": "latest",
+    "@farcaster/miniapp-wagmi-connector": "^1.0.0",
+    "@formo/analytics": "^1.27.0",
+    "@tanstack/react-query": "5.45.1",
+    "buffer": "^6.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "viem": "latest",
+    "wagmi": "latest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@wagmi/cli": "latest",
+    "typescript": "^5.8.3",
+    "vite": "^5.2.11"
+  }
+}

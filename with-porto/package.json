@@ -1,0 +1,31 @@
+{
+  "name": "formo-example-porto",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@formo/analytics": "^1.27.0",
+    "@tanstack/react-query": "latest",
+    "autoprefixer": "^10.4.23",
+    "next": "latest",
+    "porto": "^0.2.37",
+    "postcss": "^8.5.6",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "^4.1.18",
+    "viem": "latest",
+    "wagmi": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@wagmi/cli": "latest",
+    "typescript": "latest"
+  }
+}

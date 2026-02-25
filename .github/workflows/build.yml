@@ -1,0 +1,143 @@
+name: Build Examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: with-react
+            dir: with-react
+            pm: yarn
+            build: build
+            node: 20
+
+          - name: with-next-app-router
+            dir: with-next-app-router
+            pm: yarn-berry
+            build: next:build
+            node: 20
+
+          - name: with-next-page-router
+            dir: with-next-page-router
+            pm: npm
+            build: build
+            node: 20
+
+          - name: with-dynamic
+            dir: with-dynamic
+            pm: npm
+            build: build
+            node: 20
+
+          - name: with-farcaster
+            dir: with-farcaster
+            pm: yarn
+            build: build
+            node: 22
+
+          - name: with-metamask
+            dir: with-metamask
+            pm: npm
+            build: build
+            node: 20
+
+          - name: with-porto
+            dir: with-porto
+            pm: npm
+            build: build
+            node: 20
+
+          - name: with-privy
+            dir: with-privy
+            pm: pnpm
+            build: build
+            node: 20
+
+          - name: with-reown
+            dir: with-reown
+            pm: pnpm
+            build: build
+            node: 20
+
+          - name: with-thirdweb
+            dir: with-thirdweb
+            pm: npm-legacy-peer-deps
+            build: build
+            node: 20
+
+          - name: with-web3-onboard
+            dir: with-web3-onboard
+            pm: npm
+            build: build
+            node: 20
+
+          # with-solana: requires @formo/analytics@1.28.0 (not yet published)
+          # with-react-native: requires @formo/react-native-analytics (not yet published)
+
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install pnpm
+        if: matrix.pm == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup env files
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        run: |
+          if [ -f .env.example ]; then
+            sed 's/=$/=ci_test_key/' .env.example | \
+            sed 's/=your_[a-z_]*_here$/=ci_test_key/' | \
+            sed 's/="your_[a-z_]*"$/=ci_test_key/' | \
+            sed 's/=your-[a-z-]*$/=ci_test_key/' > .env
+          fi
+
+      - name: Setup nested env (next-app-router)
+        if: matrix.name == 'with-next-app-router'
+        shell: bash
+        run: |
+          echo "NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY=ci_test_key" > with-next-app-router/packages/nextjs/.env
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        env:
+          PM: ${{ matrix.pm }}
+          HUSKY: "0"
+        run: |
+          case "$PM" in
+            yarn)              yarn install --frozen-lockfile ;;
+            yarn-berry)        yarn install ;;
+            pnpm)              pnpm install --frozen-lockfile ;;
+            npm-legacy-peer-deps) npm ci --legacy-peer-deps ;;
+            *)                 npm ci ;;
+          esac
+
+      - name: Build
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        env:
+          BUILD_SCRIPT: ${{ matrix.build }}
+          PM: ${{ matrix.pm }}
+          CI: false
+        run: |
+          case "$PM" in
+            yarn|yarn-berry) yarn "$BUILD_SCRIPT" ;;
+            pnpm)            pnpm run "$BUILD_SCRIPT" ;;
+            *)               npm run "$BUILD_SCRIPT" ;;
+          esac
