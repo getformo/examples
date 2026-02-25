@@ -118,10 +118,11 @@ jobs:
         shell: bash
         env:
           PM: ${{ matrix.pm }}
+          HUSKY: "0"
         run: |
           case "$PM" in
             yarn)              yarn install --frozen-lockfile ;;
-            yarn-berry)        yarn install --immutable ;;
+            yarn-berry)        yarn install ;;
             pnpm)              pnpm install --frozen-lockfile ;;
             npm-legacy-peer-deps) npm ci --legacy-peer-deps ;;
             *)                 npm ci ;;
