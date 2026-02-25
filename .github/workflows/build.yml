@@ -1,0 +1,127 @@
+name: Build Examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: with-react
+            dir: with-react
+            pm: yarn
+            build: build
+
+          - name: with-next-app-router
+            dir: with-next-app-router
+            pm: yarn
+            build: next:build
+
+          - name: with-next-page-router
+            dir: with-next-page-router
+            pm: npm
+            build: build
+
+          - name: with-dynamic
+            dir: with-dynamic
+            pm: npm
+            build: build
+
+          - name: with-farcaster
+            dir: with-farcaster
+            pm: yarn
+            build: build
+
+          - name: with-metamask
+            dir: with-metamask
+            pm: npm
+            build: build
+
+          - name: with-porto
+            dir: with-porto
+            pm: npm
+            build: build
+
+          - name: with-privy
+            dir: with-privy
+            pm: pnpm
+            build: build
+
+          - name: with-reown
+            dir: with-reown
+            pm: pnpm
+            build: build
+
+          - name: with-thirdweb
+            dir: with-thirdweb
+            pm: npm
+            build: build
+
+          - name: with-web3-onboard
+            dir: with-web3-onboard
+            pm: npm
+            build: build
+
+          # with-solana: requires @formo/analytics@1.28.0 (not yet published)
+          # with-react-native: requires @formo/react-native-analytics (not yet published)
+
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        if: matrix.pm == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup env files
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        run: |
+          # Create .env from .env.example with dummy CI values
+          if [ -f .env.example ]; then
+            sed 's/=$/=ci_test_key/' .env.example | \
+            sed 's/=your_[a-z_]*_here$/=ci_test_key/' | \
+            sed 's/="your_[a-z_]*"$/=ci_test_key/' | \
+            sed 's/=your-[a-z-]*$/=ci_test_key/' > .env
+          fi
+
+      - name: Setup nested env (next-app-router)
+        if: matrix.name == 'with-next-app-router'
+        shell: bash
+        run: |
+          cp with-next-app-router/.env with-next-app-router/packages/nextjs/.env
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        run: |
+          case "${{ matrix.pm }}" in
+            yarn) yarn install --frozen-lockfile ;;
+            pnpm) pnpm install --frozen-lockfile ;;
+            *)    npm ci ;;
+          esac
+
+      - name: Build
+        working-directory: ${{ matrix.dir }}
+        shell: bash
+        env:
+          BUILD_SCRIPT: ${{ matrix.build }}
+          PM: ${{ matrix.pm }}
+        run: |
+          case "$PM" in
+            yarn) yarn "$BUILD_SCRIPT" ;;
+            pnpm) pnpm run "$BUILD_SCRIPT" ;;
+            *)    npm run "$BUILD_SCRIPT" ;;
+          esac
