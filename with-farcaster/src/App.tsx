@@ -501,8 +501,10 @@ function CustomTrackEventSection() {
       }
 
       console.log('Tracking custom event:', eventName, parsedProperties);
-      
-      // Send the track event using the useFormo hook
+
+      if (!analytics) {
+        throw new Error('Formo SDK not initialized');
+      }
       await analytics.track(eventName, parsedProperties);
       
       setTrackResult(`✅ Event "${eventName}" tracked successfully!`);
