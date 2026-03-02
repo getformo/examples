@@ -1,28 +1,15 @@
+import { Attribution } from "ox/erc8021";
 import * as React from "react";
 import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
-
-const ERC_MARKER = "80218021802180218021802180218021";
-const SCHEMA_ID = "00";
-
-/**
- * Encode a builder code string into an ERC-8021 data suffix.
- *
- * Format: [codes (ASCII)] [codesLength (1 byte)] [schemaId (1 byte)] [ercMarker (16 bytes)]
- * @see https://docs.base.org/base-chain/builder-codes/app-developers
- */
-function encodeBuilderCodeSuffix(code: string): `0x${string}` {
-  const hex = Array.from(code)
-    .map(c => c.charCodeAt(0).toString(16).padStart(2, "0"))
-    .join("");
-  const length = (hex.length / 2).toString(16).padStart(2, "0");
-  return `0x${hex}${length}${SCHEMA_ID}${ERC_MARKER}`;
-}
 
 export function SendTransaction() {
   const { address } = useAccount();
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
   const [builderCode, setBuilderCode] = React.useState("test_builder");
-  const dataSuffix = React.useMemo(() => encodeBuilderCodeSuffix(builderCode), [builderCode]);
+  const dataSuffix = React.useMemo(
+    () => Attribution.toDataSuffix({ codes: builderCode ? [builderCode] : [] }),
+    [builderCode],
+  );
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,

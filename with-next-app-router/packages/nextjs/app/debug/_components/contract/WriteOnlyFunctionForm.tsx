@@ -1,9 +1,10 @@
 "use client";
 
+import { Attribution } from "ox/erc8021";
 import { useEffect, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
-import { Address, Hex, TransactionReceipt } from "viem";
+import { Address, TransactionReceipt } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import {
   ContractInput,
@@ -16,18 +17,6 @@ import {
 import { IntegerInput } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-
-const ERC_MARKER = "80218021802180218021802180218021";
-const SCHEMA_ID = "00";
-
-/** Encode a builder code string into an ERC-8021 data suffix. */
-function encodeBuilderCodeSuffix(code: string): Hex {
-  const hex = Array.from(code)
-    .map(c => c.charCodeAt(0).toString(16).padStart(2, "0"))
-    .join("");
-  const length = (hex.length / 2).toString(16).padStart(2, "0");
-  return `0x${hex}${length}${SCHEMA_ID}${ERC_MARKER}`;
-}
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;
@@ -64,7 +53,7 @@ export const WriteOnlyFunctionForm = ({
             abi: abi,
             args: getParsedContractFunctionArgs(form),
             value: txValue ? BigInt(txValue) : BigInt(0),
-            ...(builderCode ? { dataSuffix: encodeBuilderCodeSuffix(builderCode) } : {}),
+            ...(builderCode ? { dataSuffix: Attribution.toDataSuffix({ codes: [builderCode] }) } : {}),
           });
         await writeTxn(makeWriteWithParams);
         onChange();
