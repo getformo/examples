@@ -7,7 +7,7 @@ export function SendTransaction() {
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
   const [builderCode, setBuilderCode] = React.useState("test_builder");
   const dataSuffix = React.useMemo(
-    () => Attribution.toDataSuffix({ codes: builderCode ? [builderCode] : [] }),
+    () => (builderCode ? Attribution.toDataSuffix({ codes: [builderCode] }) : undefined),
     [builderCode],
   );
 
@@ -18,10 +18,12 @@ export function SendTransaction() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (address) {
+      // useSendTransaction has no dataSuffix param; for this test tx the only calldata
+      // is the ERC-8021 suffix, so passing it as data is correct and indexers will parse it.
       sendTransaction({
         to: "0x000000000000000000000000000000000000dEaD",
         value: BigInt(0),
-        data: dataSuffix,
+        ...(dataSuffix ? { data: dataSuffix } : {}),
       });
     }
   };
@@ -44,7 +46,7 @@ export function SendTransaction() {
         />
         <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-800">
           <p className="font-medium">ERC-8021 Builder Code: &quot;{builderCode}&quot;</p>
-          <p className="mt-1 break-all text-xs font-mono">dataSuffix: {dataSuffix}</p>
+          <p className="mt-1 break-all text-xs font-mono">dataSuffix: {dataSuffix ?? "—"}</p>
         </div>
       </div>
 
