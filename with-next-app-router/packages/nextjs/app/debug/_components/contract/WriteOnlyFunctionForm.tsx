@@ -88,7 +88,8 @@ export const WriteOnlyFunctionForm = ({
       />
     );
   });
-  const zeroInputs = inputs.length === 0 && abiFunction.stateMutability !== "payable";
+  // Builder code block is always rendered, so use column layout for consistent UX
+  const zeroInputs = false;
 
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
