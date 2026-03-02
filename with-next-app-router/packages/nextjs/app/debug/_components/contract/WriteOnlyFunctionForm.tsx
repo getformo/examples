@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
-import { Address, TransactionReceipt } from "viem";
+import { Address, Hex, TransactionReceipt } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import {
   ContractInput,
@@ -16,6 +16,18 @@ import {
 import { IntegerInput } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+
+const ERC_MARKER = "80218021802180218021802180218021";
+const SCHEMA_ID = "00";
+
+/** Encode a builder code string into an ERC-8021 data suffix. */
+function encodeBuilderCodeSuffix(code: string): Hex {
+  const hex = Array.from(code)
+    .map(c => c.charCodeAt(0).toString(16).padStart(2, "0"))
+    .join("");
+  const length = (hex.length / 2).toString(16).padStart(2, "0");
+  return `0x${hex}${length}${SCHEMA_ID}${ERC_MARKER}`;
+}
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;
@@ -34,6 +46,7 @@ export const WriteOnlyFunctionForm = ({
 }: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [txValue, setTxValue] = useState<string>("");
+  const [builderCode, setBuilderCode] = useState<string>("");
   const { chain } = useAccount();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
@@ -51,6 +64,7 @@ export const WriteOnlyFunctionForm = ({
             abi: abi,
             args: getParsedContractFunctionArgs(form),
             value: txValue ? BigInt(txValue) : BigInt(0),
+            ...(builderCode ? { dataSuffix: encodeBuilderCodeSuffix(builderCode) } : {}),
           });
         await writeTxn(makeWriteWithParams);
         onChange();
@@ -111,6 +125,21 @@ export const WriteOnlyFunctionForm = ({
             />
           </div>
         ) : null}
+        <div className="flex flex-col gap-1.5 w-full">
+          <div className="flex items-center ml-2">
+            <span className="text-xs font-medium mr-2 leading-none">builder code</span>
+            <span className="block text-xs font-extralight leading-none">ERC-8021 (optional)</span>
+          </div>
+          <input
+            className="input input-ghost focus-within:border-transparent focus:outline-none focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400 bg-base-200 rounded-full text-accent"
+            placeholder="e.g. coinbase"
+            value={builderCode}
+            onChange={e => {
+              setDisplayedTxResult(undefined);
+              setBuilderCode(e.target.value);
+            }}
+          />
+        </div>
         <div className="flex justify-between gap-2">
           {!zeroInputs && (
             <div className="flex-grow basis-0">
