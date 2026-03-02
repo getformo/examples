@@ -1,5 +1,6 @@
 "use client";
 
+import { Attribution } from "ox/erc8021";
 import { useEffect, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
@@ -34,6 +35,7 @@ export const WriteOnlyFunctionForm = ({
 }: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [txValue, setTxValue] = useState<string>("");
+  const [builderCode, setBuilderCode] = useState<string>("");
   const { chain } = useAccount();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
@@ -51,6 +53,7 @@ export const WriteOnlyFunctionForm = ({
             abi: abi,
             args: getParsedContractFunctionArgs(form),
             value: txValue ? BigInt(txValue) : BigInt(0),
+            ...(builderCode ? { dataSuffix: Attribution.toDataSuffix({ codes: [builderCode] }) } : {}),
           });
         await writeTxn(makeWriteWithParams);
         onChange();
@@ -85,7 +88,8 @@ export const WriteOnlyFunctionForm = ({
       />
     );
   });
-  const zeroInputs = inputs.length === 0 && abiFunction.stateMutability !== "payable";
+  // Builder code block is always rendered, so use column layout for consistent UX
+  const zeroInputs = false;
 
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
@@ -111,6 +115,21 @@ export const WriteOnlyFunctionForm = ({
             />
           </div>
         ) : null}
+        <div className="flex flex-col gap-1.5 w-full">
+          <div className="flex items-center ml-2">
+            <span className="text-xs font-medium mr-2 leading-none">builder code</span>
+            <span className="block text-xs font-extralight leading-none">ERC-8021 (optional)</span>
+          </div>
+          <input
+            className="input input-ghost focus-within:border-transparent focus:outline-none focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400 bg-base-200 rounded-full text-accent"
+            placeholder="e.g. coinbase"
+            value={builderCode}
+            onChange={e => {
+              setDisplayedTxResult(undefined);
+              setBuilderCode(e.target.value);
+            }}
+          />
+        </div>
         <div className="flex justify-between gap-2">
           {!zeroInputs && (
             <div className="flex-grow basis-0">
