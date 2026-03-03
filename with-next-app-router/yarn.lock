@@ -1105,26 +1105,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formo/analytics@npm:^1.27.0":
-  version: 1.27.0
-  resolution: "@formo/analytics@npm:1.27.0"
+"@formo/analytics@npm:^1.28.0":
+  version: 1.28.0
+  resolution: "@formo/analytics@npm:1.28.0"
   dependencies:
     ethereum-cryptography: 3.2.0
     mipd: 0.0.7
   peerDependencies:
+    "@solana/wallet-adapter-base": ">=0.9.0"
+    "@solana/wallet-adapter-react": ">=0.15.0"
+    "@solana/web3.js": ">=1.70.0"
     "@tanstack/react-query": ">=5.0.0"
     "@types/react": ">=16.14.34"
     react: ">=16.14.0"
     viem: ">=2.0.0"
     wagmi: ">=2.0.0"
   peerDependenciesMeta:
+    "@solana/wallet-adapter-base":
+      optional: true
+    "@solana/wallet-adapter-react":
+      optional: true
+    "@solana/web3.js":
+      optional: true
     "@tanstack/react-query":
       optional: true
     viem:
       optional: true
     wagmi:
       optional: true
-  checksum: c7c1daea217703ff8d835623524eff8375fee01c34238cb535ad72a2562cf522e45f0430138d454839539836a7c0a8ff3f365569400bb1974666915a2f28b0eb
+  checksum: 200d33b78fd638a6e8be677a96c77c7495e25e04b9bd9626e9de575e32ad889e41060a265ce0380b8969431e95f2e3f9f957bc8d94e55ee3510c81eb64a463b1
   languageName: node
   linkType: hard
 
@@ -10811,7 +10820,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
-    "@formo/analytics": ^1.27.0
+    "@formo/analytics": ^1.28.0
     ansi-regex: ^6.1.0
     husky: ~8.0.3
     lint-staged: ~13.2.2

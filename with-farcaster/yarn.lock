@@ -591,10 +591,10 @@
     jose "^5.2.3"
     zod "^3.25.1"
 
-"@formo/analytics@^1.27.0":
-  version "1.27.0"
-  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.27.0.tgz#6a38e09d32f99034f45c6a15707676f80612c037"
-  integrity sha512-mrM/PBqQEHGNs6qUkCkO/rg1S2DmrviLQ3kvkDlwsM3k6oCjvlZW/DMJzel8vykN4kK2xTeMsqpaDb0BoBgrZA==
+"@formo/analytics@^1.28.0":
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.28.0.tgz#43e4d1a1c41668c4d3ab806a1cf149577e2bdbcc"
+  integrity sha512-FFHPUuNaKVSbpI60TRQQTWPa32f7a5VgQK1GOJvHPIT4GTMOyIQA93gRofgYViM9h1Yp3GcuTF+s28q7eNBVIw==
   dependencies:
     ethereum-cryptography "3.2.0"
     mipd "0.0.7"
