@@ -4,11 +4,11 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useSetActiveWallet } from "@privy-io/wagmi";
 import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction } from "wagmi";
 import { formatUnits } from "viem";
-import { useFormo } from "@formo/analytics";
+import { useFormo, parsePrivyProperties } from "@formo/analytics";
 import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, login, logout, user } = usePrivy();
   const { wallets } = useWallets();
   const { setActiveWallet } = useSetActiveWallet();
   const { address, isConnected, connector } = useAccount();
@@ -81,15 +81,16 @@ export default function Home() {
     });
   };
 
-  // Handle identify
-  const handleIdentify = async () => {
-    if (!address || !formo) return;
+  // Identify user with Privy profile on connect
+  useEffect(() => {
+    if (!user || !formo) return;
 
-    await formo.identify({
-      address,
-      providerName: connector?.name,
-    });
-  };
+    const { properties, wallets } = parsePrivyProperties(user);
+
+    for (const wallet of wallets) {
+      formo.identify({ address: wallet.address, userId: user.id }, properties);
+    }
+  }, [user, formo]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)
   const handleSignMessage = () => {
@@ -261,14 +262,6 @@ export default function Home() {
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 Track Page View
-              </button>
-
-              <button
-                onClick={handleIdentify}
-                disabled={!authenticated || !isConnected}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Identify User
               </button>
 
               <div className="flex gap-2">
