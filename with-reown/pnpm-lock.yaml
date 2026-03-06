@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.28.0
-        version: 1.28.0(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(react@18.2.0)(typescript@5.9.2)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(wagmi@2.16.9(@tanstack/query-core@5.87.4)(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.2.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))
+        specifier: ^1.28.2
+        version: 1.28.2(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(react@18.2.0)(typescript@5.9.2)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(wagmi@2.16.9(@tanstack/query-core@5.87.4)(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.2.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))
       '@radix-ui/react-accordion':
         specifier: ^1.2.0
         version: 1.2.12(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -201,8 +201,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@formo/analytics@1.28.0':
-    resolution: {integrity: sha512-FFHPUuNaKVSbpI60TRQQTWPa32f7a5VgQK1GOJvHPIT4GTMOyIQA93gRofgYViM9h1Yp3GcuTF+s28q7eNBVIw==}
+  '@formo/analytics@1.28.2':
+    resolution: {integrity: sha512-CCTR1o6RyygtQmXedm2zZ/MXxLYLCDxIL6BzZ09nIc57MGOILHvfJVhLTm1W5QZjL8w+8Y9jI9xqan0NHAWogg==}
     peerDependencies:
       '@solana/wallet-adapter-base': '>=0.9.0'
       '@solana/wallet-adapter-react': '>=0.15.0'
@@ -3773,7 +3773,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@formo/analytics@1.28.0(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(react@18.2.0)(typescript@5.9.2)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(wagmi@2.16.9(@tanstack/query-core@5.87.4)(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.2.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))':
+  '@formo/analytics@1.28.2(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(react@18.2.0)(typescript@5.9.2)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(wagmi@2.16.9(@tanstack/query-core@5.87.4)(@tanstack/react-query@5.87.4(react@18.2.0))(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.2.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.37.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))':
     dependencies:
       '@types/react': 18.3.24
       ethereum-cryptography: 3.2.0

@@ -1258,10 +1258,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@formo/analytics@^1.28.0":
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.28.0.tgz#43e4d1a1c41668c4d3ab806a1cf149577e2bdbcc"
-  integrity sha512-FFHPUuNaKVSbpI60TRQQTWPa32f7a5VgQK1GOJvHPIT4GTMOyIQA93gRofgYViM9h1Yp3GcuTF+s28q7eNBVIw==
+"@formo/analytics@^1.28.2":
+  version "1.28.2"
+  resolved "https://registry.yarnpkg.com/@formo/analytics/-/analytics-1.28.2.tgz#6cd121b1fcbca0406ddd246c0db7d7c2af0565fd"
+  integrity sha512-CCTR1o6RyygtQmXedm2zZ/MXxLYLCDxIL6BzZ09nIc57MGOILHvfJVhLTm1W5QZjL8w+8Y9jI9xqan0NHAWogg==
   dependencies:
     ethereum-cryptography "3.2.0"
     mipd "0.0.7"
