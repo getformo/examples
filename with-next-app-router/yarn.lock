@@ -1105,9 +1105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formo/analytics@npm:^1.28.0":
-  version: 1.28.0
-  resolution: "@formo/analytics@npm:1.28.0"
+"@formo/analytics@npm:^1.28.2":
+  version: 1.28.2
+  resolution: "@formo/analytics@npm:1.28.2"
   dependencies:
     ethereum-cryptography: 3.2.0
     mipd: 0.0.7
@@ -1133,7 +1133,7 @@ __metadata:
       optional: true
     wagmi:
       optional: true
-  checksum: 200d33b78fd638a6e8be677a96c77c7495e25e04b9bd9626e9de575e32ad889e41060a265ce0380b8969431e95f2e3f9f957bc8d94e55ee3510c81eb64a463b1
+  checksum: 1e56451eeaa5bb3105a8f545c05f0704eb7a346e033ccb0b306e4d8c5692097054ccaae0706c3f670e6d7f45eaa8a7e6e7b51793e362f518f0295f0029f7853c
   languageName: node
   linkType: hard
 
@@ -10820,7 +10820,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
-    "@formo/analytics": ^1.28.0
+    "@formo/analytics": ^1.28.2
     ansi-regex: ^6.1.0
     husky: ~8.0.3
     lint-staged: ~13.2.2

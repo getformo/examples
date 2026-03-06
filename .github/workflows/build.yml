@@ -79,7 +79,7 @@ jobs:
             build: build
             node: 20
 
-          # with-solana: requires @formo/analytics@1.28.0 (not yet published)
+          # with-solana: requires @formo/analytics@1.28.2 (not yet published)
           # with-react-native: requires @formo/react-native-analytics (not yet published)
 
     name: ${{ matrix.name }}
