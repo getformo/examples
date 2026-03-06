@@ -51,7 +51,7 @@ jobs:
 
           - name: with-porto
             dir: with-porto
-            pm: npm
+            pm: bun
             build: build
             node: 20
 
@@ -96,6 +96,10 @@ jobs:
         with:
           version: 9
 
+      - name: Install bun
+        if: matrix.pm == 'bun'
+        uses: oven-sh/setup-bun@v2
+
       - name: Setup env files
         working-directory: ${{ matrix.dir }}
         shell: bash
@@ -124,6 +128,7 @@ jobs:
             yarn)              yarn install --frozen-lockfile ;;
             yarn-berry)        yarn install ;;
             pnpm)              pnpm install --frozen-lockfile ;;
+            bun)               bun install --frozen-lockfile ;;
             npm-legacy-peer-deps) npm ci --legacy-peer-deps ;;
             *)                 npm ci ;;
           esac
@@ -139,5 +144,6 @@ jobs:
           case "$PM" in
             yarn|yarn-berry) yarn "$BUILD_SCRIPT" ;;
             pnpm)            pnpm run "$BUILD_SCRIPT" ;;
+            bun)             bun run "$BUILD_SCRIPT" ;;
             *)               npm run "$BUILD_SCRIPT" ;;
           esac
