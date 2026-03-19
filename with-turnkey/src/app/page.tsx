@@ -16,7 +16,6 @@ import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import { turnkeyConnector } from "@/config/turnkey-connector";
-import { wagmiConfig } from "@/config/wagmi";
 
 export default function Home() {
   const { turnkey, getActiveClient } = useTurnkey();
@@ -134,8 +133,7 @@ export default function Home() {
         signWith,
       });
 
-      // Register the connector with wagmi and connect
-      const augmentedConfig = wagmiConfig;
+      // Connect the Turnkey wallet via wagmi
       connect({ connector });
 
       setTurnkeyUser({
@@ -492,7 +490,7 @@ export default function Home() {
             </p>
             <p>
               <a
-                href="https://github.com/getformo/formo-example-turnkey"
+                href="https://github.com/getformo/examples/tree/main/with-turnkey"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-teal-400 hover:underline"
