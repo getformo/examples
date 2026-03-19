@@ -116,7 +116,23 @@ export function turnkeyConnector(params: {
         const account = await getAccount();
         const accountAddress = getAddress(account.address);
 
+        // Event listener store for EIP-1193 on/removeListener
+        const listeners = new Map<string, Set<(...args: unknown[]) => void>>();
+
         const provider: EIP1193Provider = {
+          on(event: string, handler: (...args: unknown[]) => void) {
+            if (!listeners.has(event)) listeners.set(event, new Set());
+            listeners.get(event)!.add(handler);
+            return provider;
+          },
+          removeListener(event: string, handler: (...args: unknown[]) => void) {
+            listeners.get(event)?.delete(handler);
+            return provider;
+          },
+          emit(event: string, ...args: unknown[]) {
+            listeners.get(event)?.forEach((h) => h(...args));
+            return listeners.has(event) && listeners.get(event)!.size > 0;
+          },
           async request({ method, params }: { method: string; params?: unknown[] }) {
             switch (method) {
               case "eth_accounts":
