@@ -7,8 +7,6 @@ import {
   type EIP1193Provider,
   type Address,
   type LocalAccount,
-  serializeTransaction,
-  type TransactionSerializable,
   hexToNumber,
 } from "viem";
 import type { TurnkeyBrowserClient } from "@turnkey/sdk-browser";
@@ -77,16 +75,28 @@ export function turnkeyConnector(params: {
       name: "Turnkey",
       type: "turnkey" as const,
 
-      async connect({ chainId } = {}) {
+      async connect(parameters?) {
         const account = await getAccount();
         const chain =
-          config.chains.find((c) => c.id === chainId) ?? config.chains[0];
+          config.chains.find((c) => c.id === parameters?.chainId) ?? config.chains[0];
         currentChainId = chain.id;
 
+        const accounts = [getAddress(account.address)] as const;
+
+        if (parameters?.withCapabilities) {
+          return {
+            accounts: accounts.map((address) => ({
+              address,
+              capabilities: {} as Record<string, unknown>,
+            })),
+            chainId: chain.id,
+          } as never;
+        }
+
         return {
-          accounts: [getAddress(account.address)],
+          accounts,
           chainId: chain.id,
-        };
+        } as never;
       },
 
       async disconnect() {
@@ -138,8 +148,11 @@ export function turnkeyConnector(params: {
                 const [txParams] = params as [Record<string, string>];
                 const rpcUrl = getRpcUrl();
 
-                // Build a serializable transaction object from the RPC params
-                const tx: TransactionSerializable = {
+                // Build a serializable transaction object from the RPC params.
+                // We use Record<string, unknown> because the tx may be legacy
+                // (gasPrice) or EIP-1559 (maxFeePerGas), which are separate
+                // union members in viem's TransactionSerializable type.
+                const tx: Record<string, unknown> = {
                   to: txParams.to as Address,
                   value: txParams.value ? BigInt(txParams.value) : 0n,
                   data: txParams.data as `0x${string}` | undefined,
@@ -177,7 +190,8 @@ export function turnkeyConnector(params: {
                 }
 
                 // Sign the transaction via Turnkey
-                const signedTx = await account.signTransaction(tx);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const signedTx = await account.signTransaction(tx as any);
 
                 // Broadcast the signed transaction
                 const txHash = await forwardToRpc(rpcUrl, "eth_sendRawTransaction", [signedTx]);

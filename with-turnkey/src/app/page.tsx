@@ -18,7 +18,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { turnkeyConnector } from "@/config/turnkey-connector";
 
 export default function Home() {
-  const { turnkey, getActiveClient } = useTurnkey();
+  const { turnkey, client: turnkeyClient } = useTurnkey();
   const { connect } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { address, isConnected, connector } = useAccount();
@@ -86,14 +86,13 @@ export default function Home() {
     setIsAuthenticating(true);
     setAuthError(null);
     try {
-      const currentUser = await turnkey?.getCurrentUser();
-      if (!currentUser) {
+      const session = await turnkey?.getSession();
+      if (!session) {
         setAuthError("No active Turnkey session. Please create a passkey first.");
         return;
       }
 
-      const client = await getActiveClient();
-      if (!client) {
+      if (!turnkeyClient) {
         setAuthError("Failed to get Turnkey client.");
         return;
       }
@@ -102,7 +101,7 @@ export default function Home() {
         process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID ?? "";
 
       // Fetch the user's wallets from Turnkey
-      const walletsResponse = await client.getWallets({ organizationId });
+      const walletsResponse = await turnkeyClient.getWallets({ organizationId });
       const wallets = walletsResponse.wallets;
 
       if (!wallets || wallets.length === 0) {
@@ -113,7 +112,7 @@ export default function Home() {
       }
 
       // Get accounts for the first wallet
-      const accountsResponse = await client.getWalletAccounts({
+      const accountsResponse = await turnkeyClient.getWalletAccounts({
         organizationId,
         walletId: wallets[0].walletId,
       });
@@ -128,7 +127,7 @@ export default function Home() {
 
       // Create the wagmi connector with the Turnkey client
       const connector = turnkeyConnector({
-        client,
+        client: turnkeyClient,
         organizationId,
         signWith,
       });
@@ -137,7 +136,7 @@ export default function Home() {
       connect({ connector });
 
       setTurnkeyUser({
-        userId: currentUser.userId,
+        userId: session.userId,
         organizationId,
       });
     } catch (err) {
@@ -148,7 +147,7 @@ export default function Home() {
     } finally {
       setIsAuthenticating(false);
     }
-  }, [turnkey, getActiveClient, connect]);
+  }, [turnkey, turnkeyClient, connect]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
