@@ -70,6 +70,10 @@ export function turnkeyConnector(params: {
       return httpRpc;
     }
 
+    // Cached provider instance so event subscriptions persist across getProvider() calls
+    let cachedProvider: EIP1193Provider | null = null;
+    const listeners = new Map<string, Set<(...args: unknown[]) => void>>();
+
     return {
       id: "turnkey",
       name: "Turnkey",
@@ -101,6 +105,8 @@ export function turnkeyConnector(params: {
 
       async disconnect() {
         cachedAccount = null;
+        cachedProvider = null;
+        listeners.clear();
       },
 
       async getAccounts() {
@@ -113,21 +119,20 @@ export function turnkeyConnector(params: {
       },
 
       async getProvider(): Promise<EIP1193Provider> {
+        if (cachedProvider) return cachedProvider;
+
         const account = await getAccount();
         const accountAddress = getAddress(account.address);
 
-        // Event listener store for EIP-1193 on/removeListener
-        const listeners = new Map<string, Set<(...args: unknown[]) => void>>();
-
-        const provider: EIP1193Provider = {
+        cachedProvider = {
           on(event: string, handler: (...args: unknown[]) => void) {
             if (!listeners.has(event)) listeners.set(event, new Set());
             listeners.get(event)!.add(handler);
-            return provider;
+            return cachedProvider!;
           },
           removeListener(event: string, handler: (...args: unknown[]) => void) {
             listeners.get(event)?.delete(handler);
-            return provider;
+            return cachedProvider!;
           },
           emit(event: string, ...args: unknown[]) {
             listeners.get(event)?.forEach((h) => h(...args));
@@ -221,7 +226,7 @@ export function turnkeyConnector(params: {
           },
         } as EIP1193Provider;
 
-        return provider;
+        return cachedProvider;
       },
 
       async isAuthorized() {
