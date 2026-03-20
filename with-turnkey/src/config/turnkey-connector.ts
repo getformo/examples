@@ -1,263 +1,154 @@
 "use client";
 
 import { createConnector } from "wagmi";
-import { createAccount } from "@turnkey/viem";
-import {
-  getAddress,
-  type EIP1193Provider,
-  type Address,
-  type LocalAccount,
-  hexToNumber,
-} from "viem";
+import { createEIP1193Provider } from "@turnkey/eip-1193-provider";
+import { getAddress, type Address, type EIP1193Provider } from "viem";
 import type { TurnkeyBrowserClient } from "@turnkey/sdk-browser";
+import type { AddEthereumChainParameter } from "viem";
+import type { UUID } from "crypto";
 
 /**
- * Custom wagmi connector that wraps Turnkey's embedded wallet.
+ * Custom wagmi connector that wraps Turnkey's embedded wallet
+ * using the official @turnkey/eip-1193-provider package.
  *
- * Once a user authenticates with Turnkey (via passkey or email),
- * this connector lets wagmi interact with the Turnkey wallet
- * for signing messages and sending transactions.
+ * This follows the approach outlined in the Turnkey docs:
+ * https://docs.turnkey.com/wallets/wagmi
  */
 export function turnkeyConnector(params: {
   client: TurnkeyBrowserClient;
   organizationId: string;
-  signWith: string;
+  walletId: string;
 }) {
-  const { client, organizationId, signWith } = params;
+  const { client, organizationId, walletId } = params;
 
-  // Mutable state shared across connector methods
-  let cachedAccount: LocalAccount | null = null;
-  let currentChainId: number = 1;
+  let cachedProvider: EIP1193Provider | null = null;
 
-  async function getAccount(): Promise<LocalAccount> {
-    if (!cachedAccount) {
-      cachedAccount = await createAccount({
-        client,
-        organizationId,
-        signWith,
-      });
-    }
-    return cachedAccount;
-  }
+  return createConnector((config) => ({
+    id: "turnkey",
+    name: "Turnkey",
+    type: "turnkey" as const,
 
-  /**
-   * Forward an RPC call to the chain's public endpoint.
-   * Used for methods the connector doesn't handle directly
-   * (e.g. eth_getTransactionCount, eth_sendRawTransaction).
-   */
-  async function forwardToRpc(
-    rpcUrl: string,
-    method: string,
-    params: unknown[] = [],
-  ): Promise<unknown> {
-    const res = await fetch(rpcUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-    });
-    const json = await res.json();
-    if (json.error) {
-      throw new Error(json.error.message ?? JSON.stringify(json.error));
-    }
-    return json.result;
-  }
+    async connect(parameters?) {
+      const provider = await this.getProvider();
+      const accounts = (await provider.request({
+        method: "eth_requestAccounts",
+      })) as Address[];
 
-  return createConnector((config) => {
-    /** Resolve the RPC URL for the current chain */
-    function getRpcUrl(): string {
-      const chain = config.chains.find((c) => c.id === currentChainId) ?? config.chains[0];
-      const httpRpc = chain.rpcUrls.default.http[0];
-      return httpRpc;
-    }
+      let chainId: number;
+      if (parameters?.chainId) {
+        await this.switchChain!({ chainId: parameters.chainId });
+        chainId = parameters.chainId;
+      } else {
+        const chainIdHex = (await provider.request({
+          method: "eth_chainId",
+        })) as string;
+        chainId = parseInt(chainIdHex, 16);
+      }
 
-    // Cached provider instance so event subscriptions persist across getProvider() calls
-    let cachedProvider: EIP1193Provider | null = null;
-    const listeners = new Map<string, Set<(...args: unknown[]) => void>>();
-
-    return {
-      id: "turnkey",
-      name: "Turnkey",
-      type: "turnkey" as const,
-
-      async connect(parameters?) {
-        const account = await getAccount();
-        const chain =
-          config.chains.find((c) => c.id === parameters?.chainId) ?? config.chains[0];
-        currentChainId = chain.id;
-
-        const accounts = [getAddress(account.address)] as const;
-
-        if (parameters?.withCapabilities) {
-          return {
-            accounts: accounts.map((address) => ({
-              address,
-              capabilities: {} as Record<string, unknown>,
-            })),
-            chainId: chain.id,
-          } as never;
-        }
-
+      if (parameters?.withCapabilities) {
         return {
-          accounts,
-          chainId: chain.id,
+          accounts: accounts.map((address) => ({
+            address: getAddress(address),
+            capabilities: {} as Record<string, unknown>,
+          })),
+          chainId,
         } as never;
-      },
+      }
 
-      async disconnect() {
-        cachedAccount = null;
-        cachedProvider = null;
-        listeners.clear();
-      },
+      return {
+        accounts: accounts.map((a) => getAddress(a)) as readonly Address[],
+        chainId,
+      } as never;
+    },
 
-      async getAccounts() {
-        const account = await getAccount();
-        return [getAddress(account.address)];
-      },
+    async disconnect() {
+      cachedProvider = null;
+    },
 
-      async getChainId() {
-        return currentChainId;
-      },
+    async getAccounts() {
+      const provider = await this.getProvider();
+      const accounts = (await provider.request({
+        method: "eth_accounts",
+      })) as Address[];
+      return accounts.map((a) => getAddress(a));
+    },
 
-      async getProvider(): Promise<EIP1193Provider> {
-        if (cachedProvider) return cachedProvider;
+    async getChainId() {
+      const provider = await this.getProvider();
+      const chainIdHex = (await provider.request({
+        method: "eth_chainId",
+      })) as string;
+      return parseInt(chainIdHex, 16);
+    },
 
-        const account = await getAccount();
-        const accountAddress = getAddress(account.address);
+    async getProvider(): Promise<EIP1193Provider> {
+      if (cachedProvider) return cachedProvider;
 
-        cachedProvider = {
-          on(event: string, handler: (...args: unknown[]) => void) {
-            if (!listeners.has(event)) listeners.set(event, new Set());
-            listeners.get(event)!.add(handler);
-            return cachedProvider!;
-          },
-          removeListener(event: string, handler: (...args: unknown[]) => void) {
-            listeners.get(event)?.delete(handler);
-            return cachedProvider!;
-          },
-          emit(event: string, ...args: unknown[]) {
-            listeners.get(event)?.forEach((h) => h(...args));
-            return listeners.has(event) && listeners.get(event)!.size > 0;
-          },
-          async request({ method, params }: { method: string; params?: unknown[] }) {
-            switch (method) {
-              case "eth_accounts":
-              case "eth_requestAccounts":
-                return [accountAddress];
+      // Build chain definitions from wagmi config for the EIP-1193 provider
+      const chains: AddEthereumChainParameter[] = config.chains.map(
+        (chain) => ({
+          chainId: `0x${chain.id.toString(16)}`,
+          chainName: chain.name,
+          nativeCurrency: chain.nativeCurrency,
+          rpcUrls: [...chain.rpcUrls.default.http],
+          blockExplorerUrls: chain.blockExplorers?.default?.url
+            ? [chain.blockExplorers.default.url]
+            : undefined,
+        })
+      );
 
-              case "eth_chainId":
-                return `0x${currentChainId.toString(16)}`;
+      const provider = await createEIP1193Provider({
+        walletId: walletId as UUID,
+        organizationId: organizationId as UUID,
+        turnkeyClient: client,
+        chains,
+      });
 
-              case "personal_sign": {
-                const [message, _address] = params as [string, string];
-                return account.signMessage({
-                  message: { raw: message as `0x${string}` },
-                });
-              }
+      cachedProvider = provider as unknown as EIP1193Provider;
+      return cachedProvider;
+    },
 
-              case "eth_signTypedData_v4": {
-                const [_address, typedDataJson] = params as [string, string];
-                const typedData = JSON.parse(typedDataJson);
-                return account.signTypedData({
-                  domain: typedData.domain,
-                  types: typedData.types,
-                  primaryType: typedData.primaryType,
-                  message: typedData.message,
-                });
-              }
+    async switchChain({ chainId }) {
+      const provider = await this.getProvider();
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: `0x${chainId.toString(16)}` }],
+      });
 
-              case "eth_sendTransaction": {
-                const [txParams] = params as [Record<string, string>];
-                const rpcUrl = getRpcUrl();
+      const chain = config.chains.find((c) => c.id === chainId);
+      if (!chain) throw new Error(`Chain ${chainId} not configured`);
 
-                // Build a serializable transaction object from the RPC params.
-                // We use Record<string, unknown> because the tx may be legacy
-                // (gasPrice) or EIP-1559 (maxFeePerGas), which are separate
-                // union members in viem's TransactionSerializable type.
-                const tx: Record<string, unknown> = {
-                  to: txParams.to as Address,
-                  value: txParams.value ? BigInt(txParams.value) : 0n,
-                  data: txParams.data as `0x${string}` | undefined,
-                  gas: txParams.gas ? BigInt(txParams.gas) : undefined,
-                  gasPrice: txParams.gasPrice ? BigInt(txParams.gasPrice) : undefined,
-                  maxFeePerGas: txParams.maxFeePerGas
-                    ? BigInt(txParams.maxFeePerGas)
-                    : undefined,
-                  maxPriorityFeePerGas: txParams.maxPriorityFeePerGas
-                    ? BigInt(txParams.maxPriorityFeePerGas)
-                    : undefined,
-                  nonce: txParams.nonce ? hexToNumber(txParams.nonce as `0x${string}`) : undefined,
-                  chainId: currentChainId,
-                };
+      config.emitter.emit("change", { chainId });
+      return chain;
+    },
 
-                // Fill in missing gas/nonce from the node if needed
-                if (tx.nonce === undefined) {
-                  const nonceHex = (await forwardToRpc(rpcUrl, "eth_getTransactionCount", [
-                    accountAddress,
-                    "pending",
-                  ])) as string;
-                  tx.nonce = hexToNumber(nonceHex as `0x${string}`);
-                }
+    async isAuthorized() {
+      try {
+        const accounts = await this.getAccounts();
+        return accounts.length > 0;
+      } catch {
+        return false;
+      }
+    },
 
-                if (!tx.gas) {
-                  tx.gas = (await forwardToRpc(rpcUrl, "eth_estimateGas", [
-                    txParams,
-                  ])) as bigint;
-                  if (typeof tx.gas === "string") tx.gas = BigInt(tx.gas);
-                }
-
-                if (!tx.maxFeePerGas && !tx.gasPrice) {
-                  const feeHistory = (await forwardToRpc(rpcUrl, "eth_gasPrice", [])) as string;
-                  tx.gasPrice = BigInt(feeHistory);
-                }
-
-                // Sign the transaction via Turnkey
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const signedTx = await account.signTransaction(tx as any);
-
-                // Broadcast the signed transaction
-                const txHash = await forwardToRpc(rpcUrl, "eth_sendRawTransaction", [signedTx]);
-                return txHash;
-              }
-
-              default:
-                // Forward any other RPC call to the chain's node
-                return forwardToRpc(getRpcUrl(), method, (params as unknown[]) ?? []);
-            }
-          },
-        } as EIP1193Provider;
-
-        return cachedProvider;
-      },
-
-      async isAuthorized() {
-        try {
-          const accounts = await this.getAccounts();
-          return accounts.length > 0;
-        } catch {
-          return false;
-        }
-      },
-
-      onAccountsChanged(accounts: string[]) {
-        if (accounts.length === 0) {
-          config.emitter.emit("disconnect");
-        } else {
-          config.emitter.emit("change", {
-            accounts: accounts.map((a) => getAddress(a as Address)),
-          });
-        }
-      },
-
-      onChainChanged(chainId: string) {
-        currentChainId = Number(chainId);
-        config.emitter.emit("change", {
-          chainId: Number(chainId),
-        });
-      },
-
-      onDisconnect() {
+    onAccountsChanged(accounts: string[]) {
+      if (accounts.length === 0) {
         config.emitter.emit("disconnect");
-      },
-    };
-  });
+      } else {
+        config.emitter.emit("change", {
+          accounts: accounts.map((a) => getAddress(a as Address)),
+        });
+      }
+    },
+
+    onChainChanged(chainId: string) {
+      config.emitter.emit("change", {
+        chainId: Number(chainId),
+      });
+    },
+
+    onDisconnect() {
+      config.emitter.emit("disconnect");
+    },
+  }));
 }

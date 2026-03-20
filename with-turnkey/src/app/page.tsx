@@ -111,25 +111,11 @@ export default function Home() {
         return;
       }
 
-      // Get accounts for the first wallet
-      const accountsResponse = await turnkeyClient.getWalletAccounts({
-        organizationId,
-        walletId: wallets[0].walletId,
-      });
-      const accounts = accountsResponse.accounts;
-
-      if (!accounts || accounts.length === 0) {
-        setAuthError("No accounts found in the wallet.");
-        return;
-      }
-
-      const signWith = accounts[0].address;
-
       // Create the wagmi connector with the Turnkey client
       const connector = turnkeyConnector({
         client: turnkeyClient,
         organizationId,
-        signWith,
+        walletId: wallets[0].walletId,
       });
 
       // Connect the Turnkey wallet via wagmi

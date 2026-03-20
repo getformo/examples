@@ -6,7 +6,7 @@ This is an example Next.js application demonstrating integration between [Turnke
 
 - **Turnkey Authentication**: Login with passkeys to access embedded wallets — no browser extensions needed
 - **Formo Analytics Integration**: Track wallet events and custom analytics
-- **Wagmi Integration**: Custom wagmi connector wrapping Turnkey's embedded wallet via `@turnkey/viem`
+- **Wagmi Integration**: Custom wagmi connector wrapping Turnkey's `@turnkey/eip-1193-provider`
 - **Event Testing UI**: Test all major Formo SDK event types:
   - Page events
   - Connect/Disconnect events (auto-captured)
@@ -84,7 +84,7 @@ Turnkey provides embedded wallets secured by passkeys. When a user authenticates
 
 1. The user authenticates via Turnkey's auth iframe (passkeys or email)
 2. The app fetches the user's wallets from the Turnkey API
-3. A custom wagmi connector is created wrapping `@turnkey/viem`'s `createAccount`
+3. A wagmi connector is created wrapping `@turnkey/eip-1193-provider`, which handles signing, transactions, and chain switching per the [Turnkey wagmi integration guide](https://docs.turnkey.com/wallets/wagmi)
 4. The connector is connected via wagmi, enabling standard hooks like `useAccount`, `useSignMessage`, etc.
 
 ### Formo Analytics
@@ -124,7 +124,7 @@ function MyComponent() {
 
 ## Wagmi Integration
 
-This example uses a custom wagmi connector that wraps Turnkey's signing capabilities via `@turnkey/viem`. The key setup in `providers.tsx`:
+This example uses a wagmi connector that wraps `@turnkey/eip-1193-provider`, following the [official Turnkey wagmi integration approach](https://docs.turnkey.com/wallets/wagmi). The key setup in `providers.tsx`:
 
 ```typescript
 import { TurnkeyProvider } from "@turnkey/sdk-react";
