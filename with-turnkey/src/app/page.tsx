@@ -13,7 +13,7 @@ import {
 } from "wagmi";
 import { formatUnits } from "viem";
 import { useFormo } from "@formo/analytics";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { turnkeyConnector } from "@/config/turnkey-connector";
 
@@ -42,31 +42,6 @@ export default function Home() {
 
   const [customEventName, setCustomEventName] = useState("");
   const [customEventSent, setCustomEventSent] = useState(false);
-
-  // Track previous auth state to detect logout
-  const prevAuthRef = useRef<{
-    connected: boolean;
-    address?: string;
-    chainId?: number;
-  }>({ connected: false });
-
-  // Bridge Turnkey logout to Formo disconnect event
-  useEffect(() => {
-    const prev = prevAuthRef.current;
-
-    if (prev.connected && !isConnected && prev.address && formo) {
-      formo.disconnect({
-        address: prev.address,
-        chainId: prev.chainId,
-      });
-    }
-
-    prevAuthRef.current = {
-      connected: isConnected,
-      address,
-      chainId,
-    };
-  }, [isConnected, address, chainId, formo]);
 
   // Identify user in Formo when connected via Turnkey
   useEffect(() => {
