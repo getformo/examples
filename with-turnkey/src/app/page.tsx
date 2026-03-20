@@ -19,7 +19,7 @@ import { turnkeyConnector } from "@/config/turnkey-connector";
 
 export default function Home() {
   const { turnkey, client: turnkeyClient } = useTurnkey();
-  const { connect } = useConnect();
+  const { connectAsync } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
@@ -118,8 +118,8 @@ export default function Home() {
         walletId: wallets[0].walletId,
       });
 
-      // Connect the Turnkey wallet via wagmi
-      connect({ connector });
+      // Connect the Turnkey wallet via wagmi (await so errors propagate to catch)
+      await connectAsync({ connector });
 
       setTurnkeyUser({
         userId: session.userId,
@@ -133,7 +133,7 @@ export default function Home() {
     } finally {
       setIsAuthenticating(false);
     }
-  }, [turnkey, turnkeyClient, connect]);
+  }, [turnkey, turnkeyClient, connectAsync]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
