@@ -251,9 +251,11 @@ export default function Home() {
                   <span className="text-gray-400 text-sm">Balance:</span>
                   <span className="ml-2 text-white">
                     {balance
-                      ? `${parseFloat(
-                          formatUnits(balance.value, balance.decimals)
-                        ).toFixed(4)} ${balance.symbol}`
+                      ? `${(() => {
+                          const formatted = formatUnits(balance.value, balance.decimals);
+                          const dot = formatted.indexOf(".");
+                          return dot === -1 ? formatted : formatted.slice(0, dot + 5);
+                        })()} ${balance.symbol}`
                       : "Loading..."}
                   </span>
                 </div>
