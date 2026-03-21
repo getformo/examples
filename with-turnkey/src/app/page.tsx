@@ -17,6 +17,12 @@ import { useState, useEffect, useCallback } from "react";
 
 import { turnkeyConnector } from "@/config/turnkey-connector";
 
+function formatDisplayBalance(value: bigint, decimals: number): string {
+  const formatted = formatUnits(value, decimals);
+  const dot = formatted.indexOf(".");
+  return dot === -1 ? formatted : formatted.slice(0, dot + 5);
+}
+
 export default function Home() {
   const { turnkey, client: turnkeyClient } = useTurnkey();
   const { connectAsync } = useConnect();
@@ -251,11 +257,7 @@ export default function Home() {
                   <span className="text-gray-400 text-sm">Balance:</span>
                   <span className="ml-2 text-white">
                     {balance
-                      ? `${(() => {
-                          const formatted = formatUnits(balance.value, balance.decimals);
-                          const dot = formatted.indexOf(".");
-                          return dot === -1 ? formatted : formatted.slice(0, dot + 5);
-                        })()} ${balance.symbol}`
+                      ? `${formatDisplayBalance(balance.value, balance.decimals)} ${balance.symbol}`
                       : "Loading..."}
                   </span>
                 </div>

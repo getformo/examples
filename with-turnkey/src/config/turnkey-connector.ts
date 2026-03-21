@@ -5,7 +5,8 @@ import { createEIP1193Provider } from "@turnkey/eip-1193-provider";
 import { getAddress, type Address, type EIP1193Provider } from "viem";
 import type { TurnkeyBrowserClient } from "@turnkey/sdk-browser";
 import type { AddEthereumChainParameter } from "viem";
-import type { UUID } from "crypto";
+
+type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 /**
  * Custom wagmi connector that wraps Turnkey's embedded wallet

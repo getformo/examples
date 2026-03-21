@@ -153,8 +153,6 @@ The Formo SDK hooks into:
 - `wagmiConfig.subscribe()` for wallet connect/disconnect/chain events
 - `queryClient.getMutationCache().subscribe()` for signature and transaction events
 
-**Note:** Turnkey's logout doesn't trigger wagmi's disconnect status, so the demo includes a `useEffect` that manually tracks disconnect events when the connection state changes.
-
 ## Supported Chains
 
 The app is configured to support:
