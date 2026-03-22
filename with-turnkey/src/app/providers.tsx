@@ -9,15 +9,14 @@ import { ReactNode, useState } from "react";
 
 import { wagmiConfig } from "@/config/wagmi";
 
-const turnkeyConfig = {
-  apiBaseUrl: "https://api.turnkey.com",
-  defaultOrganizationId: process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID ?? "",
-  rpId: process.env.NEXT_PUBLIC_TURNKEY_RP_ID ?? "localhost",
-  iframeUrl: "https://auth.turnkey.com",
-  serverSignUrl: process.env.NEXT_PUBLIC_TURNKEY_SERVER_SIGN_URL,
-};
-
 export function Providers({ children }: { children: ReactNode }) {
+  const turnkeyConfig = {
+    apiBaseUrl: "https://api.turnkey.com",
+    defaultOrganizationId: process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID ?? "",
+    rpId: process.env.NEXT_PUBLIC_TURNKEY_RP_ID ?? "localhost",
+    iframeUrl: "https://auth.turnkey.com",
+    serverSignUrl: process.env.NEXT_PUBLIC_TURNKEY_SERVER_SIGN_URL,
+  };
   const formoWriteKey = process.env.NEXT_PUBLIC_FORMO_WRITE_KEY;
   const [queryClient] = useState(() => new QueryClient());
 

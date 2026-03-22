@@ -16,7 +16,7 @@ This is an example Next.js application demonstrating integration between [Turnke
 
 ## Prerequisites
 
-- Node.js 18+ and pnpm 9.15+
+- Node.js 18+ and pnpm 9.15.4
 - A [Turnkey](https://app.turnkey.com/) account and Organization ID
 - A [Formo](https://app.formo.so/) account and Write Key
 

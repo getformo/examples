@@ -78,8 +78,7 @@ export default function Home() {
         return;
       }
 
-      const organizationId =
-        process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID ?? "";
+      const organizationId = turnkey!.config.defaultOrganizationId;
 
       // Fetch the user's wallets from Turnkey
       const walletsResponse = await turnkeyClient.getWallets({ organizationId });
