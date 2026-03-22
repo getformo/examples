@@ -105,6 +105,10 @@ export function turnkeyConnector(params: {
         chains,
       });
 
+      provider.on("accountsChanged", this.onAccountsChanged);
+      provider.on("chainChanged", this.onChainChanged);
+      provider.on("disconnect", this.onDisconnect);
+
       cachedProvider = provider as unknown as EIP1193Provider;
       return cachedProvider;
     },
