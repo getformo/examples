@@ -63,7 +63,12 @@ export function turnkeyConnector(params: {
     },
 
     async disconnect() {
-      cachedProvider = null;
+      if (cachedProvider) {
+        cachedProvider.removeListener("accountsChanged", this.onAccountsChanged);
+        cachedProvider.removeListener("chainChanged", this.onChainChanged);
+        cachedProvider.removeListener("disconnect", this.onDisconnect);
+        cachedProvider = null;
+      }
     },
 
     async getAccounts() {
