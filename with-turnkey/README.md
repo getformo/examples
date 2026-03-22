@@ -33,8 +33,6 @@ This is an example Next.js application demonstrating integration between [Turnke
 
    ```bash
    pnpm install
-   # or
-   npm install
    ```
 
 3. **Configure environment variables**
@@ -56,8 +54,6 @@ This is an example Next.js application demonstrating integration between [Turnke
 
    ```bash
    pnpm dev
-   # or
-   npm run dev
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser

@@ -38,6 +38,10 @@ export function Providers({ children }: { children: ReactNode }) {
     );
   }
 
+  if (!formoWriteKey) {
+    console.warn("Missing NEXT_PUBLIC_FORMO_WRITE_KEY. Formo analytics will be disabled.");
+  }
+
   const innerContent = formoWriteKey ? (
     <FormoAnalyticsProvider
       writeKey={formoWriteKey}
