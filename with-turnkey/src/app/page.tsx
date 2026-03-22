@@ -133,9 +133,15 @@ export default function Home() {
     });
 
     setCustomEventSent(true);
-    setTimeout(() => setCustomEventSent(false), 2000);
     setCustomEventName("");
   };
+
+  // Clear custom event confirmation after 2 seconds
+  useEffect(() => {
+    if (!customEventSent) return;
+    const timer = setTimeout(() => setCustomEventSent(false), 2000);
+    return () => clearTimeout(timer);
+  }, [customEventSent]);
 
   // Handle page view tracking
   const handleTrackPageView = async () => {
