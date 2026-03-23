@@ -24,7 +24,7 @@ function formatDisplayBalance(value: bigint, decimals: number): string {
 }
 
 export default function Home() {
-  const { turnkey, client: turnkeyClient } = useTurnkey();
+  const { turnkey, passkeyClient, client: turnkeyClient } = useTurnkey();
   const { connectAsync } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { address, isConnected, connector } = useAccount();
@@ -67,10 +67,19 @@ export default function Home() {
     setIsAuthenticating(true);
     setAuthError(null);
     try {
-      const session = await turnkey?.getSession();
+      // Check for an existing session; if none, initiate passkey login
+      let session = await turnkey?.getSession();
       if (!session) {
-        setAuthError("No active Turnkey session. Please create a passkey first.");
-        return;
+        if (!passkeyClient) {
+          setAuthError("Passkey client not available. Check your Turnkey configuration.");
+          return;
+        }
+        await passkeyClient.login();
+        session = await turnkey?.getSession();
+        if (!session) {
+          setAuthError("Failed to create Turnkey session.");
+          return;
+        }
       }
 
       if (!turnkeyClient) {
@@ -113,7 +122,7 @@ export default function Home() {
     } finally {
       setIsAuthenticating(false);
     }
-  }, [turnkey, turnkeyClient, connectAsync]);
+  }, [turnkey, passkeyClient, turnkeyClient, connectAsync]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
