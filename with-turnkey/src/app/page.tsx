@@ -232,7 +232,7 @@ export default function Home() {
     } finally {
       setIsCreatingAccount(false);
     }
-  }, [turnkey, passkeyClient, turnkeyClient, connectAsync]);
+  }, [turnkey, passkeyClient, turnkeyClient, connectAsync, signupEmail]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
