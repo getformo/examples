@@ -299,7 +299,7 @@ export default function Home() {
     if (!provider || !address) return;
     setIsSignPending(true);
     try {
-      await (provider as any).request({
+      await provider.request({
         method: "personal_sign",
         params: [
           toHex("Hello from Formo + Turnkey Demo!"),

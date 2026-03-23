@@ -47,6 +47,7 @@ This is an example Next.js application demonstrating integration between [Turnke
 
    ```env
    NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID=your-turnkey-organization-id
+   NEXT_PUBLIC_TURNKEY_RP_ID=localhost
    TURNKEY_API_PUBLIC_KEY=your-turnkey-api-public-key
    TURNKEY_API_PRIVATE_KEY=your-turnkey-api-private-key
    NEXT_PUBLIC_FORMO_WRITE_KEY=your-formo-write-key
@@ -146,7 +147,7 @@ The Formo SDK hooks into the EIP-1193 provider to auto-capture wallet connect/di
 
 ## Supported Chains
 
-The app is configured for Sepolia (testnet). Additional chains can be added by modifying the `chainParam` configuration in `page.tsx`.
+The app is configured for Sepolia (testnet). To support additional chains, you would need to update the `chainParam` configuration in `page.tsx` and add a chain-switching UI along with dynamic provider configuration.
 
 ## Resources
 

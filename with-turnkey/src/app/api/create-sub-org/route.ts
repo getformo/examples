@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const apiClient = turnkeyServer.apiClient();
 
     const result = await apiClient.createSubOrganization({
-      subOrganizationName: `Sub-Org ${Date.now()}`,
+      subOrganizationName: `Sub-Org ${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       rootUsers: [
         {
           userName: email,
