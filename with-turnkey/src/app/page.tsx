@@ -47,6 +47,7 @@ export default function Home() {
   const { signMessage, isPending: isSignPending } = useSignMessage();
   const { sendTransaction, isPending: isTxPending } = useSendTransaction();
 
+  const [signupEmail, setSignupEmail] = useState("");
   const [customEventName, setCustomEventName] = useState("");
   const [customEventSent, setCustomEventSent] = useState(false);
 
@@ -75,7 +76,11 @@ export default function Home() {
           setAuthError("Passkey client not available. Check your Turnkey configuration.");
           return;
         }
-        await passkeyClient.login();
+        // Use the stored sub-org ID if available (for sub-org passkeys)
+        const storedOrgId = localStorage.getItem("turnkey_sub_org_id");
+        await passkeyClient.login(
+          storedOrgId ? { organizationId: storedOrgId } : undefined
+        );
         session = await turnkey?.getSession();
         if (!session) {
           setAuthError("Failed to create Turnkey session.");
@@ -88,7 +93,8 @@ export default function Home() {
         return;
       }
 
-      const organizationId = turnkey!.config.defaultOrganizationId;
+      // Use the session's organization ID (may be a sub-org)
+      const organizationId = session.organizationId;
 
       // Fetch the user's wallets from Turnkey
       const walletsResponse = await turnkeyClient.getWallets({ organizationId });
@@ -127,6 +133,10 @@ export default function Home() {
 
   // Handle new account creation (sub-organization with passkey + wallet)
   const handleCreateAccount = useCallback(async () => {
+    if (!signupEmail.trim()) {
+      setAuthError("Please enter your email address.");
+      return;
+    }
     setIsCreatingAccount(true);
     setAuthError(null);
     try {
@@ -135,18 +145,20 @@ export default function Home() {
         return;
       }
 
+      const email = signupEmail.trim();
+
       // Prompt the user to create a passkey via WebAuthn
       const passkey = await passkeyClient.createUserPasskey({
-        publicKey: { user: { name: "Turnkey Demo User", displayName: "Turnkey Demo User" } },
+        publicKey: { user: { name: email, displayName: email } },
       });
 
       // Create a sub-organization with the passkey and an Ethereum wallet
       const subOrg = await passkeyClient.createSubOrganization({
-        subOrganizationName: `Demo Sub-Org ${Date.now()}`,
+        subOrganizationName: `Sub-Org ${Date.now()}`,
         rootUsers: [
           {
-            userName: "demo-user",
-            userEmail: "",
+            userName: email,
+            userEmail: email,
             authenticators: [
               {
                 authenticatorName: "Passkey",
@@ -176,6 +188,9 @@ export default function Home() {
         setAuthError("Failed to create sub-organization.");
         return;
       }
+
+      // Store the sub-org ID so future logins can scope to it
+      localStorage.setItem("turnkey_sub_org_id", subOrg.subOrganizationId);
 
       // Log in with the newly created passkey
       await passkeyClient.login({ organizationId: subOrg.subOrganizationId });
@@ -337,9 +352,24 @@ export default function Home() {
                     ? "Authenticating..."
                     : "Log In with Passkey"}
                 </button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-600" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="bg-gray-800 px-2 text-gray-400">or create an account</span>
+                  </div>
+                </div>
+                <input
+                  type="email"
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
+                  placeholder="Email address"
+                  className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
                 <button
                   onClick={handleCreateAccount}
-                  disabled={isAuthenticating || isCreatingAccount}
+                  disabled={isAuthenticating || isCreatingAccount || !signupEmail.trim()}
                   className="w-full bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors border border-gray-500"
                 >
                   {isCreatingAccount
