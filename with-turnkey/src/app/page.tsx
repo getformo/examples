@@ -147,42 +147,30 @@ export default function Home() {
 
       const email = signupEmail.trim();
 
-      // Prompt the user to create a passkey via WebAuthn
+      // Prompt the user to create a passkey via WebAuthn (local only, no Turnkey API call)
       const passkey = await passkeyClient.createUserPasskey({
         publicKey: { user: { name: email, displayName: email } },
       });
 
-      // Create a sub-organization with the passkey and an Ethereum wallet
-      const subOrg = await passkeyClient.createSubOrganization({
-        subOrganizationName: `Sub-Org ${Date.now()}`,
-        rootUsers: [
-          {
-            userName: email,
-            userEmail: email,
-            authenticators: [
-              {
-                authenticatorName: "Passkey",
-                challenge: passkey.encodedChallenge,
-                attestation: passkey.attestation,
-              },
-            ],
-            oauthProviders: [],
-            apiKeys: [],
-          },
-        ],
-        rootQuorumThreshold: 1,
-        wallet: {
-          walletName: "Default Wallet",
-          accounts: [
-            {
-              curve: "CURVE_SECP256K1",
-              pathFormat: "PATH_FORMAT_BIP32",
-              path: "m/44'/60'/0'/0/0",
-              addressFormat: "ADDRESS_FORMAT_ETHEREUM",
-            },
-          ],
-        },
+      // Create the sub-organization via server-side API route
+      // (the server uses an API key to authenticate with Turnkey,
+      // since the new passkey isn't registered with Turnkey yet)
+      const response = await fetch("/api/create-sub-org", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          challenge: passkey.encodedChallenge,
+          attestation: passkey.attestation,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create account");
+      }
+
+      const subOrg = await response.json();
 
       if (!subOrg?.subOrganizationId) {
         setAuthError("Failed to create sub-organization.");
@@ -192,7 +180,7 @@ export default function Home() {
       // Store the sub-org ID so future logins can scope to it
       localStorage.setItem("turnkey_sub_org_id", subOrg.subOrganizationId);
 
-      // Log in with the newly created passkey
+      // Log in with the newly created passkey (now registered in the sub-org)
       await passkeyClient.login({ organizationId: subOrg.subOrganizationId });
 
       const session = await turnkey?.getSession();
@@ -202,23 +190,31 @@ export default function Home() {
       }
 
       // Connect the wallet via wagmi
-      const walletsResponse = await turnkeyClient.getWallets({
-        organizationId: subOrg.subOrganizationId,
-      });
-      const wallets = walletsResponse.wallets;
-
-      if (!wallets || wallets.length === 0) {
-        setAuthError("Account created but no wallets found.");
-        return;
+      const walletId = subOrg.walletId;
+      if (!walletId) {
+        // Fallback: fetch wallets from Turnkey
+        const walletsResponse = await turnkeyClient.getWallets({
+          organizationId: subOrg.subOrganizationId,
+        });
+        const wallets = walletsResponse.wallets;
+        if (!wallets || wallets.length === 0) {
+          setAuthError("Account created but no wallets found.");
+          return;
+        }
+        const connector = turnkeyConnector({
+          client: turnkeyClient,
+          organizationId: subOrg.subOrganizationId,
+          walletId: wallets[0].walletId,
+        });
+        await connectAsync({ connector });
+      } else {
+        const connector = turnkeyConnector({
+          client: turnkeyClient,
+          organizationId: subOrg.subOrganizationId,
+          walletId,
+        });
+        await connectAsync({ connector });
       }
-
-      const connector = turnkeyConnector({
-        client: turnkeyClient,
-        organizationId: subOrg.subOrganizationId,
-        walletId: wallets[0].walletId,
-      });
-
-      await connectAsync({ connector });
 
       setTurnkeyUser({
         userId: session.userId,
