@@ -76,17 +76,20 @@ export function Providers({ children }: { children: ReactNode }) {
     console.warn("Missing NEXT_PUBLIC_FORMO_WRITE_KEY. Formo analytics will be disabled.");
   }
 
-  // Formo options: when a provider is available, pass it for EIP-1193 autocapture.
-  // When provider changes from null -> value, the optionsKey changes and Formo reinitializes.
-  const formoOptions = {
-    ...(provider ? { provider: provider as any } : {}),
-    autocapture: true,
-    tracking: true,
-    logger: {
-      enabled: true,
-      levels: ["info", "warn", "error"] as ("info" | "warn" | "error")[],
-    },
-  };
+  // Memoize analytics options to prevent re-initialization on every render.
+  // When provider changes from null -> value, Formo reinitializes to attach autocapture.
+  const formoOptions = useMemo(
+    () => ({
+      ...(provider ? { provider: provider as any } : {}),
+      autocapture: true,
+      tracking: true,
+      logger: {
+        enabled: true,
+        levels: ["info", "warn", "error"] as ("info" | "warn" | "error")[],
+      },
+    }),
+    [provider]
+  );
 
   const innerContent = formoWriteKey ? (
     <FormoAnalyticsProvider writeKey={formoWriteKey} options={formoOptions}>
