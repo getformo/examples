@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Turnkey } from "@turnkey/sdk-server";
 
+const apiPrivateKey = process.env.TURNKEY_API_PRIVATE_KEY;
+const apiPublicKey = process.env.TURNKEY_API_PUBLIC_KEY;
+const defaultOrganizationId = process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID;
+
+if (!apiPrivateKey || !apiPublicKey || !defaultOrganizationId) {
+  throw new Error(
+    "Missing required Turnkey server environment variables (TURNKEY_API_PRIVATE_KEY, TURNKEY_API_PUBLIC_KEY, NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID). Please check your .env file."
+  );
+}
+
 const turnkeyServer = new Turnkey({
   apiBaseUrl: "https://api.turnkey.com",
-  apiPrivateKey: process.env.TURNKEY_API_PRIVATE_KEY!,
-  apiPublicKey: process.env.TURNKEY_API_PUBLIC_KEY!,
-  defaultOrganizationId: process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID!,
+  apiPrivateKey,
+  apiPublicKey,
+  defaultOrganizationId,
 });
 
 export async function POST(request: NextRequest) {

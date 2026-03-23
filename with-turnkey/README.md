@@ -6,7 +6,7 @@ This is an example Next.js application demonstrating integration between [Turnke
 
 - **Turnkey Authentication**: Login with passkeys to access embedded wallets — no browser extensions needed
 - **Formo Analytics Integration**: Track wallet events and custom analytics
-- **Wagmi Integration**: Custom wagmi connector wrapping Turnkey's `@turnkey/eip-1193-provider`
+- **EIP-1193 Provider**: Direct integration with Turnkey's `@turnkey/eip-1193-provider` for signing and transactions
 - **Event Testing UI**: Test all major Formo SDK event types:
   - Page events
   - Connect/Disconnect events (auto-captured)
@@ -47,6 +47,8 @@ This is an example Next.js application demonstrating integration between [Turnke
 
    ```env
    NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID=your-turnkey-organization-id
+   TURNKEY_API_PUBLIC_KEY=your-turnkey-api-public-key
+   TURNKEY_API_PRIVATE_KEY=your-turnkey-api-private-key
    NEXT_PUBLIC_FORMO_WRITE_KEY=your-formo-write-key
    ```
 
@@ -63,13 +65,13 @@ This is an example Next.js application demonstrating integration between [Turnke
 ```
 src/
 ├── app/
-│   ├── globals.css       # Global styles with Tailwind
-│   ├── layout.tsx        # Root layout with providers
-│   ├── page.tsx          # Main demo page with wallet UI and event testing
-│   └── providers.tsx     # Turnkey, wagmi, and Formo providers
-└── config/
-    ├── turnkey-connector.ts  # Custom wagmi connector wrapping Turnkey
-    └── wagmi.ts              # Wagmi chain and transport configuration
+│   ├── api/
+│   │   └── create-sub-org/
+│   │       └── route.ts    # Server-side Turnkey sub-organization creation
+│   ├── globals.css         # Global styles with Tailwind
+│   ├── layout.tsx          # Root layout with providers
+│   ├── page.tsx            # Main demo page with wallet UI and event testing
+│   └── providers.tsx       # Turnkey and Formo providers
 ```
 
 ## How It Works
@@ -78,10 +80,10 @@ src/
 
 Turnkey provides embedded wallets secured by passkeys. When a user authenticates:
 
-1. The user authenticates via Turnkey's auth iframe (passkeys or email)
-2. The app fetches the user's wallets from the Turnkey API
-3. A wagmi connector is created wrapping `@turnkey/eip-1193-provider`, which handles signing, transactions, and chain switching per the [Turnkey wagmi integration guide](https://docs.turnkey.com/wallets/wagmi)
-4. The connector is connected via wagmi, enabling standard hooks like `useAccount`, `useSignMessage`, etc.
+1. The user creates a passkey and a Turnkey sub-organization is created via the server-side API route
+2. The user authenticates via passkeys using `@turnkey/sdk-react`
+3. The app fetches the user's wallets from the Turnkey API
+4. An EIP-1193 provider is created via `@turnkey/eip-1193-provider`, enabling signing, transactions, and chain switching
 
 ### Formo Analytics
 
@@ -118,25 +120,20 @@ function MyComponent() {
 }
 ```
 
-## Wagmi Integration
+## Provider Setup
 
-This example uses a wagmi connector that wraps `@turnkey/eip-1193-provider`, following the [official Turnkey wagmi integration approach](https://docs.turnkey.com/wallets/wagmi). The key setup in `providers.tsx`:
+The key setup in `providers.tsx`:
 
 ```typescript
 import { TurnkeyProvider } from "@turnkey/sdk-react";
-import { WagmiProvider } from "wagmi";
 import { FormoAnalyticsProvider } from "@formo/analytics";
-import { wagmiConfig } from "@/config/wagmi";
 
 // Provider nesting order:
-// TurnkeyProvider > WagmiProvider > QueryClientProvider > FormoAnalyticsProvider
+// TurnkeyProvider > WalletContext > FormoAnalyticsProvider
 <FormoAnalyticsProvider
   writeKey={formoWriteKey}
   options={{
-    wagmi: {
-      config: wagmiConfig,
-      queryClient,
-    },
+    provider,       // EIP-1193 provider from Turnkey
     autocapture: true,
     tracking: true,
   }}
@@ -145,26 +142,16 @@ import { wagmiConfig } from "@/config/wagmi";
 </FormoAnalyticsProvider>
 ```
 
-The Formo SDK hooks into:
-- `wagmiConfig.subscribe()` for wallet connect/disconnect/chain events
-- `queryClient.getMutationCache().subscribe()` for signature and transaction events
+The Formo SDK hooks into the EIP-1193 provider to auto-capture wallet connect/disconnect, chain changes, signatures, and transactions.
 
 ## Supported Chains
 
-The app is configured to support:
-
-- Ethereum Mainnet
-- Sepolia (testnet)
-- Polygon
-- Arbitrum
-- Optimism
-- Base
+The app is configured for Sepolia (testnet). Additional chains can be added by modifying the `chainParam` configuration in `page.tsx`.
 
 ## Resources
 
 - [Turnkey Documentation](https://docs.turnkey.com/)
 - [Turnkey Embedded Wallet Quickstart](https://docs.turnkey.com/getting-started/embedded-wallet-quickstart)
-- [Turnkey Wagmi Integration](https://docs.turnkey.com/wallets/wagmi)
 - [Formo Documentation](https://docs.formo.so/)
 - [Formo SDK Installation](https://docs.formo.so/install)
 

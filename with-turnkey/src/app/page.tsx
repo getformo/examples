@@ -3,7 +3,7 @@
 // @ts-ignore — @turnkey/sdk-react is built for React 18; safe to use with React 19
 import { useTurnkey } from "@turnkey/sdk-react";
 import { createEIP1193Provider } from "@turnkey/eip-1193-provider";
-import { formatUnits } from "viem";
+import { formatUnits, toHex } from "viem";
 import { sepolia } from "viem/chains";
 import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useCallback } from "react";
@@ -84,15 +84,16 @@ export default function Home() {
         method: "eth_chainId",
       })) as string;
 
+      const parsedChainId = parseInt(chainIdHex, 16);
+
       setProvider(eip1193 as any);
       setWalletState({
         address: accounts[0],
-        chainId: parseInt(chainIdHex, 16),
+        chainId: parsedChainId,
         organizationId,
         userId: null,
       });
 
-      const parsedChainId = parseInt(chainIdHex, 16);
       return { accounts, eip1193, chainId: parsedChainId };
     },
     [getFreshClient, setProvider, setWalletState]
@@ -301,7 +302,7 @@ export default function Home() {
       await (provider as any).request({
         method: "personal_sign",
         params: [
-          ("0x" + Buffer.from("Hello from Formo + Turnkey Demo!").toString("hex")) as `0x${string}`,
+          toHex("Hello from Formo + Turnkey Demo!"),
           address as `0x${string}`,
         ],
       });
