@@ -32,6 +32,7 @@ export default function Home() {
   const formo = useFormo();
 
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [turnkeyUser, setTurnkeyUser] = useState<{
     userId: string;
@@ -121,6 +122,100 @@ export default function Home() {
       );
     } finally {
       setIsAuthenticating(false);
+    }
+  }, [turnkey, passkeyClient, turnkeyClient, connectAsync]);
+
+  // Handle new account creation (sub-organization with passkey + wallet)
+  const handleCreateAccount = useCallback(async () => {
+    setIsCreatingAccount(true);
+    setAuthError(null);
+    try {
+      if (!passkeyClient) {
+        setAuthError("Passkey client not available. Check your Turnkey configuration.");
+        return;
+      }
+
+      // Prompt the user to create a passkey via WebAuthn
+      const passkey = await passkeyClient.createUserPasskey({
+        publicKey: { user: { name: "Turnkey Demo User", displayName: "Turnkey Demo User" } },
+      });
+
+      // Create a sub-organization with the passkey and an Ethereum wallet
+      const subOrg = await passkeyClient.createSubOrganization({
+        subOrganizationName: `Demo Sub-Org ${Date.now()}`,
+        rootUsers: [
+          {
+            userName: "demo-user",
+            userEmail: "",
+            authenticators: [
+              {
+                authenticatorName: "Passkey",
+                challenge: passkey.encodedChallenge,
+                attestation: passkey.attestation,
+              },
+            ],
+            oauthProviders: [],
+            apiKeys: [],
+          },
+        ],
+        rootQuorumThreshold: 1,
+        wallet: {
+          walletName: "Default Wallet",
+          accounts: [
+            {
+              curve: "CURVE_SECP256K1",
+              pathFormat: "PATH_FORMAT_BIP32",
+              path: "m/44'/60'/0'/0/0",
+              addressFormat: "ADDRESS_FORMAT_ETHEREUM",
+            },
+          ],
+        },
+      });
+
+      if (!subOrg?.subOrganizationId) {
+        setAuthError("Failed to create sub-organization.");
+        return;
+      }
+
+      // Log in with the newly created passkey
+      await passkeyClient.login({ organizationId: subOrg.subOrganizationId });
+
+      const session = await turnkey?.getSession();
+      if (!session || !turnkeyClient) {
+        setAuthError("Account created but failed to log in. Try clicking 'Log In with Passkey'.");
+        return;
+      }
+
+      // Connect the wallet via wagmi
+      const walletsResponse = await turnkeyClient.getWallets({
+        organizationId: subOrg.subOrganizationId,
+      });
+      const wallets = walletsResponse.wallets;
+
+      if (!wallets || wallets.length === 0) {
+        setAuthError("Account created but no wallets found.");
+        return;
+      }
+
+      const connector = turnkeyConnector({
+        client: turnkeyClient,
+        organizationId: subOrg.subOrganizationId,
+        walletId: wallets[0].walletId,
+      });
+
+      await connectAsync({ connector });
+
+      setTurnkeyUser({
+        userId: session.userId,
+        organizationId: subOrg.subOrganizationId,
+      });
+    } catch (err) {
+      console.error("Account creation failed:", err);
+      setAuthError(
+        err instanceof Error ? err.message : "Account creation failed"
+      );
+    } finally {
+      setIsCreatingAccount(false);
     }
   }, [turnkey, passkeyClient, turnkeyClient, connectAsync]);
 
@@ -232,15 +327,26 @@ export default function Home() {
                 Disconnect
               </button>
             ) : (
-              <button
-                onClick={handlePasskeyLogin}
-                disabled={isAuthenticating}
-                className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                {isAuthenticating
-                  ? "Authenticating..."
-                  : "Connect with Turnkey"}
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={handlePasskeyLogin}
+                  disabled={isAuthenticating || isCreatingAccount}
+                  className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  {isAuthenticating
+                    ? "Authenticating..."
+                    : "Log In with Passkey"}
+                </button>
+                <button
+                  onClick={handleCreateAccount}
+                  disabled={isAuthenticating || isCreatingAccount}
+                  className="w-full bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors border border-gray-500"
+                >
+                  {isCreatingAccount
+                    ? "Creating Account..."
+                    : "Create New Account"}
+                </button>
+              </div>
             )}
           </div>
 
