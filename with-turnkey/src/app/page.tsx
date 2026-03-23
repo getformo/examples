@@ -50,15 +50,24 @@ export default function Home() {
       : undefined,
   };
 
+  // Get a fresh Turnkey client (avoids stale closure after login)
+  const getFreshClient = useCallback(async () => {
+    if (turnkeyClient) return turnkeyClient;
+    // After login, turnkeyClient may still be undefined due to React not re-rendering yet.
+    // Create a fresh IndexedDB client which reads the session credentials directly.
+    if (!turnkey) throw new Error("Turnkey SDK not available");
+    return await turnkey.indexedDbClient();
+  }, [turnkey, turnkeyClient]);
+
   // Create the EIP-1193 provider and connect the wallet
   const connectWallet = useCallback(
     async (organizationId: string, walletId: string) => {
-      if (!turnkeyClient) throw new Error("Turnkey client not available");
+      const client = await getFreshClient();
 
       const eip1193 = await createEIP1193Provider({
         walletId: walletId as UUID,
         organizationId: organizationId as UUID,
-        turnkeyClient: turnkeyClient,
+        turnkeyClient: client,
         chains: [chainParam],
       });
 
@@ -83,9 +92,10 @@ export default function Home() {
         userId: null,
       });
 
-      return { accounts, eip1193 };
+      const parsedChainId = parseInt(chainIdHex, 16);
+      return { accounts, eip1193, chainId: parsedChainId };
     },
-    [turnkeyClient, setProvider, setWalletState]
+    [getFreshClient, setProvider, setWalletState]
   );
 
   // Fetch balance when connected
@@ -154,13 +164,16 @@ export default function Home() {
         }
       }
 
-      if (!turnkeyClient) {
+      let freshClient;
+      try {
+        freshClient = await getFreshClient();
+      } catch {
         setAuthError("Failed to get Turnkey client.");
         return;
       }
 
       const organizationId = session.organizationId;
-      const walletsResponse = await turnkeyClient.getWallets({ organizationId });
+      const walletsResponse = await freshClient.getWallets({ organizationId });
       const wallets = walletsResponse.wallets;
 
       if (!wallets || wallets.length === 0) {
@@ -168,10 +181,10 @@ export default function Home() {
         return;
       }
 
-      const { accounts } = await connectWallet(organizationId, wallets[0].walletId);
+      const { accounts, chainId: connectedChainId } = await connectWallet(organizationId, wallets[0].walletId);
       setWalletState({
         address: accounts[0],
-        chainId: walletState.chainId,
+        chainId: connectedChainId,
         userId: session!.userId,
         organizationId,
       });
@@ -181,7 +194,7 @@ export default function Home() {
     } finally {
       setIsAuthenticating(false);
     }
-  }, [turnkey, passkeyClient, turnkeyClient, connectWallet, setWalletState]);
+  }, [turnkey, passkeyClient, getFreshClient, connectWallet, setWalletState]);
 
   // Handle new account creation
   const handleCreateAccount = useCallback(async () => {
@@ -231,15 +244,23 @@ export default function Home() {
       await passkeyClient.login({ organizationId: subOrg.subOrganizationId });
 
       const session = await turnkey?.getSession();
-      if (!session || !turnkeyClient) {
+      if (!session) {
         setAuthError("Account created but failed to log in. Try clicking 'Log In with Passkey'.");
+        return;
+      }
+
+      let freshClient;
+      try {
+        freshClient = await getFreshClient();
+      } catch {
+        setAuthError("Account created but failed to get Turnkey client. Try clicking 'Log In with Passkey'.");
         return;
       }
 
       // Get wallet ID from the sub-org creation response or fetch it
       let walletId = subOrg.walletId;
       if (!walletId) {
-        const walletsResponse = await turnkeyClient.getWallets({
+        const walletsResponse = await freshClient.getWallets({
           organizationId: subOrg.subOrganizationId,
         });
         const wallets = walletsResponse.wallets;
@@ -250,10 +271,10 @@ export default function Home() {
         walletId = wallets[0].walletId;
       }
 
-      const { accounts } = await connectWallet(subOrg.subOrganizationId, walletId);
+      const { accounts, chainId: connectedChainId } = await connectWallet(subOrg.subOrganizationId, walletId);
       setWalletState({
         address: accounts[0],
-        chainId: walletState.chainId,
+        chainId: connectedChainId,
         userId: session!.userId,
         organizationId: subOrg.subOrganizationId,
       });
@@ -263,7 +284,7 @@ export default function Home() {
     } finally {
       setIsCreatingAccount(false);
     }
-  }, [turnkey, passkeyClient, turnkeyClient, connectWallet, signupEmail, setWalletState]);
+  }, [turnkey, passkeyClient, getFreshClient, connectWallet, signupEmail, setWalletState]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
