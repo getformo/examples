@@ -2,12 +2,36 @@
 
 // @ts-ignore — @turnkey/sdk-react is built for React 18; safe to use with React 19
 import { TurnkeyProvider } from "@turnkey/sdk-react";
-import { WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FormoAnalyticsProvider } from "@formo/analytics";
-import { ReactNode, useState } from "react";
+import { ReactNode, createContext, useContext, useState, useMemo } from "react";
 
-import { wagmiConfig } from "@/config/wagmi";
+import type { EIP1193Provider } from "viem";
+
+// Context to share the EIP-1193 provider across the app
+type WalletContextType = {
+  provider: EIP1193Provider | null;
+  setProvider: (provider: EIP1193Provider | null) => void;
+  walletState: WalletState;
+  setWalletState: (state: WalletState) => void;
+};
+
+type WalletState = {
+  address: string | null;
+  chainId: number | null;
+  organizationId: string | null;
+  userId: string | null;
+};
+
+const WalletContext = createContext<WalletContextType>({
+  provider: null,
+  setProvider: () => {},
+  walletState: { address: null, chainId: null, organizationId: null, userId: null },
+  setWalletState: () => {},
+});
+
+export function useWallet() {
+  return useContext(WalletContext);
+}
 
 export function Providers({ children }: { children: ReactNode }) {
   const turnkeyConfig = {
@@ -15,10 +39,21 @@ export function Providers({ children }: { children: ReactNode }) {
     defaultOrganizationId: process.env.NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID ?? "",
     rpId: process.env.NEXT_PUBLIC_TURNKEY_RP_ID ?? "localhost",
     iframeUrl: "https://auth.turnkey.com",
-    serverSignUrl: process.env.NEXT_PUBLIC_TURNKEY_SERVER_SIGN_URL,
   };
   const formoWriteKey = process.env.NEXT_PUBLIC_FORMO_WRITE_KEY;
-  const [queryClient] = useState(() => new QueryClient());
+
+  const [provider, setProvider] = useState<EIP1193Provider | null>(null);
+  const [walletState, setWalletState] = useState<WalletState>({
+    address: null,
+    chainId: null,
+    organizationId: null,
+    userId: null,
+  });
+
+  const walletContextValue = useMemo(
+    () => ({ provider, setProvider, walletState, setWalletState }),
+    [provider, walletState]
+  );
 
   if (!turnkeyConfig.defaultOrganizationId) {
     console.error("Missing NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID environment variable");
@@ -41,37 +76,32 @@ export function Providers({ children }: { children: ReactNode }) {
     console.warn("Missing NEXT_PUBLIC_FORMO_WRITE_KEY. Formo analytics will be disabled.");
   }
 
+  // Formo options: when a provider is available, pass it for EIP-1193 autocapture.
+  // When provider changes from null -> value, the optionsKey changes and Formo reinitializes.
+  const formoOptions = {
+    ...(provider ? { provider: provider as any } : {}),
+    autocapture: true,
+    tracking: true,
+    logger: {
+      enabled: true,
+      levels: ["info", "warn", "error"] as ("info" | "warn" | "error")[],
+    },
+  };
+
   const innerContent = formoWriteKey ? (
-    <FormoAnalyticsProvider
-      writeKey={formoWriteKey}
-      options={{
-        wagmi: {
-          config: wagmiConfig,
-          queryClient,
-        },
-        autocapture: true,
-        tracking: true,
-        logger: {
-          enabled: true,
-          levels: ["info", "warn", "error"],
-        },
-      }}
-    >
+    <FormoAnalyticsProvider writeKey={formoWriteKey} options={formoOptions}>
       {children}
     </FormoAnalyticsProvider>
   ) : (
     children
   );
 
-  // Provider order: Turnkey -> Wagmi -> QueryClient -> Formo -> children
   return (
     // @ts-ignore — @turnkey/sdk-react is built for React 18
     <TurnkeyProvider config={turnkeyConfig}>
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          {innerContent}
-        </QueryClientProvider>
-      </WagmiProvider>
+      <WalletContext.Provider value={walletContextValue}>
+        {innerContent}
+      </WalletContext.Provider>
     </TurnkeyProvider>
   );
 }

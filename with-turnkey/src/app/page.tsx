@@ -2,20 +2,15 @@
 
 // @ts-ignore — @turnkey/sdk-react is built for React 18; safe to use with React 19
 import { useTurnkey } from "@turnkey/sdk-react";
-import {
-  useAccount,
-  useBalance,
-  useChainId,
-  useConnect,
-  useDisconnect,
-  useSignMessage,
-  useSendTransaction,
-} from "wagmi";
+import { createEIP1193Provider } from "@turnkey/eip-1193-provider";
 import { formatUnits } from "viem";
+import { sepolia } from "viem/chains";
 import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useCallback } from "react";
 
-import { turnkeyConnector } from "@/config/turnkey-connector";
+import { useWallet } from "./providers";
+
+type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 function formatDisplayBalance(value: bigint, decimals: number): string {
   const formatted = formatUnits(value, decimals);
@@ -25,58 +20,129 @@ function formatDisplayBalance(value: bigint, decimals: number): string {
 
 export default function Home() {
   const { turnkey, passkeyClient, client: turnkeyClient } = useTurnkey();
-  const { connectAsync } = useConnect();
-  const { disconnect: wagmiDisconnect } = useDisconnect();
-  const { address, isConnected, connector } = useAccount();
-  const chainId = useChainId();
+  const { provider, setProvider, walletState, setWalletState } = useWallet();
   const formo = useFormo();
 
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [turnkeyUser, setTurnkeyUser] = useState<{
-    userId: string;
-    organizationId: string;
-  } | null>(null);
-
-  const { data: balance } = useBalance({
-    address,
-    query: { enabled: !!address },
-  });
-
-  const { signMessage, isPending: isSignPending } = useSignMessage();
-  const { sendTransaction, isPending: isTxPending } = useSendTransaction();
-
   const [signupEmail, setSignupEmail] = useState("");
+
+  const [balance, setBalance] = useState<{ value: bigint; decimals: number; symbol: string } | null>(null);
+  const [isSignPending, setIsSignPending] = useState(false);
+  const [isTxPending, setIsTxPending] = useState(false);
   const [customEventName, setCustomEventName] = useState("");
   const [customEventSent, setCustomEventSent] = useState(false);
 
-  // Identify user in Formo when connected via Turnkey
+  const isConnected = !!walletState.address;
+  const address = walletState.address;
+  const chainId = walletState.chainId;
+
+  // Build the chain config for the EIP-1193 provider
+  const chain = sepolia;
+  const chainParam = {
+    chainId: `0x${chain.id.toString(16)}`,
+    chainName: chain.name,
+    nativeCurrency: chain.nativeCurrency,
+    rpcUrls: [...chain.rpcUrls.default.http],
+    blockExplorerUrls: chain.blockExplorers?.default?.url
+      ? [chain.blockExplorers.default.url]
+      : undefined,
+  };
+
+  // Create the EIP-1193 provider and connect the wallet
+  const connectWallet = useCallback(
+    async (organizationId: string, walletId: string) => {
+      if (!turnkeyClient) throw new Error("Turnkey client not available");
+
+      const eip1193 = await createEIP1193Provider({
+        walletId: walletId as UUID,
+        organizationId: organizationId as UUID,
+        turnkeyClient: turnkeyClient,
+        chains: [chainParam],
+      });
+
+      // Request accounts to initialize the provider
+      const accounts = (await eip1193.request({
+        method: "eth_requestAccounts",
+      })) as string[];
+
+      if (!accounts || accounts.length === 0) {
+        throw new Error("No accounts returned from provider");
+      }
+
+      const chainIdHex = (await eip1193.request({
+        method: "eth_chainId",
+      })) as string;
+
+      setProvider(eip1193 as any);
+      setWalletState({
+        address: accounts[0],
+        chainId: parseInt(chainIdHex, 16),
+        organizationId,
+        userId: null,
+      });
+
+      return { accounts, eip1193 };
+    },
+    [turnkeyClient, setProvider, setWalletState]
+  );
+
+  // Fetch balance when connected
   useEffect(() => {
-    if (!turnkeyUser || !address || !formo) return;
+    if (!provider || !address) {
+      setBalance(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchBalance = async () => {
+      try {
+        const balanceHex = (await provider.request({
+          method: "eth_getBalance",
+          params: [address as `0x${string}`, "latest"],
+        })) as string;
+        if (!cancelled) {
+          setBalance({
+            value: BigInt(balanceHex),
+            decimals: 18,
+            symbol: "ETH",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch balance:", err);
+      }
+    };
+
+    fetchBalance();
+    return () => { cancelled = true; };
+  }, [provider, address]);
+
+  // Identify user in Formo when connected
+  useEffect(() => {
+    if (!walletState.address || !walletState.userId || !formo) return;
 
     formo.identify(
-      { address, userId: turnkeyUser.userId },
+      { address: walletState.address, userId: walletState.userId },
       {
         provider: "turnkey",
-        organizationId: turnkeyUser.organizationId,
+        organizationId: walletState.organizationId || undefined,
       }
     );
-  }, [turnkeyUser, address, formo]);
+  }, [walletState, formo]);
 
   // Handle passkey login
   const handlePasskeyLogin = useCallback(async () => {
     setIsAuthenticating(true);
     setAuthError(null);
     try {
-      // Check for an existing session; if none, initiate passkey login
       let session = await turnkey?.getSession();
       if (!session) {
         if (!passkeyClient) {
           setAuthError("Passkey client not available. Check your Turnkey configuration.");
           return;
         }
-        // Use the stored sub-org ID if available (for sub-org passkeys)
         const storedOrgId = localStorage.getItem("turnkey_sub_org_id");
         await passkeyClient.login(
           storedOrgId ? { organizationId: storedOrgId } : undefined
@@ -93,45 +159,31 @@ export default function Home() {
         return;
       }
 
-      // Use the session's organization ID (may be a sub-org)
       const organizationId = session.organizationId;
-
-      // Fetch the user's wallets from Turnkey
       const walletsResponse = await turnkeyClient.getWallets({ organizationId });
       const wallets = walletsResponse.wallets;
 
       if (!wallets || wallets.length === 0) {
-        setAuthError(
-          "No wallets found. Create a wallet in your Turnkey dashboard first."
-        );
+        setAuthError("No wallets found. Create a wallet in your Turnkey dashboard first.");
         return;
       }
 
-      // Create the wagmi connector with the Turnkey client
-      const connector = turnkeyConnector({
-        client: turnkeyClient,
-        organizationId,
-        walletId: wallets[0].walletId,
-      });
-
-      // Connect the Turnkey wallet via wagmi (await so errors propagate to catch)
-      await connectAsync({ connector });
-
-      setTurnkeyUser({
-        userId: session.userId,
+      const { accounts } = await connectWallet(organizationId, wallets[0].walletId);
+      setWalletState({
+        address: accounts[0],
+        chainId: walletState.chainId,
+        userId: session!.userId,
         organizationId,
       });
     } catch (err) {
       console.error("Turnkey login failed:", err);
-      setAuthError(
-        err instanceof Error ? err.message : "Authentication failed"
-      );
+      setAuthError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setIsAuthenticating(false);
     }
-  }, [turnkey, passkeyClient, turnkeyClient, connectAsync]);
+  }, [turnkey, passkeyClient, turnkeyClient, connectWallet, setWalletState]);
 
-  // Handle new account creation (sub-organization with passkey + wallet)
+  // Handle new account creation
   const handleCreateAccount = useCallback(async () => {
     if (!signupEmail.trim()) {
       setAuthError("Please enter your email address.");
@@ -147,14 +199,10 @@ export default function Home() {
 
       const email = signupEmail.trim();
 
-      // Prompt the user to create a passkey via WebAuthn (local only, no Turnkey API call)
       const passkey = await passkeyClient.createUserPasskey({
         publicKey: { user: { name: email, displayName: email } },
       });
 
-      // Create the sub-organization via server-side API route
-      // (the server uses an API key to authenticate with Turnkey,
-      // since the new passkey isn't registered with Turnkey yet)
       const response = await fetch("/api/create-sub-org", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,10 +225,9 @@ export default function Home() {
         return;
       }
 
-      // Store the sub-org ID so future logins can scope to it
       localStorage.setItem("turnkey_sub_org_id", subOrg.subOrganizationId);
 
-      // Log in with the newly created passkey (now registered in the sub-org)
+      // Log in with the newly created passkey
       await passkeyClient.login({ organizationId: subOrg.subOrganizationId });
 
       const session = await turnkey?.getSession();
@@ -189,10 +236,9 @@ export default function Home() {
         return;
       }
 
-      // Connect the wallet via wagmi
-      const walletId = subOrg.walletId;
+      // Get wallet ID from the sub-org creation response or fetch it
+      let walletId = subOrg.walletId;
       if (!walletId) {
-        // Fallback: fetch wallets from Turnkey
         const walletsResponse = await turnkeyClient.getWallets({
           organizationId: subOrg.subOrganizationId,
         });
@@ -201,40 +247,71 @@ export default function Home() {
           setAuthError("Account created but no wallets found.");
           return;
         }
-        const connector = turnkeyConnector({
-          client: turnkeyClient,
-          organizationId: subOrg.subOrganizationId,
-          walletId: wallets[0].walletId,
-        });
-        await connectAsync({ connector });
-      } else {
-        const connector = turnkeyConnector({
-          client: turnkeyClient,
-          organizationId: subOrg.subOrganizationId,
-          walletId,
-        });
-        await connectAsync({ connector });
+        walletId = wallets[0].walletId;
       }
 
-      setTurnkeyUser({
-        userId: session.userId,
+      const { accounts } = await connectWallet(subOrg.subOrganizationId, walletId);
+      setWalletState({
+        address: accounts[0],
+        chainId: walletState.chainId,
+        userId: session!.userId,
         organizationId: subOrg.subOrganizationId,
       });
     } catch (err) {
       console.error("Account creation failed:", err);
-      setAuthError(
-        err instanceof Error ? err.message : "Account creation failed"
-      );
+      setAuthError(err instanceof Error ? err.message : "Account creation failed");
     } finally {
       setIsCreatingAccount(false);
     }
-  }, [turnkey, passkeyClient, turnkeyClient, connectAsync, signupEmail]);
+  }, [turnkey, passkeyClient, turnkeyClient, connectWallet, signupEmail, setWalletState]);
 
   // Handle disconnect
   const handleDisconnect = useCallback(() => {
-    wagmiDisconnect();
-    setTurnkeyUser(null);
-  }, [wagmiDisconnect]);
+    setProvider(null);
+    setWalletState({ address: null, chainId: null, organizationId: null, userId: null });
+    setBalance(null);
+  }, [setProvider, setWalletState]);
+
+  // Handle sign message (Formo auto-tracks via EIP-1193 provider wrapping)
+  const handleSignMessage = useCallback(async () => {
+    if (!provider || !address) return;
+    setIsSignPending(true);
+    try {
+      await (provider as any).request({
+        method: "personal_sign",
+        params: [
+          ("0x" + Buffer.from("Hello from Formo + Turnkey Demo!").toString("hex")) as `0x${string}`,
+          address as `0x${string}`,
+        ],
+      });
+    } catch (err) {
+      console.error("Sign message failed:", err);
+    } finally {
+      setIsSignPending(false);
+    }
+  }, [provider, address]);
+
+  // Handle send transaction (Formo auto-tracks via EIP-1193 provider wrapping)
+  const handleSendTransaction = useCallback(async () => {
+    if (!provider || !address) return;
+    setIsTxPending(true);
+    try {
+      await provider.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from: address as `0x${string}`,
+            to: address as `0x${string}`,
+            value: "0x0",
+          },
+        ],
+      });
+    } catch (err) {
+      console.error("Send transaction failed:", err);
+    } finally {
+      setIsTxPending(false);
+    }
+  }, [provider, address]);
 
   // Handle custom event tracking
   const handleTrackCustomEvent = async () => {
@@ -267,21 +344,6 @@ export default function Home() {
     });
   };
 
-  // Handle sign message (Formo automatically tracks this via wagmi integration)
-  const handleSignMessage = () => {
-    signMessage({ message: "Hello from Formo + Turnkey Demo!" });
-  };
-
-  // Handle send transaction (Formo automatically tracks this via wagmi integration)
-  const handleSendTransaction = () => {
-    if (!address) return;
-
-    sendTransaction({
-      to: address,
-      value: 0n,
-    });
-  };
-
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 via-teal-900 to-gray-900">
       <div className="container mx-auto px-4 py-8">
@@ -309,7 +371,7 @@ export default function Home() {
             >
               Turnkey
             </a>{" "}
-            embedded wallets for web3 analytics.
+            embedded wallets using the EIP-1193 provider.
           </p>
         </div>
 
@@ -321,7 +383,8 @@ export default function Home() {
             </h2>
             <p className="text-gray-400 text-sm mb-4">
               Authenticate with Turnkey using passkeys to access your embedded
-              wallet. Formo will automatically track wallet events via wagmi.
+              wallet. Formo automatically tracks wallet events via the EIP-1193
+              provider.
             </p>
 
             {authError && (
@@ -408,18 +471,16 @@ export default function Home() {
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-400 text-sm">Connector:</span>
-                  <span className="ml-2 text-white">
-                    {connector?.name || "Turnkey"}
-                  </span>
+                  <span className="text-gray-400 text-sm">Provider:</span>
+                  <span className="ml-2 text-white">Turnkey EIP-1193</span>
                 </div>
-                {turnkeyUser && (
+                {walletState.userId && (
                   <div className="pt-3 border-t border-gray-600">
                     <span className="text-gray-400 text-sm">
                       Turnkey User ID:
                     </span>
                     <p className="text-white font-mono text-xs break-all mt-1">
-                      {turnkeyUser.userId}
+                      {walletState.userId}
                     </p>
                   </div>
                 )}
@@ -473,8 +534,8 @@ export default function Home() {
               Wallet Actions
             </h2>
             <p className="text-gray-400 text-sm mb-4">
-              These actions are automatically tracked by Formo via wagmi
-              integration.
+              These actions are automatically tracked by Formo via the EIP-1193
+              provider wrapper.
             </p>
             <div className="space-y-3">
               <button
@@ -505,8 +566,8 @@ export default function Home() {
               Auto-tracked Events
             </h2>
             <p className="text-gray-400 text-sm mb-4">
-              The following events are automatically captured by Formo when using
-              the wagmi integration:
+              The following events are automatically captured by Formo via the
+              EIP-1193 provider wrapper:
             </p>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="bg-gray-700/50 rounded-lg p-3">
@@ -578,15 +639,6 @@ export default function Home() {
                 className="text-teal-400 hover:underline"
               >
                 Turnkey
-              </a>
-              {" \u2022 "}
-              <a
-                href="https://wagmi.sh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-teal-400 hover:underline"
-              >
-                wagmi
               </a>
               {" \u2022 "}
               <a

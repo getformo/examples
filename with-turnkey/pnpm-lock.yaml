@@ -14,9 +14,6 @@ importers:
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.4)
-      '@tanstack/react-query':
-        specifier: ^5.90.19
-        version: 5.91.2(react@19.2.4)
       '@turnkey/eip-1193-provider':
         specifier: ^3.4.26
         version: 3.4.26(typescript@5.9.3)
@@ -44,9 +41,6 @@ importers:
       viem:
         specifier: ^2.44.4
         version: 2.47.5(typescript@5.9.3)
-      wagmi:
-        specifier: ^3.3.4
-        version: 3.5.0(@tanstack/query-core@5.91.2)(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -3769,12 +3763,14 @@ snapshots:
       postcss: 8.5.8
       tailwindcss: 4.2.2
 
-  '@tanstack/query-core@5.91.2': {}
+  '@tanstack/query-core@5.91.2':
+    optional: true
 
   '@tanstack/react-query@5.91.2(react@19.2.4)':
     dependencies:
       '@tanstack/query-core': 5.91.2
       react: 19.2.4
+    optional: true
 
   '@turnkey/api-key-stamper@0.6.3':
     dependencies:
@@ -4176,6 +4172,7 @@ snapshots:
       viem: 2.47.5(typescript@5.9.3)
     optionalDependencies:
       typescript: 5.9.3
+    optional: true
 
   '@wagmi/core@3.4.0(@tanstack/query-core@5.91.2)(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.47.5(typescript@5.9.3))':
     dependencies:
@@ -4192,6 +4189,7 @@ snapshots:
       - immer
       - react
       - use-sync-external-store
+    optional: true
 
   '@wallet-standard/app@1.1.0':
     dependencies:
@@ -6247,6 +6245,7 @@ snapshots:
   use-sync-external-store@1.4.0(react@19.2.4):
     dependencies:
       react: 19.2.4
+    optional: true
 
   usehooks-ts@3.1.1(react@19.2.4):
     dependencies:
@@ -6311,6 +6310,7 @@ snapshots:
       - immer
       - ox
       - porto
+    optional: true
 
   webidl-conversions@3.0.1: {}
 
@@ -6383,3 +6383,4 @@ snapshots:
       '@types/react': 19.2.14
       react: 19.2.4
       use-sync-external-store: 1.4.0(react@19.2.4)
+    optional: true
