@@ -43,8 +43,5 @@
   },
   "dependencies": {
     "@formo/analytics": "^1.28.3"
-  },
-  "resolutions": {
-    "@formo/analytics": "portal:/Users/yos/sdk"
   }
 }

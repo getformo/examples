@@ -26,19 +26,21 @@ yarn start   # starts Next.js dev server on port 3002
 
 Visit http://localhost:3002.
 
-## SDK Linking
+## SDK Linking (local development)
 
-The root `package.json` uses a Yarn `resolutions` field to point `@formo/analytics` at your local SDK:
+To test against a local SDK build, add a Yarn `resolutions` field to `package.json`:
 
 ```json
 {
   "resolutions": {
-    "@formo/analytics": "portal:/Users/yos/sdk"
+    "@formo/analytics": "portal:/path/to/sdk"
   }
 }
 ```
 
-After changing SDK source, rebuild (`npm run build` in the SDK repo) and the Next.js dev server will pick up changes via Fast Refresh.
+Then run `yarn install` to relink. After changing SDK source, rebuild (`npm run build` in the SDK repo) and the Next.js dev server will pick up changes via Fast Refresh.
+
+> **Note:** Do not commit the `resolutions` field — it uses an absolute local path that will break CI.
 
 ## Pages
 
