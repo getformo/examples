@@ -1,91 +1,127 @@
-# 🏗 Formo Analytics Next.js Example
+# Formo Analytics — Next.js App Router Example
 
 [Documentation](https://help.formo.so) |
 [Website](https://formo.so)
 
-This is a working example of a Next.js app using Formo Analytics.
+A [Scaffold-ETH 2](https://scaffoldeth.io) app wired up with `@formo/analytics` for testing SDK features in a real Next.js + wagmi environment.
 
------
+## Prerequisites
 
-## Built with Scaffold-ETH 2
-
-<h4>
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
-
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
-
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
-
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v18.18)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+- Node.js >= 18.18.0
+- Yarn (the repo pins yarn 3.2.3 via `packageManager`)
+- The SDK repo at `../sdk` (used via `portal:` resolution)
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+```bash
+# 1. Build the SDK
+cd ../sdk
+npm run build
 
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
+# 2. Install and start the example
+cd ../examples/with-next-app-router
 yarn install
+yarn start   # starts Next.js dev server on port 3002
 ```
 
-2. Run a local network in the first terminal:
+Visit http://localhost:3002.
 
-```
-yarn chain
-```
+## SDK Linking
 
-This command starts a local Ethereum network using Foundry. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/foundry/foundry.toml`.
+The root `package.json` uses a Yarn `resolutions` field to point `@formo/analytics` at your local SDK:
 
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-
-yarn verify
+```json
+{
+  "resolutions": {
+    "@formo/analytics": "portal:/Users/yos/sdk"
+  }
+}
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/foundry/script` to deploy the contract to the network. You can also customize the deploy script.
+After changing SDK source, rebuild (`npm run build` in the SDK repo) and the Next.js dev server will pick up changes via Fast Refresh.
 
-4. On a third terminal, start your NextJS app:
+## Pages
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Main page — wallet connect, sign/send transactions, custom event tracking, consent management |
+| `/cookies` | Cross-subdomain cookie testing (see below) |
+| `/debug` | Scaffold-ETH contract debugger |
+| `/blockexplorer` | Local block explorer |
+
+## SDK Configuration
+
+The SDK is initialized in `packages/nextjs/components/ScaffoldEthAppWithProviders.tsx`:
+
+```tsx
+<AnalyticsProvider
+  writeKey={WRITE_KEY}
+  options={{
+    tracking: true,
+    crossSubdomainCookies: true,
+    flushInterval: 5000,
+    logger: { enabled: true, levels: ["debug", "error", "warn", "info"] },
+    autocapture: { connect: true, disconnect: true, signature: true, transaction: true, chain: true },
+    apiHost: "/api/events",
+    wagmi: { config: wagmiConfig, queryClient },
+  }}
+>
+```
+
+Set `NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY` in a `.env` file to use a real write key.
+
+---
+
+## Testing Cross-Subdomain Cookies
+
+The `/cookies` page is a dedicated tool for verifying the `crossSubdomainCookies` SDK option. It displays all Formo cookies in real time (auto-refreshes every second).
+
+### How it works
+
+[lvh.me](http://lvh.me) is a public domain that resolves `*.lvh.me` to `127.0.0.1` — no `/etc/hosts` editing needed. By visiting two different subdomains you can verify whether identity cookies are shared.
+
+### Test 1: Shared cookies (`crossSubdomainCookies: true`, the default)
+
+1. Start the dev server: `yarn start`
+2. Open http://app.lvh.me:3002/cookies
+3. Note the `anonymous-id` cookie value
+4. Open DevTools > Application > Cookies — confirm the cookie domain is `.lvh.me` (apex)
+5. Open http://www.lvh.me:3002/cookies
+6. The `anonymous-id` value should be **identical** (shared via `.lvh.me`)
+
+### Test 2: Host-only cookies (`crossSubdomainCookies: false`)
+
+1. In `packages/nextjs/components/ScaffoldEthAppWithProviders.tsx`, change:
+   ```ts
+   crossSubdomainCookies: false,
+   ```
+2. Clear browser cookies for `lvh.me`
+3. Visit http://app.lvh.me:3002/cookies — note the `anonymous-id` value
+4. Visit http://www.lvh.me:3002/cookies — it should have a **different** `anonymous-id`
+5. In DevTools, confirm each cookie is scoped to its respective host (`app.lvh.me`, `www.lvh.me`)
+
+### Expected cookie scoping
+
+| Cookie | `crossSubdomainCookies: true` | `crossSubdomainCookies: false` |
+|--------|-------------------------------|-------------------------------|
+| `formo_{hash}_anonymous-id` | `.lvh.me` (apex) | `app.lvh.me` (host-only) |
+| `formo_{hash}_user-id` | `.lvh.me` (apex) | `app.lvh.me` (host-only) |
+| Session cookies (`wallet-detected`, etc.) | Always host-scoped | Always host-scoped |
+| Consent cookies (`formo_{hash}_*`) | Always apex-scoped | Always apex-scoped |
+
+### Fallback: /etc/hosts
+
+If `lvh.me` doesn't resolve (some corporate networks block it), add to `/etc/hosts`:
 
 ```
-yarn start
+127.0.0.1  app.local.test
+127.0.0.1  www.local.test
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+Then use `http://app.local.test:3002/cookies` and `http://www.local.test:3002/cookies`.
 
-Run smart contract test with `yarn foundry:test`
+---
 
-- Edit your smart contract `YourContract.sol` in `packages/foundry/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/foundry/script`
+## Scaffold-ETH 2
 
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+This example is built on top of [Scaffold-ETH 2](https://github.com/scaffold-eth/scaffold-eth-2). See their [docs](https://docs.scaffoldeth.io) for info on smart contract development, the debug page, and the local chain setup.

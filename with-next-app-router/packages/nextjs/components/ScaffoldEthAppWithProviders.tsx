@@ -55,6 +55,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
           writeKey={WRITE_KEY}
           options={{
             tracking: true,
+            crossSubdomainCookies: true, // Toggle to false to test host-only cookies
             flushInterval: 500 * 10, // 5 secs
             logger: {
               enabled: true,
