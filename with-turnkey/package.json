@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.28.2",
+    "@formo/analytics": "^1.28.3",
     "@heroicons/react": "^2.2.0",
     "@turnkey/eip-1193-provider": "^3.4.26",
     "@turnkey/sdk-browser": "^5.15.2",
