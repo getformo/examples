@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.28.3
-        version: 1.28.3(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3))(wagmi@3.5.0(@tanstack/query-core@5.91.2)(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3)))
+        specifier: ^1.28.5
+        version: 1.28.5(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3))(wagmi@3.5.0(@tanstack/query-core@5.91.2)(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3)))
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.4)
@@ -234,24 +234,16 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@formo/analytics@1.28.3':
-    resolution: {integrity: sha512-aAwUGtujEojGvl9r67vPkG4veiIE2T7N30GfOnwwPRbYDMLSPZifJSTnT7HX3cyHqL0QhWRYlxCLNtZon+Xn6w==}
+  '@formo/analytics@1.28.5':
+    resolution: {integrity: sha512-Ne0F5iE0Nr+0++rqvncO14VhgIjDPhurYF/HaZu3ft/WK0a6L2+qm3BSj8qNIbUMxLdWHRNEd5fLLR62yhHjww==}
+    engines: {node: '>=18.0.0'}
     peerDependencies:
-      '@solana/wallet-adapter-base': '>=0.9.0'
-      '@solana/wallet-adapter-react': '>=0.15.0'
-      '@solana/web3.js': '>=1.70.0'
       '@tanstack/react-query': '>=5.0.0'
       '@types/react': '>=16.14.34'
       react: '>=16.14.0'
       viem: '>=2.0.0'
       wagmi: '>=2.0.0'
     peerDependenciesMeta:
-      '@solana/wallet-adapter-base':
-        optional: true
-      '@solana/wallet-adapter-react':
-        optional: true
-      '@solana/web3.js':
-        optional: true
       '@tanstack/react-query':
         optional: true
       viem:
@@ -3203,7 +3195,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@formo/analytics@1.28.3(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3))(wagmi@3.5.0(@tanstack/query-core@5.91.2)(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3)))':
+  '@formo/analytics@1.28.5(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3))(wagmi@3.5.0(@tanstack/query-core@5.91.2)(@tanstack/react-query@5.91.2(react@19.2.4))(@types/react@19.2.14)(ox@0.14.5(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(viem@2.47.5(typescript@5.9.3)))':
     dependencies:
       '@types/react': 19.2.14
       ethereum-cryptography: 3.2.0
