@@ -124,70 +124,94 @@ export default function WalletScreen() {
   // --- Direct SDK method handlers (no wallet needed) ---
 
   const handleDirectConnect = async () => {
-    addLog("SDK: connect()");
-    await formo.connect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
-    addLog("SDK: connect tracked");
+    try {
+      addLog("SDK: connect()");
+      await formo.connect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
+      addLog("SDK: connect tracked");
+    } catch (e: any) {
+      addLog(`SDK: connect error: ${e.message}`);
+    }
   };
 
   const handleDirectDisconnect = async () => {
-    addLog("SDK: disconnect()");
-    await formo.disconnect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
-    addLog("SDK: disconnect tracked");
+    try {
+      addLog("SDK: disconnect()");
+      await formo.disconnect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
+      addLog("SDK: disconnect tracked");
+    } catch (e: any) {
+      addLog(`SDK: disconnect error: ${e.message}`);
+    }
   };
 
   const handleDirectChain = async () => {
-    addLog("SDK: chain()");
-    await formo.chain({ chainId: optimismSepolia.id, address: TEST_ADDRESS });
-    addLog("SDK: chain switch tracked");
+    try {
+      addLog("SDK: chain()");
+      await formo.chain({ chainId: optimismSepolia.id, address: TEST_ADDRESS });
+      addLog("SDK: chain switch tracked");
+    } catch (e: any) {
+      addLog(`SDK: chain error: ${e.message}`);
+    }
   };
 
   const handleDirectSignature = async () => {
-    addLog("SDK: signature(requested)");
-    await formo.signature({
-      status: "requested",
-      chainId: baseSepolia.id,
-      address: TEST_ADDRESS,
-      message: "Test message for SDK testing",
-    });
-    addLog("SDK: signature(confirmed)");
-    await formo.signature({
-      status: "confirmed",
-      chainId: baseSepolia.id,
-      address: TEST_ADDRESS,
-      message: "Test message for SDK testing",
-      signatureHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-    });
-    addLog("SDK: signature events tracked");
+    try {
+      addLog("SDK: signature(requested)");
+      await formo.signature({
+        status: "requested",
+        chainId: baseSepolia.id,
+        address: TEST_ADDRESS,
+        message: "Test message for SDK testing",
+      });
+      addLog("SDK: signature(confirmed)");
+      await formo.signature({
+        status: "confirmed",
+        chainId: baseSepolia.id,
+        address: TEST_ADDRESS,
+        message: "Test message for SDK testing",
+        signatureHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+      });
+      addLog("SDK: signature events tracked");
+    } catch (e: any) {
+      addLog(`SDK: signature error: ${e.message}`);
+    }
   };
 
   const handleDirectTransaction = async () => {
-    addLog("SDK: transaction(started)");
-    await formo.transaction({
-      status: "started",
-      chainId: baseSepolia.id,
-      address: TEST_ADDRESS,
-      to: TEST_ADDRESS,
-      value: "100000000000000",
-    });
-    addLog("SDK: transaction(broadcasted)");
-    await formo.transaction({
-      status: "broadcasted",
-      chainId: baseSepolia.id,
-      address: TEST_ADDRESS,
-      to: TEST_ADDRESS,
-      value: "100000000000000",
-      transactionHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-    });
-    addLog("SDK: transaction events tracked");
+    try {
+      addLog("SDK: transaction(started)");
+      await formo.transaction({
+        status: "started",
+        chainId: baseSepolia.id,
+        address: TEST_ADDRESS,
+        to: TEST_ADDRESS,
+        value: "100000000000000",
+      });
+      addLog("SDK: transaction(broadcasted)");
+      await formo.transaction({
+        status: "broadcasted",
+        chainId: baseSepolia.id,
+        address: TEST_ADDRESS,
+        to: TEST_ADDRESS,
+        value: "100000000000000",
+        transactionHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      });
+      addLog("SDK: transaction events tracked");
+    } catch (e: any) {
+      addLog(`SDK: transaction error: ${e.message}`);
+    }
   };
 
   const handleDirectTrack = async () => {
-    addLog("SDK: track(test_event)");
-    await formo.track("test_event", {
-      source: "wallet_screen",
-      timestamp: new Date().toISOString(),
-    });
-    addLog("SDK: custom event tracked");
+    try {
+      addLog("SDK: track(test_event)");
+      await formo.track("test_event", {
+        source: "wallet_screen",
+        timestamp: new Date().toISOString(),
+      });
+      addLog("SDK: custom event tracked");
+    } catch (e: any) {
+      addLog(`SDK: track error: ${e.message}`);
+    }
   };
 
   // Sort mock connector first
