@@ -25,6 +25,7 @@ const TEST_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 export default function WalletScreen() {
   const formo = useFormo();
+  const [baseSepolia, optimismSepolia] = chains;
   const { address, isConnected } = useAccount();
   const [eventLog, setEventLog] = useState<string[]>([]);
 
@@ -124,19 +125,19 @@ export default function WalletScreen() {
 
   const handleDirectConnect = async () => {
     addLog("SDK: connect()");
-    await formo.connect({ chainId: 84532, address: TEST_ADDRESS });
+    await formo.connect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
     addLog("SDK: connect tracked");
   };
 
   const handleDirectDisconnect = async () => {
     addLog("SDK: disconnect()");
-    await formo.disconnect({ chainId: 84532, address: TEST_ADDRESS });
+    await formo.disconnect({ chainId: baseSepolia.id, address: TEST_ADDRESS });
     addLog("SDK: disconnect tracked");
   };
 
   const handleDirectChain = async () => {
     addLog("SDK: chain()");
-    await formo.chain({ chainId: 11155420, address: TEST_ADDRESS });
+    await formo.chain({ chainId: optimismSepolia.id, address: TEST_ADDRESS });
     addLog("SDK: chain switch tracked");
   };
 
@@ -144,14 +145,14 @@ export default function WalletScreen() {
     addLog("SDK: signature(requested)");
     await formo.signature({
       status: "requested",
-      chainId: 84532,
+      chainId: baseSepolia.id,
       address: TEST_ADDRESS,
       message: "Test message for SDK testing",
     });
     addLog("SDK: signature(confirmed)");
     await formo.signature({
       status: "confirmed",
-      chainId: 84532,
+      chainId: baseSepolia.id,
       address: TEST_ADDRESS,
       message: "Test message for SDK testing",
       signatureHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
@@ -163,7 +164,7 @@ export default function WalletScreen() {
     addLog("SDK: transaction(started)");
     await formo.transaction({
       status: "started",
-      chainId: 84532,
+      chainId: baseSepolia.id,
       address: TEST_ADDRESS,
       to: TEST_ADDRESS,
       value: "100000000000000",
@@ -171,7 +172,7 @@ export default function WalletScreen() {
     addLog("SDK: transaction(broadcasted)");
     await formo.transaction({
       status: "broadcasted",
-      chainId: 84532,
+      chainId: baseSepolia.id,
       address: TEST_ADDRESS,
       to: TEST_ADDRESS,
       value: "100000000000000",
