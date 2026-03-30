@@ -4,11 +4,12 @@ const path = require("path");
 const config = getDefaultConfig(__dirname);
 
 // Handle linked SDK package
-const sdkPath = path.resolve(__dirname, "../sdk-react-native");
+const sdkPath = path.resolve(__dirname, "../../sdk-react-native");
 const projectRoot = __dirname;
 const projectNodeModules = path.resolve(projectRoot, "node_modules");
 
 // Watch the SDK directory for changes
+// Note: sdk-react-native/.watchmanconfig excludes node_modules and lib
 config.watchFolders = [sdkPath];
 
 // Enable symlinks
@@ -29,33 +30,30 @@ config.resolver.extraNodeModules = {
 // Custom resolver to ensure SDK imports use example app's modules
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  // Block MetaMask SDK which has Node.js crypto dependencies that break React Native
-  // WalletConnect is used instead for mobile wallet connections
-  if (moduleName === "@metamask/sdk" || moduleName.startsWith("@metamask/sdk/")) {
-    return {
-      type: "empty",
-    };
+  // Block modules that are incompatible with React Native
+  const blockedModules = [
+    "@metamask/sdk",       // Node.js crypto dependencies
+    "react-native-device-info",  // Optional SDK peer dep, not installed
+  ];
+  for (const blocked of blockedModules) {
+    if (moduleName === blocked || moduleName.startsWith(blocked + "/")) {
+      return { type: "empty" };
+    }
   }
 
-  // On web, don't redirect react-native (it's handled by react-native-web alias)
-  // Only redirect react and ethereum-cryptography to prevent duplicates
-  const redirectModules = ["react", "react-dom", "ethereum-cryptography"];
-
-  // Also redirect react-native and react-native-web on native platforms only
-  if (platform !== "web") {
-    redirectModules.push("react-native", "react-native-web");
-  }
-
-  for (const mod of redirectModules) {
-    if (moduleName === mod || moduleName.startsWith(mod + "/")) {
-      try {
-        return {
-          filePath: require.resolve(moduleName, { paths: [projectNodeModules] }),
-          type: "sourceFile",
-        };
-      } catch (e) {
-        // Fall through to default resolution
-      }
+  // When resolving external packages from the SDK source, redirect to example
+  // app's node_modules. Skip relative/absolute imports (SDK-internal modules).
+  if (
+    context.originModulePath &&
+    context.originModulePath.startsWith(sdkPath) &&
+    !moduleName.startsWith(".") &&
+    !moduleName.startsWith("/")
+  ) {
+    try {
+      const resolved = require.resolve(moduleName, { paths: [projectNodeModules] });
+      return { filePath: resolved, type: "sourceFile" };
+    } catch (e) {
+      // Fall through to default resolution
     }
   }
 

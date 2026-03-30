@@ -7,11 +7,11 @@ export const FORMO_WRITE_KEY =
   process.env.EXPO_PUBLIC_FORMO_WRITE_KEY || "YOUR_FORMO_WRITE_KEY";
 
 // Base Formo Analytics configuration (without wagmi)
-const baseFormoOptions: Omit<Options, "wagmi"> = {
+export const baseFormoOptions: Omit<Options, "wagmi"> = {
   // App information for context enrichment
   app: {
     name: "Formo Analytics Demo",
-    version: "1.0.0",
+    version: "1.1.0",
     bundleId: "com.formo.analytics.demo",
   },
 

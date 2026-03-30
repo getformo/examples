@@ -2,6 +2,20 @@
 import "@walletconnect/react-native-compat";
 import "react-native-get-random-values";
 
+// Polyfill window.matchMedia for WalletConnect modal (browser API not in RN)
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = () => ({
+    matches: false,
+    media: "",
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  });
+}
+
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useMemo } from "react";
