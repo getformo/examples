@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import {
   useAccount,
-  useBalance,
   useChainId,
   useConnect,
   useDisconnect,
@@ -18,33 +17,32 @@ import {
   useSwitchChain,
 } from "wagmi";
 import { chains } from "../config/wagmi";
-import { formatUnits, parseEther } from "viem";
+import { parseEther } from "viem";
 import { useFormo } from "@formo/react-native-analytics";
+
+// Mock address for direct SDK testing
+const TEST_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 export default function WalletScreen() {
   const formo = useFormo();
   const { address, isConnected } = useAccount();
+  const [eventLog, setEventLog] = useState<string[]>([]);
 
-  // Track screen view on mount and when SDK initializes
+  const addLog = (msg: string) => {
+    setEventLog((prev) =>
+      [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 30)
+    );
+  };
+
   useEffect(() => {
     formo.screen("Wallet");
   }, [formo]);
 
-  // Note: Wallet connect/disconnect, signature, and transaction events
-  // are automatically tracked by the SDK via wagmi integration
-
   const chainId = useChainId();
-  const { data: balance } = useBalance({ address });
   const { connectors, connect, isPending: isConnecting } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain, isPending: isSwitchingChain } = useSwitchChain();
-
   const currentChain = chains.find((c) => c.id === chainId);
-  const isOnSupportedChain = currentChain !== undefined;
-
-  // Note: All wallet events (connect, disconnect, signature, transaction) are
-  // automatically tracked by the SDK via wagmi's MutationCache and config.subscribe().
-  // No need to override mutation callbacks for tracking.
 
   const {
     signMessage,
@@ -60,25 +58,19 @@ export default function WalletScreen() {
     reset: resetTransaction,
   } = useSendTransaction();
 
-  const handleSignMessage = () => {
-    signMessage({ message: "Sign this message to verify wallet ownership" });
-  };
-
-  const handleSendTransaction = () => {
-    // Send a small amount to yourself (0.0001 ETH)
-    if (address) {
-      sendTransaction({
-        to: address,
-        value: parseEther("0.0001"),
-      });
-    }
-  };
+  // --- Wagmi-connected handlers ---
 
   const handleConnect = (connector: (typeof connectors)[number]) => {
+    addLog(`Connecting with ${connector.name}...`);
     connect(
       { connector },
       {
+        onSuccess: (data) =>
+          addLog(
+            `Connected: ${data.accounts[0]?.slice(0, 10)}... chain ${data.chainId}`
+          ),
         onError: (error) => {
+          addLog(`Connect error: ${error.message}`);
           Alert.alert("Connection Error", error.message);
         },
       }
@@ -86,163 +78,262 @@ export default function WalletScreen() {
   };
 
   const handleDisconnect = () => {
-    disconnect();
-    // Clear mutation state; disconnect event is tracked automatically by SDK
+    addLog("Disconnecting...");
+    disconnect(undefined, {
+      onSuccess: () => addLog("Disconnected"),
+    });
     resetSignature();
     resetTransaction();
   };
 
+  const handleSignMessage = () => {
+    addLog("Requesting signature...");
+    signMessage(
+      { message: "Sign this message to verify wallet ownership" },
+      {
+        onSuccess: (data) => addLog(`Signed: ${data.slice(0, 20)}...`),
+        onError: (error) => addLog(`Sign error: ${error.message}`),
+      }
+    );
+  };
+
+  const handleSendTransaction = () => {
+    if (!address) return;
+    addLog("Sending transaction...");
+    sendTransaction(
+      { to: address, value: parseEther("0.0001") },
+      {
+        onSuccess: (hash) => addLog(`Tx sent: ${hash.slice(0, 20)}...`),
+        onError: (error) => addLog(`Tx error: ${error.message}`),
+      }
+    );
+  };
+
+  const handleSwitchChain = (targetChainId: number) => {
+    addLog(`Switching to chain ${targetChainId}...`);
+    switchChain(
+      { chainId: targetChainId },
+      {
+        onSuccess: (chain) => addLog(`Switched to ${chain.name}`),
+        onError: (error) => addLog(`Switch error: ${error.message}`),
+      }
+    );
+  };
+
+  // --- Direct SDK method handlers (no wallet needed) ---
+
+  const handleDirectConnect = async () => {
+    addLog("SDK: connect()");
+    await formo.connect({ chainId: 84532, address: TEST_ADDRESS });
+    addLog("SDK: connect tracked");
+  };
+
+  const handleDirectDisconnect = async () => {
+    addLog("SDK: disconnect()");
+    await formo.disconnect({ chainId: 84532, address: TEST_ADDRESS });
+    addLog("SDK: disconnect tracked");
+  };
+
+  const handleDirectChain = async () => {
+    addLog("SDK: chain()");
+    await formo.chain({ chainId: 11155420, address: TEST_ADDRESS });
+    addLog("SDK: chain switch tracked");
+  };
+
+  const handleDirectSignature = async () => {
+    addLog("SDK: signature(requested)");
+    await formo.signature({
+      status: "requested",
+      chainId: 84532,
+      address: TEST_ADDRESS,
+      message: "Test message for SDK testing",
+    });
+    addLog("SDK: signature(confirmed)");
+    await formo.signature({
+      status: "confirmed",
+      chainId: 84532,
+      address: TEST_ADDRESS,
+      message: "Test message for SDK testing",
+      signatureHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+    });
+    addLog("SDK: signature events tracked");
+  };
+
+  const handleDirectTransaction = async () => {
+    addLog("SDK: transaction(started)");
+    await formo.transaction({
+      status: "started",
+      chainId: 84532,
+      address: TEST_ADDRESS,
+      to: TEST_ADDRESS,
+      value: "100000000000000",
+    });
+    addLog("SDK: transaction(broadcasted)");
+    await formo.transaction({
+      status: "broadcasted",
+      chainId: 84532,
+      address: TEST_ADDRESS,
+      to: TEST_ADDRESS,
+      value: "100000000000000",
+      transactionHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    });
+    addLog("SDK: transaction events tracked");
+  };
+
+  const handleDirectTrack = async () => {
+    addLog("SDK: track(test_event)");
+    await formo.track("test_event", {
+      source: "wallet_screen",
+      timestamp: new Date().toISOString(),
+    });
+    addLog("SDK: custom event tracked");
+  };
+
+  // Sort mock connector first
+  const sortedConnectors = [...connectors].sort((a, b) => {
+    if (a.id === "mock") return -1;
+    if (b.id === "mock") return 1;
+    return 0;
+  });
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
+      {/* Direct SDK Testing */}
+      <View style={[styles.section, styles.sdkSection]}>
+        <Text style={styles.sectionTitle}>Direct SDK Testing</Text>
+        <Text style={styles.description}>
+          Call Formo SDK methods directly — no wallet needed
+        </Text>
+        <View style={styles.buttonGrid}>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkConnect]} onPress={handleDirectConnect}>
+            <Text style={styles.sdkButtonText}>Connect</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkDisconnect]} onPress={handleDirectDisconnect}>
+            <Text style={styles.sdkButtonText}>Disconnect</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkChain]} onPress={handleDirectChain}>
+            <Text style={styles.sdkButtonText}>Chain Switch</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkSign]} onPress={handleDirectSignature}>
+            <Text style={styles.sdkButtonText}>Signature</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkTx]} onPress={handleDirectTransaction}>
+            <Text style={styles.sdkButtonText}>Transaction</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.sdkButton, styles.sdkTrack]} onPress={handleDirectTrack}>
+            <Text style={styles.sdkButtonText}>Track Event</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Wagmi Wallet Connection */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Wallet Connection</Text>
+        <Text style={styles.sectionTitle}>Wagmi Wallet</Text>
         {!isConnected ? (
           <View style={styles.connectorList}>
-            {connectors.map((connector) => (
+            {sortedConnectors.map((connector) => (
               <TouchableOpacity
                 key={connector.uid}
-                style={[styles.connectorButton, isConnecting && styles.buttonDisabled]}
+                style={[
+                  styles.connectorButton,
+                  connector.id === "mock" && styles.mockButton,
+                  isConnecting && styles.buttonDisabled,
+                ]}
                 onPress={() => handleConnect(connector)}
                 disabled={isConnecting}
               >
                 <Text style={styles.connectorButtonText}>
-                  {isConnecting ? "Connecting..." : `Connect with ${connector.name}`}
+                  {isConnecting ? "Connecting..." : connector.name}
                 </Text>
+                {connector.id === "mock" && (
+                  <Text style={styles.connectorSubtext}>
+                    Auto-tracks via wagmi integration
+                  </Text>
+                )}
               </TouchableOpacity>
             ))}
           </View>
         ) : (
-          <TouchableOpacity style={styles.disconnectButton} onPress={handleDisconnect}>
-            <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {isConnected && address && (
-        <>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Account Info</Text>
+          <View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Address</Text>
               <Text style={styles.infoValue} numberOfLines={1}>
-                {address.slice(0, 10)}...{address.slice(-8)}
+                {address?.slice(0, 10)}...{address?.slice(-8)}
               </Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Network</Text>
-              <Text style={[styles.infoValue, !isOnSupportedChain && styles.warningText]}>
-                {currentChain?.name || `Unsupported (${chainId})`}
-              </Text>
+              <Text style={styles.infoLabel}>Chain</Text>
+              <Text style={styles.infoValue}>{currentChain?.name || chainId}</Text>
             </View>
-            {!isOnSupportedChain && (
-              <View style={styles.warningBanner}>
-                <Text style={styles.warningBannerText}>
-                  Please switch to a supported network before sending transactions.
-                </Text>
-              </View>
-            )}
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Balance</Text>
-              <Text style={styles.infoValue}>
-                {balance
-                  ? `${parseFloat(formatUnits(balance.value, balance.decimals)).toFixed(4)} ${balance.symbol}`
-                  : "Loading..."}
-              </Text>
-            </View>
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Switch Network</Text>
-            <Text style={styles.description}>
-              Select a network to switch to. Chain changes are tracked by Formo Analytics.
-            </Text>
-            <View style={styles.chainList}>
+            <View style={styles.actionRow}>
               {chains.map((chain) => (
                 <TouchableOpacity
                   key={chain.id}
                   style={[
-                    styles.chainButton,
-                    chainId === chain.id && styles.chainButtonActive,
-                    isSwitchingChain && styles.buttonDisabled,
+                    styles.smallButton,
+                    chainId === chain.id && styles.smallButtonActive,
                   ]}
-                  onPress={() => switchChain({ chainId: chain.id })}
+                  onPress={() => handleSwitchChain(chain.id)}
                   disabled={chainId === chain.id || isSwitchingChain}
                 >
-                  <Text
-                    style={[
-                      styles.chainButtonText,
-                      chainId === chain.id && styles.chainButtonTextActive,
-                    ]}
-                  >
-                    {chain.name}
-                  </Text>
-                  {chainId === chain.id && (
-                    <Text style={styles.chainButtonCheck}>✓</Text>
-                  )}
+                  <Text style={styles.smallButtonText}>{chain.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Sign Message</Text>
-            <Text style={styles.description}>
-              Sign a message to prove wallet ownership. This is tracked by Formo
-              Analytics.
-            </Text>
-            <TouchableOpacity
-              style={[styles.button, isSigningPending && styles.buttonDisabled]}
-              onPress={handleSignMessage}
-              disabled={isSigningPending}
-            >
-              <Text style={styles.buttonText}>
-                {isSigningPending ? "Signing..." : "Sign Message"}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.actionRow}>
+              <TouchableOpacity
+                style={[styles.button, isSigningPending && styles.buttonDisabled]}
+                onPress={handleSignMessage}
+                disabled={isSigningPending}
+              >
+                <Text style={styles.buttonText}>
+                  {isSigningPending ? "Signing..." : "Sign Message"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonSend, isSendingPending && styles.buttonDisabled]}
+                onPress={handleSendTransaction}
+                disabled={isSendingPending}
+              >
+                <Text style={styles.buttonText}>
+                  {isSendingPending ? "Sending..." : "Send Tx"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             {signedMessage && (
               <View style={styles.result}>
                 <Text style={styles.resultLabel}>Signature:</Text>
-                <Text style={styles.resultValue} numberOfLines={2}>
-                  {signedMessage.slice(0, 40)}...
-                </Text>
+                <Text style={styles.resultValue} numberOfLines={1}>{signedMessage.slice(0, 42)}...</Text>
               </View>
             )}
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Send Transaction</Text>
-            <Text style={styles.description}>
-              Send a small test transaction (0.0001 ETH to yourself). This is
-              tracked by Formo Analytics.
-            </Text>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonSend, (isSendingPending || isSwitchingChain || !isOnSupportedChain) && styles.buttonDisabled]}
-              onPress={handleSendTransaction}
-              disabled={isSendingPending || isSwitchingChain || !isOnSupportedChain}
-            >
-              <Text style={styles.buttonText}>
-                {isSendingPending ? "Sending..." : "Send 0.0001 ETH"}
-              </Text>
-            </TouchableOpacity>
             {txHash && (
               <View style={styles.result}>
-                <Text style={styles.resultLabel}>Transaction Hash:</Text>
-                <Text style={styles.resultValue} numberOfLines={2}>
-                  {txHash.slice(0, 40)}...
-                </Text>
+                <Text style={styles.resultLabel}>Tx Hash:</Text>
+                <Text style={styles.resultValue} numberOfLines={1}>{txHash.slice(0, 42)}...</Text>
               </View>
             )}
-          </View>
-        </>
-      )}
 
-      {!isConnected && (
-        <View style={styles.section}>
-          <Text style={styles.notConnected}>
-            Connect your wallet to test message signing and transactions.
-          </Text>
-        </View>
-      )}
+            <TouchableOpacity style={styles.disconnectButton} onPress={handleDisconnect}>
+              <Text style={styles.disconnectButtonText}>Disconnect</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      {/* Event Log */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Event Log</Text>
+        {eventLog.length === 0 ? (
+          <Text style={styles.emptyLog}>No events yet — tap buttons above</Text>
+        ) : (
+          eventLog.map((log, i) => (
+            <Text key={i} style={styles.logEntry}>{log}</Text>
+          ))
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -259,78 +350,82 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
   },
+  sdkSection: {
+    borderWidth: 1,
+    borderColor: "#8b5cf6",
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
+    marginBottom: 8,
+  },
+  description: {
+    color: "#888",
+    fontSize: 13,
     marginBottom: 12,
   },
-  connectorList: {
-    gap: 12,
-  },
-  chainList: {
-    gap: 10,
-  },
-  chainButton: {
-    backgroundColor: "#252540",
-    padding: 14,
-    borderRadius: 8,
+  buttonGrid: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  sdkButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    minWidth: "30%",
     alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#3a3a5a",
   },
-  chainButtonActive: {
-    backgroundColor: "#1e3a5f",
-    borderColor: "#3b82f6",
-  },
-  chainButtonText: {
-    color: "#aaa",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  chainButtonTextActive: {
+  sdkButtonText: {
     color: "#fff",
+    fontSize: 13,
+    fontWeight: "600",
   },
-  chainButtonCheck: {
-    color: "#4ade80",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+  sdkConnect: { backgroundColor: "#22c55e" },
+  sdkDisconnect: { backgroundColor: "#ef4444" },
+  sdkChain: { backgroundColor: "#f59e0b" },
+  sdkSign: { backgroundColor: "#3b82f6" },
+  sdkTx: { backgroundColor: "#e91e63" },
+  sdkTrack: { backgroundColor: "#8b5cf6" },
+  connectorList: { gap: 10 },
   connectorButton: {
     backgroundColor: "#3b82f6",
     padding: 14,
     borderRadius: 8,
     alignItems: "center",
   },
+  mockButton: { backgroundColor: "#8b5cf6" },
   connectorButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
+  connectorSubtext: {
+    color: "#c4b5fd",
+    fontSize: 12,
+    marginTop: 2,
+  },
   disconnectButton: {
     backgroundColor: "#ef4444",
-    padding: 14,
+    padding: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginTop: 12,
   },
   disconnectButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
   },
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
     borderBottomColor: "#3a3a5a",
   },
-  infoLabel: {
-    color: "#aaa",
-    fontSize: 14,
-  },
+  infoLabel: { color: "#aaa", fontSize: 14 },
   infoValue: {
     color: "#fff",
     fontSize: 14,
@@ -338,63 +433,50 @@ const styles = StyleSheet.create({
     maxWidth: "60%",
     textAlign: "right",
   },
-  warningText: {
-    color: "#f59e0b",
+  actionRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 12,
   },
-  warningBanner: {
-    backgroundColor: "#78350f",
+  smallButton: {
+    flex: 1,
+    backgroundColor: "#252540",
     padding: 10,
-    borderRadius: 6,
-    marginTop: 8,
+    borderRadius: 8,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#3a3a5a",
   },
-  warningBannerText: {
-    color: "#fcd34d",
-    fontSize: 13,
-    textAlign: "center",
+  smallButtonActive: {
+    backgroundColor: "#1e3a5f",
+    borderColor: "#3b82f6",
   },
-  description: {
-    color: "#888",
-    fontSize: 14,
-    marginBottom: 12,
-    lineHeight: 20,
-  },
+  smallButtonText: { color: "#ccc", fontSize: 13, fontWeight: "500" },
   button: {
+    flex: 1,
     backgroundColor: "#009688",
-    padding: 14,
+    padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  buttonSend: {
-    backgroundColor: "#e91e63",
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  buttonSend: { backgroundColor: "#e91e63" },
+  buttonDisabled: { opacity: 0.5 },
+  buttonText: { color: "#fff", fontSize: 14, fontWeight: "600" },
   result: {
-    marginTop: 12,
+    marginTop: 8,
     backgroundColor: "#1a1a2e",
-    padding: 12,
+    padding: 10,
     borderRadius: 8,
   },
-  resultLabel: {
-    color: "#888",
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  resultValue: {
-    color: "#4ade80",
-    fontSize: 12,
+  resultLabel: { color: "#888", fontSize: 11, marginBottom: 2 },
+  resultValue: { color: "#4ade80", fontSize: 11, fontFamily: "monospace" },
+  emptyLog: { color: "#555", fontSize: 13, fontStyle: "italic" },
+  logEntry: {
+    color: "#a0a0b0",
+    fontSize: 11,
     fontFamily: "monospace",
-  },
-  notConnected: {
-    color: "#888",
-    fontSize: 14,
-    textAlign: "center",
-    lineHeight: 22,
+    paddingVertical: 3,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#2a2a4a",
   },
 });
