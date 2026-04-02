@@ -9,28 +9,35 @@ import {
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
-import { clusterFromEndpoint, randomAddress } from "@/lib/solana";
+import { useFormo } from "@/contexts/FormoProvider";
+import { TransactionStatus } from "@formo/analytics";
+import { clusterFromEndpoint, chainIdFromEndpoint, randomAddress } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Zap } from "lucide-react";
 
 export const SendVersionedTransaction: FC = () => {
-  const { status } = useWalletConnection();
+  const { wallet, status } = useWalletConnection();
   const session = useWalletSession();
   const sendTx = useSendTransaction();
+  const { formo } = useFormo();
   const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
 
   const cluster = clusterFromEndpoint(endpoint);
 
   const onClick = useCallback(async () => {
-    if (status !== "connected" || !session) {
+    if (status !== "connected" || !session || !wallet) {
       toast.error("Wallet not connected!");
       return;
     }
 
     setIsLoading(true);
+    const address = wallet.account.address.toString();
+    const chainId = chainIdFromEndpoint(endpoint);
+
+    formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
 
     try {
       const { signer } = createWalletTransactionSigner(session);
@@ -42,6 +49,10 @@ export const SendVersionedTransaction: FC = () => {
       });
 
       const signature = await sendTx.send({ instructions: [instruction] });
+
+      const sigStr = signature?.toString();
+      formo?.transaction({ status: TransactionStatus.BROADCASTED, chainId, address, transactionHash: sigStr });
+      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL via useSendTransaction`,
@@ -55,13 +66,15 @@ export const SendVersionedTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      toast.error("Transaction Failed", {
-        description: errorMessage,
-      });
+      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("rejected");
+      if (isUserRejection) {
+        formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
+      }
+      toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       setIsLoading(false);
     }
-  }, [status, session, sendTx, cluster]);
+  }, [status, session, wallet, sendTx, cluster, formo, endpoint]);
 
   return (
     <Card>
