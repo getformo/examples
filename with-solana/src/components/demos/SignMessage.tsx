@@ -86,16 +86,19 @@ export const SignMessage: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("rejected");
 
-      // Track rejected signature (user actually refused to sign)
-      formo?.signature({
-        status: SignatureStatus.REJECTED,
-        chainId,
-        address,
-        message: messageText,
-      });
+      // Only track REJECTED when the user actually refused to sign
+      if (isUserRejection) {
+        formo?.signature({
+          status: SignatureStatus.REJECTED,
+          chainId,
+          address,
+          message: messageText,
+        });
+      }
 
-      if (errorMessage.includes("User rejected") || errorMessage.includes("rejected")) {
+      if (isUserRejection) {
         toast.warning("Signing Cancelled", {
           description: "You rejected the signature request",
         });

@@ -75,16 +75,19 @@ export const SignTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("rejected");
 
-      // Track rejected signature
-      formo?.signature({
-        status: SignatureStatus.REJECTED,
-        chainId,
-        address,
-        message: "",
-      });
+      // Only track REJECTED when the user actually refused to sign
+      if (isUserRejection) {
+        formo?.signature({
+          status: SignatureStatus.REJECTED,
+          chainId,
+          address,
+          message: "",
+        });
+      }
 
-      if (errorMessage.includes("User rejected") || errorMessage.includes("rejected")) {
+      if (isUserRejection) {
         toast.warning("Signing Cancelled", {
           description: "You rejected the transaction signing request",
         });
