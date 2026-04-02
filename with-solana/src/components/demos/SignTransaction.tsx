@@ -5,11 +5,13 @@ import {
   useWalletConnection,
   useWalletSession,
   useTransactionPool,
+  useClientStore,
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
 import { useFormo } from "@/contexts/FormoProvider";
-import { SignatureStatus, SOLANA_CHAIN_IDS } from "@formo/analytics";
+import { SignatureStatus } from "@formo/analytics";
+import { chainIdFromEndpoint, randomAddress } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -20,6 +22,7 @@ export const SignTransaction: FC = () => {
   const session = useWalletSession();
   const pool = useTransactionPool();
   const { formo } = useFormo();
+  const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
   const [signedTxSignature, setSignedTxSignature] = useState<string | null>(null);
 
@@ -33,7 +36,7 @@ export const SignTransaction: FC = () => {
     setSignedTxSignature(null);
 
     const address = wallet.account.address.toString();
-    const chainId = SOLANA_CHAIN_IDS["devnet"];
+    const chainId = chainIdFromEndpoint(endpoint);
 
     // Track signature request
     formo?.signature({
@@ -48,7 +51,7 @@ export const SignTransaction: FC = () => {
 
       const instruction = getTransferSolInstruction({
         source: signer,
-        destination: "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ" as any,
+        destination: randomAddress() as any,
         amount: 1_000_000n, // 0.001 SOL
       });
 
@@ -94,7 +97,7 @@ export const SignTransaction: FC = () => {
       pool.reset();
       setIsLoading(false);
     }
-  }, [wallet, status, session, pool, formo]);
+  }, [wallet, status, session, pool, formo, endpoint]);
 
   return (
     <Card>

@@ -2,8 +2,7 @@
 
 import { useWalletConnection, useBalance } from "@solana/react-hooks";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Wallet } from "lucide-react";
 
 export function WalletInfo() {
   const { wallet, status } = useWalletConnection();
@@ -58,19 +57,9 @@ export function WalletInfo() {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Balance</span>
-          <div className="flex items-center gap-2">
-            <span className="font-mono font-medium">
-              {balance.fetching ? "..." : solBalance} SOL
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              disabled={balance.fetching}
-            >
-              <RefreshCw className={`h-3 w-3 ${balance.fetching ? "animate-spin" : ""}`} />
-            </Button>
-          </div>
+          <span className="font-mono font-medium">
+            {balance.fetching ? "..." : solBalance} SOL
+          </span>
         </div>
       </CardContent>
     </Card>

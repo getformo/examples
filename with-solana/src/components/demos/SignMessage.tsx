@@ -1,9 +1,10 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useWalletConnection, useWalletSession } from "@solana/react-hooks";
+import { useWalletConnection, useWalletSession, useClientStore } from "@solana/react-hooks";
 import { useFormo } from "@/contexts/FormoProvider";
-import { SignatureStatus, SOLANA_CHAIN_IDS } from "@formo/analytics";
+import { SignatureStatus } from "@formo/analytics";
+import { chainIdFromEndpoint } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ export const SignMessage: FC = () => {
   const { wallet, status } = useWalletConnection();
   const session = useWalletSession();
   const { formo } = useFormo();
+  const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
   const [lastSignature, setLastSignature] = useState<string | null>(null);
 
@@ -28,8 +30,7 @@ export const SignMessage: FC = () => {
       return;
     }
 
-    const signMessage = (session as any).signMessage;
-    if (!signMessage) {
+    if (!session.signMessage) {
       toast.error("Wallet does not support message signing!");
       return;
     }
@@ -38,7 +39,7 @@ export const SignMessage: FC = () => {
     setLastSignature(null);
 
     const address = wallet.account.address.toString();
-    const chainId = SOLANA_CHAIN_IDS["devnet"]; // or detect from store
+    const chainId = chainIdFromEndpoint(endpoint);
     const messageText = `Hello Formo! Sign this message to verify your wallet.\n\nTimestamp: ${new Date().toISOString()}`;
     const message = new TextEncoder().encode(messageText);
 
@@ -51,20 +52,24 @@ export const SignMessage: FC = () => {
     });
 
     try {
-      const signature = await signMessage(message);
-
-      // Get publicKey bytes for verification
-      const pubKeyBytes = (session.account as any).publicKey;
-      if (pubKeyBytes) {
-        const sigBytes = signature instanceof Uint8Array ? signature : new Uint8Array(signature);
-        const isValid = await verify(sigBytes, message, pubKeyBytes instanceof Uint8Array ? pubKeyBytes : new Uint8Array(pubKeyBytes));
-        if (!isValid) {
-          throw new Error("Signature verification failed!");
-        }
-      }
+      const signature = await session.signMessage(message);
 
       const sigBytes = signature instanceof Uint8Array ? signature : new Uint8Array(signature);
       const signatureBase58 = bs58.encode(sigBytes);
+
+      // Verify the signature (best-effort — don't track as rejection on failure)
+      const pubKeyBytes = session.account.publicKey;
+      if (pubKeyBytes) {
+        const pkBytes = pubKeyBytes instanceof Uint8Array ? pubKeyBytes : new Uint8Array(pubKeyBytes as ArrayBuffer);
+        const isValid = await verify(sigBytes, message, pkBytes);
+        if (!isValid) {
+          toast.error("Signature verification failed!", {
+            description: "The wallet signed, but the signature didn't verify.",
+          });
+          // Still track as confirmed — the user did sign
+        }
+      }
+
       setLastSignature(signatureBase58);
 
       // Track confirmed signature
@@ -82,7 +87,7 @@ export const SignMessage: FC = () => {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-      // Track rejected signature
+      // Track rejected signature (user actually refused to sign)
       formo?.signature({
         status: SignatureStatus.REJECTED,
         chainId,
@@ -102,7 +107,7 @@ export const SignMessage: FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [wallet, status, session, formo]);
+  }, [wallet, status, session, formo, endpoint]);
 
   return (
     <Card>
