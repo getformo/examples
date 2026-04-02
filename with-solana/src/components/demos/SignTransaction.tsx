@@ -57,7 +57,7 @@ export const SignTransaction: FC = () => {
 
       // Prepare and sign without sending
       pool.replaceInstructions([instruction]);
-      await pool.prepare();
+      await pool.prepare({ authority: session });
       await pool.sign();
 
       setSignedTxSignature("Transaction signed successfully");

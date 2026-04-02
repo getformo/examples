@@ -57,22 +57,7 @@ export const SignMessage: FC = () => {
       const sigBytes = signature instanceof Uint8Array ? signature : new Uint8Array(signature);
       const signatureBase58 = bs58.encode(sigBytes);
 
-      // Verify the signature (best-effort — don't track as rejection on failure)
-      const pubKeyBytes = session.account.publicKey;
-      if (pubKeyBytes) {
-        const pkBytes = pubKeyBytes instanceof Uint8Array ? pubKeyBytes : new Uint8Array(pubKeyBytes as ArrayBuffer);
-        const isValid = await verify(sigBytes, message, pkBytes);
-        if (!isValid) {
-          toast.error("Signature verification failed!", {
-            description: "The wallet signed, but the signature didn't verify.",
-          });
-          // Still track as confirmed — the user did sign
-        }
-      }
-
-      setLastSignature(signatureBase58);
-
-      // Track confirmed signature
+      // Track confirmed signature (the user did sign, regardless of verification)
       formo?.signature({
         status: SignatureStatus.CONFIRMED,
         chainId,
@@ -81,9 +66,25 @@ export const SignMessage: FC = () => {
         signatureHash: signatureBase58,
       });
 
-      toast.success("Message Signed!", {
-        description: "Signature verified successfully",
-      });
+      // Verify the signature
+      let verified = true;
+      const pubKeyBytes = session.account.publicKey;
+      if (pubKeyBytes) {
+        const pkBytes = pubKeyBytes instanceof Uint8Array ? pubKeyBytes : new Uint8Array(pubKeyBytes as ArrayBuffer);
+        verified = await verify(sigBytes, message, pkBytes);
+      }
+
+      setLastSignature(signatureBase58);
+
+      if (verified) {
+        toast.success("Message Signed!", {
+          description: "Signature verified successfully",
+        });
+      } else {
+        toast.warning("Message Signed (Unverified)", {
+          description: "The wallet signed, but local verification failed.",
+        });
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("rejected");
