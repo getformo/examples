@@ -67,7 +67,7 @@ export const SendVersionedTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("rejected");
+      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("User denied");
       if (isUserRejection) {
         formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
       }
