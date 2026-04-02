@@ -56,10 +56,8 @@ export const SendTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const isUserRejection = errorMessage.includes("User rejected") || errorMessage.includes("User denied");
-      if (isUserRejection) {
-        formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
-      }
+      // Emit REJECTED for any failure so STARTED always has a terminal event
+      formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       setIsLoading(false);
