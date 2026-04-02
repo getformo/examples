@@ -55,9 +55,10 @@ export const SignTransaction: FC = () => {
         amount: 1_000_000n, // 0.001 SOL
       });
 
-      // Prepare and sign without sending
+      // Prepare and sign without sending — use the same signer as feePayer
+      // to avoid "multiple distinct signers" error
       pool.replaceInstructions([instruction]);
-      await pool.prepare({ authority: session });
+      await pool.prepare({ feePayer: signer });
       await pool.sign();
 
       setSignedTxSignature("Transaction signed successfully");
