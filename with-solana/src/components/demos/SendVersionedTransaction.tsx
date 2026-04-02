@@ -37,6 +37,8 @@ export const SendVersionedTransaction: FC = () => {
     const address = wallet.account.address.toString();
     const chainId = chainIdFromEndpoint(endpoint);
 
+    // Manual transaction tracking — needed because useSendTransaction bypasses
+    // the framework-kit store's state.transactions (uses helper.send() directly).
     formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
 
     try {
@@ -51,7 +53,6 @@ export const SendVersionedTransaction: FC = () => {
       const signature = await sendTx.send({ instructions: [instruction] });
 
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.BROADCASTED, chainId, address, transactionHash: sigStr });
       formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {

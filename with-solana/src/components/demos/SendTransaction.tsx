@@ -29,7 +29,9 @@ export const SendTransaction: FC = () => {
     const address = wallet.account.address.toString();
     const chainId = chainIdFromEndpoint(endpoint);
 
-    // Track transaction started
+    // Manual transaction tracking — needed because useSolTransfer bypasses
+    // the framework-kit store's state.transactions (uses helper.send() directly).
+    // If the store were populated, SolanaStoreHandler would autocapture these.
     formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
 
     try {
@@ -39,9 +41,7 @@ export const SendTransaction: FC = () => {
         amount: 1_000_000n, // 0.001 SOL in lamports
       });
 
-      // Track transaction broadcasted + confirmed
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.BROADCASTED, chainId, address, transactionHash: sigStr });
       formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
