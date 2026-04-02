@@ -1,9 +1,9 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { WalletContextProvider } from "@/contexts/WalletContextProvider";
-import { NetworkConfigurationProvider } from "@/contexts/NetworkConfigurationProvider";
+import { SolanaProvider } from "@solana/react-hooks";
 import { FormoProvider } from "@/contexts/FormoProvider";
+import { client } from "@/lib/solana";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -13,13 +13,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <NetworkConfigurationProvider>
-        <WalletContextProvider>
-          <FormoProvider>
-            {children}
-          </FormoProvider>
-        </WalletContextProvider>
-      </NetworkConfigurationProvider>
+      <SolanaProvider client={client}>
+        <FormoProvider>
+          {children}
+        </FormoProvider>
+      </SolanaProvider>
     </ThemeProvider>
   );
 }

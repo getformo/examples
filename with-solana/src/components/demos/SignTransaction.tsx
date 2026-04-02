@@ -1,65 +1,87 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction, SystemProgram, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  useWalletConnection,
+  useWalletSession,
+  useTransactionPool,
+} from "@solana/react-hooks";
+import { createWalletTransactionSigner } from "@solana/client";
+import { getTransferSolInstruction } from "@solana-program/system";
+import { useFormo } from "@/contexts/FormoProvider";
+import { SignatureStatus, SOLANA_CHAIN_IDS } from "@formo/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, FileSignature, CheckCircle } from "lucide-react";
-import bs58 from "bs58";
 
 export const SignTransaction: FC = () => {
-  const { connection } = useConnection();
-  const { publicKey, signTransaction } = useWallet();
+  const { wallet, status } = useWalletConnection();
+  const session = useWalletSession();
+  const pool = useTransactionPool();
+  const { formo } = useFormo();
   const [isLoading, setIsLoading] = useState(false);
   const [signedTxSignature, setSignedTxSignature] = useState<string | null>(null);
 
   const onClick = useCallback(async () => {
-    if (!publicKey) {
+    if (status !== "connected" || !wallet || !session) {
       toast.error("Wallet not connected!");
-      return;
-    }
-
-    if (!signTransaction) {
-      toast.error("Wallet does not support transaction signing!");
       return;
     }
 
     setIsLoading(true);
     setSignedTxSignature(null);
 
+    const address = wallet.account.address.toString();
+    const chainId = SOLANA_CHAIN_IDS["devnet"];
+
+    // Track signature request
+    formo?.signature({
+      status: SignatureStatus.REQUESTED,
+      chainId,
+      address,
+      message: "",
+    });
+
     try {
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+      const { signer } = createWalletTransactionSigner(session);
 
-      // Create a transaction but don't send it - just sign
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: Keypair.generate().publicKey,
-          lamports: 0.001 * LAMPORTS_PER_SOL,
-        })
-      );
+      const instruction = getTransferSolInstruction({
+        source: signer,
+        destination: "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ" as any,
+        amount: 1_000_000n, // 0.001 SOL
+      });
 
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = publicKey;
+      // Prepare and sign without sending
+      pool.replaceInstructions([instruction]);
+      await pool.prepare();
+      await pool.sign();
 
-      // Sign the transaction without sending
-      const signedTx = await signTransaction(transaction);
+      setSignedTxSignature("Transaction signed successfully");
 
-      // Get the signature from the signed transaction
-      const signaturePair = signedTx.signatures[0];
-      if (signaturePair?.signature) {
-        setSignedTxSignature(bs58.encode(signaturePair.signature));
-      }
+      // Track confirmed signature
+      formo?.signature({
+        status: SignatureStatus.CONFIRMED,
+        chainId,
+        address,
+        message: "",
+      });
 
       toast.success("Transaction Signed!", {
-        description: "Transaction signed but not broadcasted. You can inspect the signature below.",
+        description: "Transaction signed but not broadcasted.",
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-      if (errorMessage.includes("User rejected")) {
+      // Track rejected signature
+      formo?.signature({
+        status: SignatureStatus.REJECTED,
+        chainId,
+        address,
+        message: "",
+      });
+
+      if (errorMessage.includes("User rejected") || errorMessage.includes("rejected")) {
         toast.warning("Signing Cancelled", {
           description: "You rejected the transaction signing request",
         });
@@ -69,9 +91,10 @@ export const SignTransaction: FC = () => {
         });
       }
     } finally {
+      pool.reset();
       setIsLoading(false);
     }
-  }, [publicKey, connection, signTransaction]);
+  }, [wallet, status, session, pool, formo]);
 
   return (
     <Card>
@@ -88,7 +111,7 @@ export const SignTransaction: FC = () => {
         <Button
           variant="gradient"
           onClick={onClick}
-          disabled={!publicKey || !signTransaction || isLoading}
+          disabled={status !== "connected" || isLoading}
           className="w-full"
         >
           {isLoading ? (
@@ -96,9 +119,7 @@ export const SignTransaction: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing...
             </>
-          ) : !signTransaction ? (
-            "Wallet Doesn't Support Transaction Signing"
-          ) : publicKey ? (
+          ) : status === "connected" ? (
             "Sign Transaction (Don't Send)"
           ) : (
             "Connect Wallet First"
@@ -112,8 +133,7 @@ export const SignTransaction: FC = () => {
               Transaction Signed (Not Broadcasted)
             </div>
             <div className="text-xs text-muted-foreground">
-              <span className="font-medium">Signature:</span>
-              <code className="block mt-1 break-all">{signedTxSignature}</code>
+              {signedTxSignature}
             </div>
           </div>
         )}

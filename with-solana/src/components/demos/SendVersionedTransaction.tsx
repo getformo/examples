@@ -1,107 +1,93 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
-  TransactionMessage,
-  VersionedTransaction,
-  SystemProgram,
-  Keypair,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
+  useWalletConnection,
+  useWalletSession,
+  useSendTransaction,
+  useClientStore,
+} from "@solana/react-hooks";
+import { createWalletTransactionSigner } from "@solana/client";
+import { getTransferSolInstruction } from "@solana-program/system";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNetworkConfiguration } from "@/contexts/NetworkConfigurationProvider";
 import { toast } from "sonner";
 import { Loader2, Zap } from "lucide-react";
 
 export const SendVersionedTransaction: FC = () => {
-  const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
-  const { networkConfiguration } = useNetworkConfiguration();
+  const { status } = useWalletConnection();
+  const session = useWalletSession();
+  const sendTx = useSendTransaction();
+  const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
 
+  const cluster = endpoint.includes("devnet") ? "devnet" : endpoint.includes("testnet") ? "testnet" : "mainnet-beta";
+
   const onClick = useCallback(async () => {
-    if (!publicKey) {
+    if (status !== "connected" || !session) {
       toast.error("Wallet not connected!");
       return;
     }
 
     setIsLoading(true);
-    let signature = "";
 
     try {
-      const instructions = [
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: Keypair.generate().publicKey,
-          lamports: 0.001 * LAMPORTS_PER_SOL, // 0.001 SOL
-        }),
-      ];
+      const { signer } = createWalletTransactionSigner(session);
 
-      const latestBlockhash = await connection.getLatestBlockhash();
-
-      const messageV0 = new TransactionMessage({
-        payerKey: publicKey,
-        recentBlockhash: latestBlockhash.blockhash,
-        instructions,
-      }).compileToV0Message();
-
-      const transactionV0 = new VersionedTransaction(messageV0);
-
-      signature = await sendTransaction(transactionV0, connection);
-
-      await connection.confirmTransaction({
-        blockhash: latestBlockhash.blockhash,
-        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-        signature,
+      const instruction = getTransferSolInstruction({
+        source: signer,
+        destination: "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ" as any,
+        amount: 1_000_000n, // 0.001 SOL
       });
 
-      toast.success("Versioned Transaction Sent!", {
-        description: `Successfully sent 0.001 SOL using V0 transaction`,
+      const signature = await sendTx.send({ instructions: [instruction] });
+
+      toast.success("Transaction Sent!", {
+        description: `Successfully sent 0.001 SOL via useSendTransaction`,
         action: {
           label: "View",
           onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${networkConfiguration}`,
+            `https://explorer.solana.com/tx/${signature}?cluster=${cluster}`,
             "_blank"
           ),
         },
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      toast.error("Versioned Transaction Failed", {
+      toast.error("Transaction Failed", {
         description: errorMessage,
       });
     } finally {
       setIsLoading(false);
     }
-  }, [publicKey, connection, sendTransaction, networkConfiguration]);
+  }, [status, session, sendTx, cluster]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />
-          Send Versioned Transaction (V0)
+          Send Transaction (Instructions)
         </CardTitle>
         <CardDescription>
-          Send a V0 versioned transaction. Tests modern transaction format support.
+          Build a transaction from instructions using useSendTransaction.
+          Tests modern instruction-based transaction format.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Button
           variant="gradient"
           onClick={onClick}
-          disabled={!publicKey || isLoading}
+          disabled={status !== "connected" || isLoading}
           className="w-full"
         >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Sending V0...
+              Sending...
             </>
-          ) : publicKey ? (
-            "Send Versioned Transaction"
+          ) : status === "connected" ? (
+            "Send via Instructions"
           ) : (
             "Connect Wallet First"
           )}

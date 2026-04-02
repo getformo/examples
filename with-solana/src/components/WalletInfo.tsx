@@ -1,24 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { useUserSOLBalanceStore } from "@/stores/useUserSOLBalanceStore";
+import { useWalletConnection, useBalance } from "@solana/react-hooks";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function WalletInfo() {
-  const { publicKey, connected, wallet } = useWallet();
-  const { connection } = useConnection();
-  const { balance, isLoading, getUserSOLBalance } = useUserSOLBalanceStore();
+  const { wallet, status } = useWalletConnection();
+  const address = status === "connected" ? wallet?.account.address?.toString() : undefined;
+  const balance = useBalance(address ?? "");
 
-  useEffect(() => {
-    if (publicKey) {
-      getUserSOLBalance(publicKey, connection);
-    }
-  }, [publicKey, connection, getUserSOLBalance]);
-
-  if (!connected || !publicKey) {
+  if (status !== "connected" || !wallet) {
     return (
       <Card>
         <CardHeader>
@@ -41,6 +33,11 @@ export function WalletInfo() {
     );
   }
 
+  const addr = wallet.account.address.toString();
+  const solBalance = balance.lamports != null
+    ? (Number(balance.lamports) / 1e9).toFixed(4)
+    : "...";
+
   return (
     <Card>
       <CardHeader>
@@ -49,30 +46,29 @@ export function WalletInfo() {
           Wallet Connected
         </CardTitle>
         <CardDescription>
-          Connected via {wallet?.adapter.name || "Unknown Wallet"}
+          Connected via {wallet.connector?.name || "Unknown Wallet"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Address</span>
           <code className="rounded bg-muted px-2 py-1 text-xs">
-            {publicKey.toBase58().slice(0, 8)}...{publicKey.toBase58().slice(-8)}
+            {addr.slice(0, 8)}...{addr.slice(-8)}
           </code>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Balance</span>
           <div className="flex items-center gap-2">
             <span className="font-mono font-medium">
-              {isLoading ? "..." : balance.toFixed(4)} SOL
+              {balance.fetching ? "..." : solBalance} SOL
             </span>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6"
-              onClick={() => getUserSOLBalance(publicKey, connection)}
-              disabled={isLoading}
+              disabled={balance.fetching}
             >
-              <RefreshCw className={`h-3 w-3 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-3 w-3 ${balance.fetching ? "animate-spin" : ""}`} />
             </Button>
           </div>
         </div>

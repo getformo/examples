@@ -1,7 +1,9 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletConnection, useWalletSession } from "@solana/react-hooks";
+import { useFormo } from "@/contexts/FormoProvider";
+import { SignatureStatus, SOLANA_CHAIN_IDS } from "@formo/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -14,16 +16,19 @@ import { sha512 } from "@noble/hashes/sha512";
 etc.sha512Sync = (...m) => sha512(etc.concatBytes(...m));
 
 export const SignMessage: FC = () => {
-  const { publicKey, signMessage } = useWallet();
+  const { wallet, status } = useWalletConnection();
+  const session = useWalletSession();
+  const { formo } = useFormo();
   const [isLoading, setIsLoading] = useState(false);
   const [lastSignature, setLastSignature] = useState<string | null>(null);
 
   const onClick = useCallback(async () => {
-    if (!publicKey) {
+    if (status !== "connected" || !wallet || !session) {
       toast.error("Wallet not connected!");
       return;
     }
 
+    const signMessage = (session as any).signMessage;
     if (!signMessage) {
       toast.error("Wallet does not support message signing!");
       return;
@@ -32,22 +37,44 @@ export const SignMessage: FC = () => {
     setIsLoading(true);
     setLastSignature(null);
 
-    try {
-      const message = new TextEncoder().encode(
-        `Hello Formo! Sign this message to verify your wallet.\n\nTimestamp: ${new Date().toISOString()}`
-      );
+    const address = wallet.account.address.toString();
+    const chainId = SOLANA_CHAIN_IDS["devnet"]; // or detect from store
+    const messageText = `Hello Formo! Sign this message to verify your wallet.\n\nTimestamp: ${new Date().toISOString()}`;
+    const message = new TextEncoder().encode(messageText);
 
+    // Track signature request
+    formo?.signature({
+      status: SignatureStatus.REQUESTED,
+      chainId,
+      address,
+      message: messageText,
+    });
+
+    try {
       const signature = await signMessage(message);
 
-      // Verify the signature
-      const isValid = await verify(signature, message, publicKey.toBytes());
-
-      if (!isValid) {
-        throw new Error("Signature verification failed!");
+      // Get publicKey bytes for verification
+      const pubKeyBytes = (session.account as any).publicKey;
+      if (pubKeyBytes) {
+        const sigBytes = signature instanceof Uint8Array ? signature : new Uint8Array(signature);
+        const isValid = await verify(sigBytes, message, pubKeyBytes instanceof Uint8Array ? pubKeyBytes : new Uint8Array(pubKeyBytes));
+        if (!isValid) {
+          throw new Error("Signature verification failed!");
+        }
       }
 
-      const signatureBase58 = bs58.encode(signature);
+      const sigBytes = signature instanceof Uint8Array ? signature : new Uint8Array(signature);
+      const signatureBase58 = bs58.encode(sigBytes);
       setLastSignature(signatureBase58);
+
+      // Track confirmed signature
+      formo?.signature({
+        status: SignatureStatus.CONFIRMED,
+        chainId,
+        address,
+        message: messageText,
+        signatureHash: signatureBase58,
+      });
 
       toast.success("Message Signed!", {
         description: "Signature verified successfully",
@@ -55,8 +82,15 @@ export const SignMessage: FC = () => {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-      // Check if user rejected
-      if (errorMessage.includes("User rejected")) {
+      // Track rejected signature
+      formo?.signature({
+        status: SignatureStatus.REJECTED,
+        chainId,
+        address,
+        message: messageText,
+      });
+
+      if (errorMessage.includes("User rejected") || errorMessage.includes("rejected")) {
         toast.warning("Signing Cancelled", {
           description: "You rejected the signature request",
         });
@@ -68,7 +102,7 @@ export const SignMessage: FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [publicKey, signMessage]);
+  }, [wallet, status, session, formo]);
 
   return (
     <Card>
@@ -86,7 +120,7 @@ export const SignMessage: FC = () => {
         <Button
           variant="gradient"
           onClick={onClick}
-          disabled={!publicKey || !signMessage || isLoading}
+          disabled={status !== "connected" || isLoading}
           className="w-full"
         >
           {isLoading ? (
@@ -94,9 +128,7 @@ export const SignMessage: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing...
             </>
-          ) : !signMessage ? (
-            "Wallet Doesn't Support Signing"
-          ) : publicKey ? (
+          ) : status === "connected" ? (
             "Sign Message"
           ) : (
             "Connect Wallet First"

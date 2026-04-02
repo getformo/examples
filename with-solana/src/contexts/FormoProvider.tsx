@@ -5,12 +5,11 @@ import {
   useContext,
   useEffect,
   useState,
-  useRef,
   ReactNode,
 } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { FormoAnalytics } from "@formo/analytics";
-import { useNetworkConfiguration } from "./NetworkConfigurationProvider";
+import { useWalletConnection } from "@solana/react-hooks";
+import { client } from "@/lib/solana";
 import { toast } from "sonner";
 
 interface FormoContextState {
@@ -30,18 +29,12 @@ export function useFormo() {
 }
 
 export function FormoProvider({ children }: { children: ReactNode }) {
-  const wallet = useWallet();
-  const { connection } = useConnection();
-  const { networkConfiguration } = useNetworkConfiguration();
+  const { wallet, status } = useWalletConnection();
   const [formo, setFormo] = useState<FormoAnalytics | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Use ref to hold the current wallet to avoid re-init on every wallet state change
-  const walletRef = useRef(wallet);
-  walletRef.current = wallet;
-
-  // Initialize the SDK once
+  // Initialize the SDK once with the framework-kit store
   useEffect(() => {
     let instance: FormoAnalytics | null = null;
     let mounted = true;
@@ -64,9 +57,7 @@ export function FormoProvider({ children }: { children: ReactNode }) {
             levels: ["debug", "info", "warn", "error"],
           },
           solana: {
-            wallet: walletRef.current as any,
-            connection,
-            cluster: networkConfiguration,
+            store: client.store as any,
           },
         });
 
@@ -74,10 +65,7 @@ export function FormoProvider({ children }: { children: ReactNode }) {
           setFormo(instance);
           setIsInitialized(true);
           setError(null);
-          console.log("[Formo] Initialized with Solana support", {
-            cluster: networkConfiguration,
-            endpoint: connection.rpcEndpoint,
-          });
+          console.log("[Formo] Initialized with framework-kit store");
         } else {
           instance.cleanup();
         }
@@ -98,40 +86,19 @@ export function FormoProvider({ children }: { children: ReactNode }) {
         instance.cleanup();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Initialize once — network/connection updates handled below
-
-  // When network changes, update the SDK instead of re-creating it
-  useEffect(() => {
-    if (!formo?.solana) return;
-
-    formo.solana.setCluster(networkConfiguration);
-    formo.solana.setConnection(connection);
-    console.log("[Formo] Network updated", {
-      cluster: networkConfiguration,
-      endpoint: connection.rpcEndpoint,
-    });
-  }, [formo, networkConfiguration, connection]);
-
-  // Update SDK when wallet state changes (connect/disconnect/switch)
-  // The SDK's setWallet() has a fast-path that skips teardown when the
-  // inner adapter hasn't changed, so passing the full wallet object is safe.
-  useEffect(() => {
-    if (!formo?.solana) return;
-
-    formo.solana.setWallet(wallet as any);
-  }, [formo, wallet]);
+  }, []);
 
   // Show toast notifications for wallet events
   useEffect(() => {
     if (!isInitialized) return;
 
-    if (wallet.connected && wallet.publicKey) {
+    if (status === "connected" && wallet?.account.address) {
+      const addr = wallet.account.address.toString();
       toast.success("Wallet Connected", {
-        description: `${wallet.publicKey.toBase58().slice(0, 8)}...${wallet.publicKey.toBase58().slice(-8)}`,
+        description: `${addr.slice(0, 8)}...${addr.slice(-8)}`,
       });
     }
-  }, [wallet.connected, wallet.publicKey, isInitialized]);
+  }, [status, wallet?.account.address, isInitialized]);
 
   return (
     <FormoContext.Provider value={{ formo, isInitialized, error }}>
