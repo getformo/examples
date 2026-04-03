@@ -1,94 +1,80 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction, SystemProgram, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { useSolTransfer, useWalletConnection } from "@solana/react-hooks";
+import { useFormo } from "@formo/analytics";
+import { TransactionStatus } from "@formo/analytics";
+import { useCurrentCluster } from "@/hooks/useCurrentCluster";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNetworkConfiguration } from "@/contexts/NetworkConfigurationProvider";
 import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 
+// Throwaway devnet address for demo transfers
+const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
+
 export const SendTransaction: FC = () => {
-  const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
-  const { networkConfiguration } = useNetworkConfiguration();
+  const { wallet, status } = useWalletConnection();
+  const solTransfer = useSolTransfer();
+  const formo = useFormo();
+  const { chainId, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async () => {
-    if (!publicKey) {
+    if (status !== "connected" || !wallet) {
       toast.error("Wallet not connected!");
       return;
     }
 
     setIsLoading(true);
-    let signature = "";
+    const address = wallet.account.address.toString();
+
+    formo?.transaction({ status: TransactionStatus.STARTED, chainId: chainId, address });
 
     try {
-      // Create a simple transfer to a random address
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: Keypair.generate().publicKey,
-          lamports: 0.001 * LAMPORTS_PER_SOL, // 0.001 SOL
-        })
-      );
-
-      const {
-        context: { slot: minContextSlot },
-        value: { blockhash, lastValidBlockHeight },
-      } = await connection.getLatestBlockhashAndContext();
-
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = publicKey;
-
-      signature = await sendTransaction(transaction, connection, {
-        minContextSlot,
+      const signature = await solTransfer.send({
+        destination: DEMO_DESTINATION,
+        amount: 1_000_000n, // 0.001 SOL in lamports
       });
 
-      await connection.confirmTransaction({
-        blockhash,
-        lastValidBlockHeight,
-        signature,
-      });
+      const sigStr = signature?.toString();
+      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL`,
         action: {
           label: "View",
           onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${networkConfiguration}`,
+            `https://explorer.solana.com/tx/${signature}?cluster=${explorerCluster}`,
             "_blank"
           ),
         },
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      toast.error("Transaction Failed", {
-        description: errorMessage,
-      });
+      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: chainId, address });
+      toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       setIsLoading(false);
     }
-  }, [publicKey, connection, sendTransaction, networkConfiguration]);
+  }, [wallet, status, solTransfer, formo, chainId, explorerCluster]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Send className="h-5 w-5" />
-          Send Transaction (Legacy)
+          Send SOL Transfer
         </CardTitle>
         <CardDescription>
-          Send a legacy transaction transferring 0.001 SOL to a random address.
-          Tests: transaction_started → transaction_broadcasted → transaction_confirmed
+          Send 0.001 SOL using the useSolTransfer hook.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Button
           variant="gradient"
           onClick={onClick}
-          disabled={!publicKey || isLoading}
+          disabled={status !== "connected" || isLoading}
           className="w-full"
         >
           {isLoading ? (
@@ -96,7 +82,7 @@ export const SendTransaction: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </>
-          ) : publicKey ? (
+          ) : status === "connected" ? (
             "Send 0.001 SOL"
           ) : (
             "Connect Wallet First"

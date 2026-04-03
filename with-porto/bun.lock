@@ -4,7 +4,7 @@
     "": {
       "name": "formo-example-porto",
       "dependencies": {
-        "@formo/analytics": "^1.28.5",
+        "@formo/analytics": "^1.28.6",
         "@tanstack/react-query": "latest",
         "autoprefixer": "^10.4.23",
         "next": "latest",
@@ -82,7 +82,7 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
 
-    "@formo/analytics": ["@formo/analytics@1.28.5", "", { "dependencies": { "ethereum-cryptography": "3.2.0", "mipd": "0.0.7" }, "peerDependencies": { "@tanstack/react-query": ">=5.0.0", "@types/react": ">=16.14.34", "react": ">=16.14.0", "viem": ">=2.0.0", "wagmi": ">=2.0.0" }, "optionalPeers": ["@tanstack/react-query", "viem", "wagmi"] }, "sha512-Ne0F5iE0Nr+0++rqvncO14VhgIjDPhurYF/HaZu3ft/WK0a6L2+qm3BSj8qNIbUMxLdWHRNEd5fLLR62yhHjww=="],
+    "@formo/analytics": ["@formo/analytics@1.28.6", "", { "dependencies": { "ethereum-cryptography": "3.2.0", "mipd": "0.0.7" }, "peerDependencies": { "@tanstack/react-query": ">=5.0.0", "@types/react": ">=16.14.34", "react": ">=16.14.0", "viem": ">=2.0.0", "wagmi": ">=2.0.0" }, "optionalPeers": ["@tanstack/react-query", "viem", "wagmi"] }, "sha512-bBt3rtVtDt9zNqtv21rdXNDrl5oTRKniS0+C8MU2aeQRbiyyXtDIDe2mtBGj1mnPNhuZ1ke/IwSlBxXrEgLmpw=="],
 
     "@img/colour": ["@img/colour@1.0.0", "", {}, "sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw=="],
 

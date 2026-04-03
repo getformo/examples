@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useFormo } from "@/contexts/FormoProvider";
+import { useFormo } from "@formo/analytics";
 import { toast } from "sonner";
 import { Loader2, Activity, Sparkles } from "lucide-react";
 
@@ -25,7 +25,7 @@ const PRESET_EVENTS = [
 ];
 
 export const CustomEvents: FC = () => {
-  const { formo, isInitialized } = useFormo();
+  const formo = useFormo();
   // Count in-flight requests per event name so duplicate sends keep loading state correct
   const [loadingCounts, setLoadingCounts] = useState<Map<string, number>>(new Map());
   const [customName, setCustomName] = useState("");
@@ -35,7 +35,7 @@ export const CustomEvents: FC = () => {
   const isLoading = (name: string) => (loadingCounts.get(name) ?? 0) > 0;
 
   const sendEvent = async (name: string, properties: Record<string, unknown>) => {
-    if (!formo || !isInitialized) {
+    if (!formo) {
       toast.error("Formo SDK not initialized");
       return;
     }
@@ -108,7 +108,7 @@ export const CustomEvents: FC = () => {
                 variant="outline"
                 size="sm"
                 className="justify-start font-mono text-xs"
-                disabled={isLoading(evt.name) || !isInitialized}
+                disabled={isLoading(evt.name) || !formo}
                 onClick={() => sendEvent(evt.name, evt.properties)}
               >
                 {isLoading(evt.name) ? (
@@ -161,7 +161,7 @@ export const CustomEvents: FC = () => {
           <Button
             variant="gradient"
             onClick={sendCustom}
-            disabled={!isInitialized || isLoading(customName.trim())}
+            disabled={!formo || isLoading(customName.trim())}
             className="w-full"
           >
             {isLoading(customName.trim()) ? (

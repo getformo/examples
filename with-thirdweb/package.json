@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.28.5",
+    "@formo/analytics": "^1.28.6",
     "@tanstack/react-query": "^4.41.0",
     "@thirdweb-dev/react": "^4",
     "@thirdweb-dev/sdk": "^4",

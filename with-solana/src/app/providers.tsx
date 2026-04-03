@@ -1,9 +1,9 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { WalletContextProvider } from "@/contexts/WalletContextProvider";
-import { NetworkConfigurationProvider } from "@/contexts/NetworkConfigurationProvider";
-import { FormoProvider } from "@/contexts/FormoProvider";
+import { SolanaProvider } from "@solana/react-hooks";
+import { FormoAnalyticsProvider } from "@formo/analytics";
+import { client } from "@/lib/solana";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -13,13 +13,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <NetworkConfigurationProvider>
-        <WalletContextProvider>
-          <FormoProvider>
-            {children}
-          </FormoProvider>
-        </WalletContextProvider>
-      </NetworkConfigurationProvider>
+      <SolanaProvider client={client}>
+        <FormoAnalyticsProvider
+          writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
+          options={{
+            tracking: true,
+            evm: false,
+            solana: {
+              store: client.store as any,
+            },
+            logger: {
+              enabled: true,
+              levels: ["debug", "info", "warn", "error"],
+            },
+          }}
+        >
+          {children}
+        </FormoAnalyticsProvider>
+      </SolanaProvider>
     </ThemeProvider>
   );
 }

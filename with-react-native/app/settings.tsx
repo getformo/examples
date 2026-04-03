@@ -96,28 +96,6 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>What We Track</Text>
-        <Text style={styles.infoText}>
-          When tracking is enabled, we collect:{"\n\n"}
-          • Wallet connection events{"\n"}
-          • Transaction and signature events{"\n"}
-          • Screen views and navigation{"\n"}
-          • Custom events you trigger{"\n\n"}
-          We never collect your private keys or seed phrases.
-        </Text>
-      </View>
-
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>GDPR Compliance</Text>
-        <Text style={styles.infoText}>
-          Your choice is respected and stored locally. When you opt out:{"\n\n"}
-          • All tracking stops immediately{"\n"}
-          • No data is sent to our servers{"\n"}
-          • Your session data is cleared{"\n"}
-          • You can opt back in at any time
-        </Text>
-      </View>
     </ScrollView>
   );
 }
@@ -190,24 +168,5 @@ const styles = StyleSheet.create({
   },
   statusTextDisabled: {
     color: "#fca5a5",
-  },
-  infoCard: {
-    backgroundColor: "#1e1e3a",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "#3a3a5a",
-  },
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#fff",
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 14,
-    color: "#a0a0b0",
-    lineHeight: 22,
   },
 });
