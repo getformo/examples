@@ -4,7 +4,7 @@ import { FC, useCallback, useState } from "react";
 import { useSolTransfer, useWalletConnection } from "@solana/react-hooks";
 import { useFormo } from "@formo/analytics";
 import { TransactionStatus } from "@formo/analytics";
-import { configuredCluster, configuredChainId } from "@/lib/solana";
+import { useCurrentCluster } from "@/hooks/useCurrentCluster";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ export const SendTransaction: FC = () => {
   const { wallet, status } = useWalletConnection();
   const solTransfer = useSolTransfer();
   const formo = useFormo();
+  const { chainId, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async () => {
@@ -28,7 +29,7 @@ export const SendTransaction: FC = () => {
     setIsLoading(true);
     const address = wallet.account.address.toString();
 
-    formo?.transaction({ status: TransactionStatus.STARTED, chainId: configuredChainId, address });
+    formo?.transaction({ status: TransactionStatus.STARTED, chainId: chainId, address });
 
     try {
       const signature = await solTransfer.send({
@@ -37,26 +38,26 @@ export const SendTransaction: FC = () => {
       });
 
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: configuredChainId, address, transactionHash: sigStr });
+      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL`,
         action: {
           label: "View",
           onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${configuredCluster}`,
+            `https://explorer.solana.com/tx/${signature}?cluster=${explorerCluster}`,
             "_blank"
           ),
         },
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: configuredChainId, address });
+      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: chainId, address });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       setIsLoading(false);
     }
-  }, [wallet, status, solTransfer, formo]);
+  }, [wallet, status, solTransfer, formo, chainId, explorerCluster]);
 
   return (
     <Card>
