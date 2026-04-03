@@ -52,6 +52,7 @@ export function FormoProvider({ children }: { children: ReactNode }) {
       try {
         instance = await FormoAnalytics.init(writeKey, {
           tracking: true,
+          evm: false, // Solana-only app — disable EVM provider detection
           logger: {
             enabled: true,
             levels: ["debug", "info", "warn", "error"],
