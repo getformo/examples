@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { SolanaProvider } from "@solana/react-hooks";
-import { FormoProvider } from "@/contexts/FormoProvider";
+import { FormoAnalyticsProvider } from "@formo/analytics";
 import { client } from "@/lib/solana";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -14,9 +14,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <SolanaProvider client={client}>
-        <FormoProvider>
+        <FormoAnalyticsProvider
+          writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
+          options={{
+            tracking: true,
+            evm: false,
+            solana: {
+              store: client.store as any,
+            },
+            logger: {
+              enabled: true,
+              levels: ["debug", "info", "warn", "error"],
+            },
+          }}
+        >
           {children}
-        </FormoProvider>
+        </FormoAnalyticsProvider>
       </SolanaProvider>
     </ThemeProvider>
   );

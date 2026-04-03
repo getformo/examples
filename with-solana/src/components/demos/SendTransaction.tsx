@@ -2,7 +2,7 @@
 
 import { FC, useCallback, useState } from "react";
 import { useSolTransfer, useWalletConnection } from "@solana/react-hooks";
-import { useFormo } from "@/contexts/FormoProvider";
+import { useFormo } from "@formo/analytics";
 import { TransactionStatus } from "@formo/analytics";
 import { configuredCluster, configuredChainId } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
 export const SendTransaction: FC = () => {
   const { wallet, status } = useWalletConnection();
   const solTransfer = useSolTransfer();
-  const { formo } = useFormo();
+  const formo = useFormo();
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async () => {

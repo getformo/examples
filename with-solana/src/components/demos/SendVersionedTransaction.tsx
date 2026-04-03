@@ -8,7 +8,7 @@ import {
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
-import { useFormo } from "@/contexts/FormoProvider";
+import { useFormo } from "@formo/analytics";
 import { TransactionStatus } from "@formo/analytics";
 import { configuredCluster, configuredChainId } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export const SendVersionedTransaction: FC = () => {
   const { wallet, status } = useWalletConnection();
   const session = useWalletSession();
   const pool = useTransactionPool();
-  const { formo } = useFormo();
+  const formo = useFormo();
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async () => {
