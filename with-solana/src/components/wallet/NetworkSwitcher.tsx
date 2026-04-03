@@ -2,7 +2,7 @@
 
 import { useClientStore, useWalletActions } from "@solana/react-hooks";
 import { resolveCluster } from "@solana/client";
-import { clusterFromEndpoint } from "@/lib/solana";
+import { configuredCluster } from "@/lib/solana";
 
 const NETWORKS = [
   { label: "Devnet", moniker: "devnet" as const },
@@ -10,10 +10,21 @@ const NETWORKS = [
   { label: "Testnet", moniker: "testnet" as const },
 ];
 
+/** Map well-known RPC endpoints back to a moniker for display. */
+function detectMoniker(endpoint: string): string {
+  const lower = endpoint.toLowerCase();
+  if (lower.includes("devnet")) return "devnet";
+  if (lower.includes("testnet")) return "testnet";
+  if (lower.includes("localhost") || lower.includes("127.0.0.1")) return "localnet";
+  if (lower.includes("mainnet")) return "mainnet";
+  // Unknown endpoint — fall back to the configured cluster
+  return configuredCluster === "mainnet-beta" ? "mainnet" : configuredCluster;
+}
+
 export function NetworkSwitcher() {
   const endpoint = useClientStore((s) => s.cluster.endpoint);
   const actions = useWalletActions();
-  const current = clusterFromEndpoint(endpoint);
+  const current = detectMoniker(endpoint);
 
   const onChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const moniker = e.target.value as (typeof NETWORKS)[number]["moniker"];
@@ -25,7 +36,7 @@ export function NetworkSwitcher() {
 
   return (
     <select
-      value={current === "mainnet-beta" ? "mainnet" : current}
+      value={current}
       onChange={onChange}
       className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >

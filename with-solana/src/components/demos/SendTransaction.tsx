@@ -1,26 +1,23 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { useSolTransfer, useWalletConnection, useClientStore } from "@solana/react-hooks";
+import { useSolTransfer, useWalletConnection } from "@solana/react-hooks";
 import { useFormo } from "@/contexts/FormoProvider";
 import { TransactionStatus } from "@formo/analytics";
-import { clusterFromEndpoint, chainIdFromEndpoint } from "@/lib/solana";
-
-// Throwaway devnet address for demo transfers
-const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
+import { configuredCluster, configuredChainId } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 
+// Throwaway devnet address for demo transfers
+const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
+
 export const SendTransaction: FC = () => {
   const { wallet, status } = useWalletConnection();
   const solTransfer = useSolTransfer();
   const { formo } = useFormo();
-  const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
-
-  const cluster = clusterFromEndpoint(endpoint);
 
   const onClick = useCallback(async () => {
     if (status !== "connected" || !wallet) {
@@ -30,12 +27,8 @@ export const SendTransaction: FC = () => {
 
     setIsLoading(true);
     const address = wallet.account.address.toString();
-    const chainId = chainIdFromEndpoint(endpoint);
 
-    // Manual transaction tracking — needed because useSolTransfer bypasses
-    // the framework-kit store's state.transactions (uses helper.send() directly).
-    // If the store were populated, SolanaStoreHandler would autocapture these.
-    formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
+    formo?.transaction({ status: TransactionStatus.STARTED, chainId: configuredChainId, address });
 
     try {
       const signature = await solTransfer.send({
@@ -44,27 +37,26 @@ export const SendTransaction: FC = () => {
       });
 
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
+      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: configuredChainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL`,
         action: {
           label: "View",
           onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${cluster}`,
+            `https://explorer.solana.com/tx/${signature}?cluster=${configuredCluster}`,
             "_blank"
           ),
         },
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      // Emit REJECTED for any failure so STARTED always has a terminal event
-      formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
+      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: configuredChainId, address });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       setIsLoading(false);
     }
-  }, [wallet, status, solTransfer, cluster, formo, endpoint]);
+  }, [wallet, status, solTransfer, formo]);
 
   return (
     <Card>
@@ -75,7 +67,6 @@ export const SendTransaction: FC = () => {
         </CardTitle>
         <CardDescription>
           Send 0.001 SOL using the useSolTransfer hook.
-          Manually tracks: transaction_started → transaction_broadcasted → transaction_confirmed
         </CardDescription>
       </CardHeader>
       <CardContent>

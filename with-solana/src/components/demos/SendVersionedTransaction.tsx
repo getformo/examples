@@ -5,13 +5,12 @@ import {
   useWalletConnection,
   useWalletSession,
   useTransactionPool,
-  useClientStore,
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
 import { useFormo } from "@/contexts/FormoProvider";
 import { TransactionStatus } from "@formo/analytics";
-import { clusterFromEndpoint, chainIdFromEndpoint } from "@/lib/solana";
+import { configuredCluster, configuredChainId } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -25,10 +24,7 @@ export const SendVersionedTransaction: FC = () => {
   const session = useWalletSession();
   const pool = useTransactionPool();
   const { formo } = useFormo();
-  const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
-
-  const cluster = clusterFromEndpoint(endpoint);
 
   const onClick = useCallback(async () => {
     if (status !== "connected" || !session || !wallet) {
@@ -38,11 +34,8 @@ export const SendVersionedTransaction: FC = () => {
 
     setIsLoading(true);
     const address = wallet.account.address.toString();
-    const chainId = chainIdFromEndpoint(endpoint);
 
-    // Manual transaction tracking — needed because useTransactionPool bypasses
-    // the framework-kit store's state.transactions.
-    formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
+    formo?.transaction({ status: TransactionStatus.STARTED, chainId: configuredChainId, address });
 
     try {
       const { signer } = createWalletTransactionSigner(session);
@@ -53,34 +46,31 @@ export const SendVersionedTransaction: FC = () => {
         amount: 1_000_000n, // 0.001 SOL
       });
 
-      // Use prepareAndSend with the same signer as feePayer to avoid
-      // "multiple distinct signers" error
       pool.replaceInstructions([instruction]);
       const signature = await pool.prepareAndSend({ feePayer: signer });
 
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
+      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: configuredChainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL via useTransactionPool`,
         action: {
           label: "View",
           onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${cluster}`,
+            `https://explorer.solana.com/tx/${signature}?cluster=${configuredCluster}`,
             "_blank"
           ),
         },
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      // Emit REJECTED for any failure so STARTED always has a terminal event
-      formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
+      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: configuredChainId, address });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       pool.reset();
       setIsLoading(false);
     }
-  }, [status, session, wallet, pool, cluster, formo, endpoint]);
+  }, [status, session, wallet, pool, formo]);
 
   return (
     <Card>
