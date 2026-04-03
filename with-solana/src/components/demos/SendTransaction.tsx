@@ -4,7 +4,10 @@ import { FC, useCallback, useState } from "react";
 import { useSolTransfer, useWalletConnection, useClientStore } from "@solana/react-hooks";
 import { useFormo } from "@/contexts/FormoProvider";
 import { TransactionStatus } from "@formo/analytics";
-import { clusterFromEndpoint, chainIdFromEndpoint, randomAddress } from "@/lib/solana";
+import { clusterFromEndpoint, chainIdFromEndpoint } from "@/lib/solana";
+
+// Throwaway devnet address for demo transfers
+const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -35,9 +38,8 @@ export const SendTransaction: FC = () => {
     formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
 
     try {
-      const destination = randomAddress();
       const signature = await solTransfer.send({
-        destination,
+        destination: DEMO_DESTINATION,
         amount: 1_000_000n, // 0.001 SOL in lamports
       });
 

@@ -4,23 +4,26 @@ import { FC, useCallback, useState } from "react";
 import {
   useWalletConnection,
   useWalletSession,
-  useSendTransaction,
+  useTransactionPool,
   useClientStore,
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
 import { useFormo } from "@/contexts/FormoProvider";
 import { TransactionStatus } from "@formo/analytics";
-import { clusterFromEndpoint, chainIdFromEndpoint, randomAddress } from "@/lib/solana";
+import { clusterFromEndpoint, chainIdFromEndpoint } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Zap } from "lucide-react";
 
+// Throwaway devnet address for demo transfers
+const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
+
 export const SendVersionedTransaction: FC = () => {
   const { wallet, status } = useWalletConnection();
   const session = useWalletSession();
-  const sendTx = useSendTransaction();
+  const pool = useTransactionPool();
   const { formo } = useFormo();
   const endpoint = useClientStore((s) => s.cluster.endpoint);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,8 +40,8 @@ export const SendVersionedTransaction: FC = () => {
     const address = wallet.account.address.toString();
     const chainId = chainIdFromEndpoint(endpoint);
 
-    // Manual transaction tracking — needed because useSendTransaction bypasses
-    // the framework-kit store's state.transactions (uses helper.send() directly).
+    // Manual transaction tracking — needed because useTransactionPool bypasses
+    // the framework-kit store's state.transactions.
     formo?.transaction({ status: TransactionStatus.STARTED, chainId, address });
 
     try {
@@ -46,17 +49,20 @@ export const SendVersionedTransaction: FC = () => {
 
       const instruction = getTransferSolInstruction({
         source: signer,
-        destination: randomAddress() as any,
+        destination: DEMO_DESTINATION as any,
         amount: 1_000_000n, // 0.001 SOL
       });
 
-      const signature = await sendTx.send({ instructions: [instruction] });
+      // Use prepareAndSend with the same signer as feePayer to avoid
+      // "multiple distinct signers" error
+      pool.replaceInstructions([instruction]);
+      const signature = await pool.prepareAndSend({ feePayer: signer });
 
       const sigStr = signature?.toString();
       formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId, address, transactionHash: sigStr });
 
       toast.success("Transaction Sent!", {
-        description: `Successfully sent 0.001 SOL via useSendTransaction`,
+        description: `Successfully sent 0.001 SOL via useTransactionPool`,
         action: {
           label: "View",
           onClick: () => window.open(
@@ -71,20 +77,20 @@ export const SendVersionedTransaction: FC = () => {
       formo?.transaction({ status: TransactionStatus.REJECTED, chainId, address });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
+      pool.reset();
       setIsLoading(false);
     }
-  }, [status, session, wallet, sendTx, cluster, formo, endpoint]);
+  }, [status, session, wallet, pool, cluster, formo, endpoint]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />
-          Send Transaction (Instructions)
+          Send Transaction (Pool)
         </CardTitle>
         <CardDescription>
-          Build a transaction from instructions using useSendTransaction.
-          Tests modern instruction-based transaction format.
+          Build and send a transaction using useTransactionPool with custom instructions.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -100,7 +106,7 @@ export const SendVersionedTransaction: FC = () => {
               Sending...
             </>
           ) : status === "connected" ? (
-            "Send via Instructions"
+            "Send via Transaction Pool"
           ) : (
             "Connect Wallet First"
           )}
