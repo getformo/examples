@@ -11,11 +11,8 @@ import {
   useSignMessage,
   useSwitchChain,
 } from "wagmi";
-import { formatUnits, stringify } from "viem";
-import { Hooks } from "wagmi/tempo";
+import { stringify } from "viem";
 import { useFormo } from "@formo/analytics";
-
-const pathUsd = "0x20c0000000000000000000000000000000000000" as const;
 
 // Status Badge Component
 function StatusBadge({ status }: { status: string }) {
@@ -121,38 +118,6 @@ function ChainSwitcherSection() {
       {error && (
         <p className="mt-3 text-sm text-[var(--error)]">{error.message}</p>
       )}
-    </div>
-  );
-}
-
-// Balance Section (Tempo-specific)
-function BalanceSection() {
-  const { address, status } = useConnection();
-  const { data, isLoading } = Hooks.token.useGetBalance({
-    account: address,
-    token: pathUsd,
-    query: { refetchInterval: 1_000 },
-  });
-
-  if (status !== "connected") return null;
-
-  return (
-    <div className="card">
-      <h2 className="text-lg font-semibold mb-4">Token Balance</h2>
-      <p className="text-sm text-[var(--muted)] mb-4">
-        pathUSD balance via Tempo SDK (auto-refreshes every second)
-      </p>
-
-      <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-lg p-3 text-center">
-        <span className="text-2xl font-mono font-bold">
-          {isLoading
-            ? "Loading..."
-            : data !== undefined
-              ? formatUnits(data, 6)
-              : "\u2014"}
-        </span>
-        <span className="text-sm text-[var(--muted)] ml-2">pathUSD</span>
-      </div>
     </div>
   );
 }
@@ -510,7 +475,6 @@ export default function App() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <ConnectionSection />
           <ChainSwitcherSection />
-          <BalanceSection />
           <TransactionSection />
           <SignMessageSection />
           <IdentifySection />
