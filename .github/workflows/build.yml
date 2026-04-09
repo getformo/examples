@@ -55,6 +55,12 @@ jobs:
             build: build
             node: 20
 
+          - name: with-tempo
+            dir: with-tempo
+            pm: npm
+            build: build
+            node: 20
+
           - name: with-privy
             dir: with-privy
             pm: pnpm

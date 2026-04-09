@@ -16,6 +16,7 @@ Check out the [SDK docs](https://docs.formo.so/sdks/web) for full installation i
 - [with-dynamic](./with-dynamic) - React (Vite) with Dynamic.xyz wallet
 - [with-reown](./with-reown) - Next.js with Reown AppKit (WalletConnect)
 - [with-porto](./with-porto) - Next.js with Porto wallet
+- [with-tempo](./with-tempo) - Next.js with Tempo Accounts wallet
 
 ## Blockchain Platforms
 
