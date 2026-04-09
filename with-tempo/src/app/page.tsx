@@ -7,12 +7,11 @@ import {
   useConnection,
   useConnectors,
   useDisconnect,
-  useSendTransactionSync,
+  useSendTransaction,
   useSignMessage,
   useSwitchChain,
 } from "wagmi";
-import { formatUnits, parseUnits, stringify, type Hex } from "viem";
-import { Actions } from "viem/tempo";
+import { formatUnits, stringify } from "viem";
 import { Hooks } from "wagmi/tempo";
 import { useFormo } from "@formo/analytics";
 
@@ -158,94 +157,49 @@ function BalanceSection() {
   );
 }
 
-// Send Transaction Section (Tempo token transfer)
-function SendTransactionSection() {
-  const [to, setTo] = useState("");
-  const [amount, setAmount] = useState("1");
-  const { mutate: sendTransactionSync, data, error, isPending } = useSendTransactionSync();
+// Transaction Section
+function TransactionSection() {
+  const { sendTransaction, data: hash, isPending, error, reset } = useSendTransaction();
   const { address, status } = useConnection();
 
   if (status !== "connected") return null;
 
-  const handleSend = () => {
-    if (!to) return;
-    sendTransactionSync({
-      calls: [
-        Actions.token.transfer.call({
-          to: to as Hex,
-          token: pathUsd,
-          amount: parseUnits(amount || "0", 6),
-        }),
-      ],
-    });
-  };
-
   const handleSendToSelf = () => {
     if (!address) return;
-    sendTransactionSync({
-      calls: [
-        Actions.token.transfer.call({
-          to: address,
-          token: pathUsd,
-          amount: parseUnits("0", 6),
-        }),
-      ],
+    sendTransaction({
+      to: address,
+      value: BigInt(0),
     });
   };
 
   return (
     <div className="card">
-      <h2 className="text-lg font-semibold mb-4">Send Token Transfer</h2>
+      <h2 className="text-lg font-semibold mb-4">Transactions</h2>
       <p className="text-sm text-[var(--muted)] mb-4">
-        Transfer pathUSD tokens - Formo SDK will automatically capture this
+        Test transaction events - Formo SDK will automatically capture this
       </p>
 
       <div className="space-y-4">
-        {/* Quick test button */}
         <button
           onClick={handleSendToSelf}
           disabled={isPending}
-          className="btn btn-outline w-full"
-        >
-          {isPending ? "Check Wallet..." : "Quick Test: Send 0 pathUSD to Self"}
-        </button>
-
-        <hr className="border-[var(--card-border)]" />
-
-        <div>
-          <label className="text-sm text-[var(--muted)] block mb-1">To Address</label>
-          <input
-            type="text"
-            value={to}
-            onChange={(e) => setTo(e.target.value)}
-            className="input"
-            placeholder="0x..."
-          />
-        </div>
-
-        <div>
-          <label className="text-sm text-[var(--muted)] block mb-1">Amount (pathUSD)</label>
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input"
-            placeholder="1"
-          />
-        </div>
-
-        <button
-          onClick={handleSend}
-          disabled={isPending || !to}
           className="btn btn-primary w-full"
         >
-          {isPending ? "Check Wallet..." : "Send Transaction"}
+          {isPending ? "Check Wallet..." : "Send Transaction to Self"}
         </button>
 
-        {data !== undefined && (
+        {hash && (
           <div>
-            <span className="text-sm text-[var(--muted)]">Result</span>
-            <pre className="code block mt-1 text-xs">{stringify(data, null, 2)}</pre>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-sm text-[var(--muted)]">Transaction Hash</span>
+              <button
+                onClick={() => reset()}
+                className="text-xs text-[var(--primary)] hover:underline"
+              >
+                Clear
+              </button>
+            </div>
+            <code className="code block">{hash}</code>
           </div>
         )}
 
@@ -511,67 +465,6 @@ function ConsentSection() {
   );
 }
 
-// Event Log Section
-function EventLogSection() {
-  const [logs, setLogs] = useState<string[]>([]);
-
-  useEffect(() => {
-    const originalConsoleLog = console.log;
-    const originalConsoleInfo = console.info;
-
-    const interceptLog = (...args: unknown[]) => {
-      const message = args
-        .map((arg) =>
-          typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
-        )
-        .join(" ");
-
-      if (message.includes("formo") || message.includes("Formo")) {
-        setLogs((prev) => [...prev.slice(-19), `${new Date().toLocaleTimeString()}: ${message}`]);
-      }
-
-      originalConsoleLog.apply(console, args);
-    };
-
-    console.log = interceptLog as typeof console.log;
-    console.info = interceptLog as typeof console.info;
-
-    return () => {
-      console.log = originalConsoleLog;
-      console.info = originalConsoleInfo;
-    };
-  }, []);
-
-  return (
-    <div className="card">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">SDK Event Log</h2>
-        <button
-          onClick={() => setLogs([])}
-          className="text-xs text-[var(--primary)] hover:underline"
-        >
-          Clear
-        </button>
-      </div>
-      <p className="text-sm text-[var(--muted)] mb-4">
-        Console output from Formo SDK (filtered for Formo-related logs)
-      </p>
-
-      <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-lg p-3 max-h-[200px] overflow-y-auto font-mono text-xs">
-        {logs.length === 0 ? (
-          <p className="text-[var(--muted)]">No events captured yet...</p>
-        ) : (
-          logs.map((log, i) => (
-            <p key={i} className="mb-1 break-all">
-              {log}
-            </p>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
-
 // Main App
 export default function App() {
   return (
@@ -618,16 +511,11 @@ export default function App() {
           <ConnectionSection />
           <ChainSwitcherSection />
           <BalanceSection />
-          <SendTransactionSection />
+          <TransactionSection />
           <SignMessageSection />
           <IdentifySection />
           <CustomEventsSection />
           <ConsentSection />
-        </div>
-
-        {/* Event Log - Full Width */}
-        <div className="mt-4">
-          <EventLogSection />
         </div>
 
         {/* Footer */}
