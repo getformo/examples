@@ -36,5 +36,16 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@web3-onboard/common": {
+      "ws": "8.18.3"
+    },
+    "@web3-onboard/core": {
+      "ws": "8.18.3"
+    },
+    "@web3-onboard/react": {
+      "ws": "8.18.3"
+    }
   }
 }
