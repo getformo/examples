@@ -43,5 +43,9 @@
   },
   "dependencies": {
     "@formo/analytics": "^1.28.6"
+  },
+  "resolutions": {
+    "elliptic": "6.6.1",
+    "axios": "^1.13.5"
   }
 }
