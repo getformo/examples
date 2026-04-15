@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { useFormo } from "@formo/react-native-analytics";
+import { useFormo } from "@formo/analytics-react-native";
 
 export default function EventsScreen() {
   const formo = useFormo();
@@ -16,12 +16,6 @@ export default function EventsScreen() {
   const [customEventName, setCustomEventName] = useState("button_clicked");
   const [customProperty, setCustomProperty] = useState("");
   const [eventsSent, setEventsSent] = useState(0);
-
-  // Track screen view once on mount and when SDK initializes.
-  useEffect(() => {
-    formo.screen("Events");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formo]);
 
   const sendEvent = (eventType: string, details?: string) => {
     setEventsSent((prev) => prev + 1);

@@ -1,4 +1,4 @@
-import type { Options } from "@formo/react-native-analytics";
+import type { Options } from "@formo/analytics-react-native";
 import type { Config } from "wagmi";
 import type { QueryClient } from "@tanstack/react-query";
 

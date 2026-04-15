@@ -7,17 +7,16 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { useFormo } from "@formo/react-native-analytics";
+import { useFormo } from "@formo/analytics-react-native";
 
 export default function SettingsScreen() {
   const formo = useFormo();
   const [isOptedOut, setIsOptedOut] = useState(false);
 
   // Re-run when formo changes from no-op defaultContext to real SDK
-  // so consent state is read correctly and screen view is tracked
+  // so consent state is read correctly.
   useEffect(() => {
     setIsOptedOut(formo.hasOptedOutTracking());
-    formo.screen("Settings");
   }, [formo]);
 
   const handleToggleTracking = (value: boolean) => {

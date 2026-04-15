@@ -18,7 +18,7 @@ import {
 } from "wagmi";
 import { chains } from "../config/wagmi";
 import { parseEther } from "viem";
-import { useFormo } from "@formo/react-native-analytics";
+import { useFormo, SignatureStatus, TransactionStatus } from "@formo/analytics-react-native";
 
 // Mock address for direct SDK testing
 const TEST_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
@@ -34,10 +34,6 @@ export default function WalletScreen() {
       [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 30)
     );
   };
-
-  useEffect(() => {
-    formo.screen("Wallet");
-  }, [formo]);
 
   const chainId = useChainId();
   const { connectors, connect, isPending: isConnecting } = useConnect();
@@ -157,14 +153,14 @@ export default function WalletScreen() {
     try {
       addLog("SDK: signature(requested)");
       await formo.signature({
-        status: "requested",
+        status: SignatureStatus.REQUESTED,
         chainId: baseSepolia.id,
         address: TEST_ADDRESS,
         message: "Test message for SDK testing",
       });
       addLog("SDK: signature(confirmed)");
       await formo.signature({
-        status: "confirmed",
+        status: SignatureStatus.CONFIRMED,
         chainId: baseSepolia.id,
         address: TEST_ADDRESS,
         message: "Test message for SDK testing",
@@ -180,7 +176,7 @@ export default function WalletScreen() {
     try {
       addLog("SDK: transaction(started)");
       await formo.transaction({
-        status: "started",
+        status: TransactionStatus.STARTED,
         chainId: baseSepolia.id,
         address: TEST_ADDRESS,
         to: TEST_ADDRESS,
@@ -188,7 +184,7 @@ export default function WalletScreen() {
       });
       addLog("SDK: transaction(broadcasted)");
       await formo.transaction({
-        status: "broadcasted",
+        status: TransactionStatus.BROADCASTED,
         chainId: baseSepolia.id,
         address: TEST_ADDRESS,
         to: TEST_ADDRESS,

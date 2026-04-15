@@ -16,11 +16,11 @@ if (typeof window !== "undefined" && !window.matchMedia) {
   });
 }
 
-import { Stack } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormoAnalyticsProvider } from "@formo/react-native-analytics";
+import { FormoAnalyticsProvider, useFormo } from "@formo/analytics-react-native";
 import { FORMO_WRITE_KEY, createFormoOptions } from "@/config/formo";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { WagmiProvider } from "wagmi";
@@ -29,6 +29,20 @@ import { wagmiConfig } from "@/config/wagmi";
 
 // Create query client for React Query
 const queryClient = new QueryClient();
+
+// Auto-fire formo.screen() whenever the active route changes.
+function ScreenTracker() {
+  const formo = useFormo();
+  const segments = useSegments();
+
+  useEffect(() => {
+    const leaf = segments[segments.length - 1];
+    const name = !leaf ? "Home" : leaf.charAt(0).toUpperCase() + leaf.slice(1);
+    formo.screen(name);
+  }, [formo, segments]);
+
+  return null;
+}
 
 export default function RootLayout() {
   // Create Formo options with wagmi integration for automatic event tracking
@@ -46,6 +60,7 @@ export default function RootLayout() {
             asyncStorage={AsyncStorage}
             options={formoOptions}
           >
+            <ScreenTracker />
             <StatusBar style="light" />
             <Stack
               screenOptions={{
