@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,19 +6,8 @@ import {
   ScrollView,
 } from "react-native";
 import { Link } from "expo-router";
-import { useFormo } from "@formo/react-native-analytics";
 
 export default function HomeScreen() {
-  const formo = useFormo();
-
-  // Track screen view once on mount and when SDK initializes.
-  // formo starts as a no-op defaultContext and becomes the real SDK async,
-  // so we must include it in deps to re-run when initialization completes.
-  useEffect(() => {
-    formo.screen("Home");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formo]);
-
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
