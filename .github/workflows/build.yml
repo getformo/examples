@@ -7,7 +7,59 @@ on:
     branches: [main]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # Each key maps to a path pattern. Workflow-file changes rebuild all.
+          filters: |
+            with-react:
+              - 'with-react/**'
+              - '.github/workflows/build.yml'
+            with-next-app-router:
+              - 'with-next-app-router/**'
+              - '.github/workflows/build.yml'
+            with-next-page-router:
+              - 'with-next-page-router/**'
+              - '.github/workflows/build.yml'
+            with-dynamic:
+              - 'with-dynamic/**'
+              - '.github/workflows/build.yml'
+            with-farcaster:
+              - 'with-farcaster/**'
+              - '.github/workflows/build.yml'
+            with-metamask:
+              - 'with-metamask/**'
+              - '.github/workflows/build.yml'
+            with-porto:
+              - 'with-porto/**'
+              - '.github/workflows/build.yml'
+            with-tempo:
+              - 'with-tempo/**'
+              - '.github/workflows/build.yml'
+            with-privy:
+              - 'with-privy/**'
+              - '.github/workflows/build.yml'
+            with-reown:
+              - 'with-reown/**'
+              - '.github/workflows/build.yml'
+            with-thirdweb:
+              - 'with-thirdweb/**'
+              - '.github/workflows/build.yml'
+            with-web3-onboard:
+              - 'with-web3-onboard/**'
+              - '.github/workflows/build.yml'
+            with-react-native:
+              - 'with-react-native/**'
+              - '.github/workflows/build.yml'
+
   build:
+    needs: changes
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -85,10 +137,16 @@ jobs:
             build: build
             node: 20
 
+          - name: with-react-native
+            dir: with-react-native
+            pm: pnpm
+            build: typecheck
+            node: 20
+
           # with-solana: requires @formo/analytics@1.28.2 (not yet published)
-          # with-react-native: requires @formo/react-native-analytics (not yet published)
 
     name: ${{ matrix.name }}
+    if: contains(fromJSON(needs.changes.outputs.examples), matrix.name)
     steps:
       - uses: actions/checkout@v4
 

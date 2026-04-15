@@ -25,15 +25,15 @@ describe("Formo Configuration", () => {
     it("should include app configuration", () => {
       const options = createFormoOptions(mockWagmiConfig, mockQueryClient);
       expect(options.app).toBeDefined();
-      expect(options.app.name).toBe("Formo Analytics Demo");
-      expect(options.app.version).toBe("1.0.0");
+      expect(options.app!.name).toBe("Formo Analytics Demo");
+      expect(options.app!.version).toBe("1.1.0");
     });
 
     it("should include wagmi configuration", () => {
       const options = createFormoOptions(mockWagmiConfig, mockQueryClient);
       expect(options.wagmi).toBeDefined();
-      expect(options.wagmi.config).toBe(mockWagmiConfig);
-      expect(options.wagmi.queryClient).toBe(mockQueryClient);
+      expect(options.wagmi!.config).toBe(mockWagmiConfig);
+      expect(options.wagmi!.queryClient).toBe(mockQueryClient);
     });
 
     it("should have flush settings", () => {

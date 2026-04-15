@@ -36,8 +36,8 @@ function ScreenTracker() {
   const segments = useSegments();
 
   useEffect(() => {
-    const leaf = segments[segments.length - 1];
-    const name = !leaf ? "Home" : leaf.charAt(0).toUpperCase() + leaf.slice(1);
+    const leaf = (segments as string[]).filter((s) => !s.startsWith("(")).pop();
+    const name = !leaf || leaf === "index" ? "Home" : leaf.charAt(0).toUpperCase() + leaf.slice(1);
     formo.screen(name);
   }, [formo, segments]);
 
