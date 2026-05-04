@@ -27,5 +27,8 @@
     "@types/react-dom": "latest",
     "@wagmi/cli": "latest",
     "typescript": "latest"
+  },
+  "overrides": {
+    "hono": "^4.12.14"
   }
 }

@@ -23,7 +23,7 @@
     "clsx": "^2.1.1",
     "ethers": "^5",
     "lucide-react": "^0.441.0",
-    "next": "^14.2.9",
+    "next": "^15.5.15",
     "next-auth": "^4.24.7",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
@@ -33,6 +33,9 @@
     "tailwindcss-animate": "^1.0.7",
     "viem": "2.21.7",
     "wagmi": "2.12.11"
+  },
+  "overrides": {
+    "h3": "^1.15.9"
   },
   "devDependencies": {
     "@types/node": "^20.14.8",

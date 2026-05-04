@@ -52,5 +52,13 @@
     "jest-expo": "~52.0.0",
     "typescript": "~5.3.3"
   },
+  "pnpm": {
+    "overrides": {
+      "h3": "^1.15.9",
+      "undici": "^7.24.1",
+      "node-forge": "^1.4.0",
+      "@xmldom/xmldom": "^0.8.13"
+    }
+  },
   "private": true
 }
