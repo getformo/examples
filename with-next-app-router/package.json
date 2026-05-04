@@ -43,5 +43,13 @@
   },
   "dependencies": {
     "@formo/analytics": "^1.28.6"
+  },
+  "resolutions": {
+    "axios": "^1.15.1",
+    "lodash": "^4.18.1",
+    "h3": "^1.15.9",
+    "hono": "^4.12.14",
+    "undici": "^7.24.1",
+    "next": "~15.5.15"
   }
 }
