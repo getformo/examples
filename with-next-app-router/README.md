@@ -40,7 +40,7 @@ To test against a local SDK build, add a Yarn `resolutions` field to `package.js
 
 Then run `yarn install` to relink. After changing SDK source, rebuild (`npm run build` in the SDK repo) and the Next.js dev server will pick up changes via Fast Refresh.
 
-> **Note:** Do not commit the `resolutions` field — it uses an absolute local path that will break CI.
+> **Note:** Do not commit the `resolutions` field — it uses an absolute local path that will break CI. After testing, remove the resolution and run `yarn install` again to restore the registry version.
 
 ## Pages
 

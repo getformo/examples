@@ -42,7 +42,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-    "@formo/analytics": "^1.28.6"
+    "@formo/analytics": "^1.29.1"
   },
   "resolutions": {
     "axios": "^1.15.1",
@@ -51,7 +51,6 @@
     "hono": "^4.12.14",
     "undici": "^7.24.1",
     "next": "~15.5.15",
-    "elliptic": "^6.6.1",
-    "@formo/analytics": "portal:/Users/yos/sdk"
+    "elliptic": "^6.6.1"
   }
 }
