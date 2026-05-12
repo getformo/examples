@@ -1258,10 +1258,10 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@formo/analytics@^1.28.6":
-  version "1.28.6"
-  resolved "https://registry.npmjs.org/@formo/analytics/-/analytics-1.28.6.tgz"
-  integrity sha512-bBt3rtVtDt9zNqtv21rdXNDrl5oTRKniS0+C8MU2aeQRbiyyXtDIDe2mtBGj1mnPNhuZ1ke/IwSlBxXrEgLmpw==
+"@formo/analytics@^1.29.1":
+  version "1.29.1"
+  resolved "https://registry.npmjs.org/@formo/analytics/-/analytics-1.29.1.tgz"
+  integrity sha512-Zf4ihC1pKeOfjy3U1rdlf248ZYEzKG4kX9IPiISrHi+ZKtInfk9DkTK0WquaFvg4Nsg85r2fL3cxWGxzpZ6+/Q==
   dependencies:
     ethereum-cryptography "3.2.0"
     mipd "0.0.7"
