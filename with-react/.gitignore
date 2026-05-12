@@ -14,3 +14,12 @@ pnpm-debug.log*
 .vscode
 .idea
 .DS_Store
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.yarn/install-state.gz
+.pnp.*

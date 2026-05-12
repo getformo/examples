@@ -1125,9 +1125,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formo/analytics@npm:^1.28.6":
-  version: 1.28.6
-  resolution: "@formo/analytics@npm:1.28.6"
+"@formo/analytics@portal:/Users/yos/sdk::locator=se-2%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@formo/analytics@portal:/Users/yos/sdk::locator=se-2%40workspace%3A."
   dependencies:
     ethereum-cryptography: 3.2.0
     mipd: 0.0.7
@@ -1144,9 +1144,8 @@ __metadata:
       optional: true
     wagmi:
       optional: true
-  checksum: dd95a6deb5e4e77996f048816dadeadcca962dba3262e284edea3507e3c3ecbdcc2aa8fbbe8245f62134a6390228aad745fe91f5d08a229f5d2382fcc6a78568
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@gemini-wallet/core@npm:0.3.2":
   version: 0.3.2
