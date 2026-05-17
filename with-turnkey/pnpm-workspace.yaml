@@ -1,5 +1,10 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 minimumReleaseAge: 2880
+
+# Security: force patched transitive versions (Aikido CVE remediation).
+overrides:
+  'uuid@>=11.0.0 <11.1.1': 11.1.1
+  'next@>=15.0.0 <15.5.18': 15.5.18
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
