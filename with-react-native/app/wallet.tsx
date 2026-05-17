@@ -164,7 +164,6 @@ export default function WalletScreen() {
         chainId: baseSepolia.id,
         address: TEST_ADDRESS,
         message: "Test message for SDK testing",
-        signatureHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
       });
       addLog("SDK: signature events tracked");
     } catch (e: any) {
