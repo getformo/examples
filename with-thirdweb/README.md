@@ -45,10 +45,10 @@ A comprehensive example application demonstrating the integration of [Formo Anal
 
 3. **Configure environment variables**
    ```bash
-   cp .env.example .env.local
+   cp .env.example .env
    ```
    
-   Edit `.env.local` and add your API keys:
+   Edit `.env` and add your API keys:
    ```env
    NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_thirdweb_client_id_here
    NEXT_PUBLIC_FORMO_WRITE_KEY=your_formo_write_key_here

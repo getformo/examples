@@ -43,10 +43,10 @@ pnpm install
 Copy the example environment file:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Edit `.env.local` and add your Formo Analytics write key:
+Edit `.env` and add your Formo Analytics write key:
 
 ```env
 NEXT_PUBLIC_FORMO_WRITE_KEY=your_write_key_here
