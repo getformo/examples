@@ -58,6 +58,9 @@ jobs:
             with-react-native:
               - 'with-react-native/**'
               - '.github/workflows/build.yml'
+            with-solana:
+              - 'with-solana/**'
+              - '.github/workflows/build.yml'
 
       # Build the matrix from a static config, filtered to changed examples.
       # The matrix is consumed via `needs` (allowed in jobs.<id>.strategy);
@@ -80,7 +83,8 @@ jobs:
             {"name":"with-reown","dir":"with-reown","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-thirdweb","dir":"with-thirdweb","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22"}
+            {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22"},
+            {"name":"with-solana","dir":"with-solana","pm":"pnpm","build":"build","node":"22"}
           ]'
           MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" \
             '{include: [ $full[] | select(.name as $n | ($changed | index($n)) != null) ]}')
