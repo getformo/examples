@@ -117,13 +117,13 @@ jobs:
             dir: with-privy
             pm: pnpm
             build: build
-            node: 20
+            node: 22
 
           - name: with-reown
             dir: with-reown
             pm: pnpm
             build: build
-            node: 20
+            node: 22
 
           - name: with-thirdweb
             dir: with-thirdweb
@@ -141,7 +141,7 @@ jobs:
             dir: with-react-native
             pm: pnpm
             build: typecheck
-            node: 20
+            node: 22
 
           # with-solana: requires @formo/analytics@1.28.2 (not yet published)
 
@@ -158,7 +158,7 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
-          version: 9
+          version: 11
 
       - name: Install bun
         if: matrix.pm == 'bun'

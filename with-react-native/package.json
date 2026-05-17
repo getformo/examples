@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Example React Native app demonstrating Formo Analytics SDK",
   "main": "expo-router/entry",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",

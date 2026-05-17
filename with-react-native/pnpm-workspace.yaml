@@ -1,0 +1,11 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+nodeLinker: hoisted
+minimumReleaseAge: 2880
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+# Allow the build scripts these trusted deps need.
+allowBuilds:
+  bufferutil: true
+  keccak: true
+  unrs-resolver: true
+  utf-8-validate: true

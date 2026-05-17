@@ -1,0 +1,12 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+minimumReleaseAge: 2880
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+# Allow the build scripts these trusted deps need.
+allowBuilds:
+  '@reown/appkit': true
+  bufferutil: true
+  keccak: true
+  sharp: true
+  unrs-resolver: true
+  utf-8-validate: true
