@@ -37,7 +37,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-    "@formo/analytics": "^1.29.1"
+    "@formo/analytics": "^1.30.0"
   },
   "pnpm": {
     "overrides": {

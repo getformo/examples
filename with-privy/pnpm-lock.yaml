@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.29.1
-        version: 1.29.1(@tanstack/react-query@5.97.0(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)(typescript@5.9.3)(viem@2.47.12(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@3.6.1)
+        specifier: ^1.30.0
+        version: 1.30.0(@tanstack/react-query@5.97.0(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)(typescript@5.9.3)(viem@2.47.12(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@3.6.1)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.5)
@@ -200,8 +200,8 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@formo/analytics@1.29.1':
-    resolution: {integrity: sha512-Zf4ihC1pKeOfjy3U1rdlf248ZYEzKG4kX9IPiISrHi+ZKtInfk9DkTK0WquaFvg4Nsg85r2fL3cxWGxzpZ6+/Q==}
+  '@formo/analytics@1.30.0':
+    resolution: {integrity: sha512-7P4vI4WyjTW4/GVoNyhKWD/0Wt6tdp3zsEtNYuUlhwWajBED1lo1dfoq8P7XqfRpeXLSfq4apsyFuYzOCSfB0g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -4401,7 +4401,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@formo/analytics@1.29.1(@tanstack/react-query@5.97.0(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)(typescript@5.9.3)(viem@2.47.12(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@3.6.1)':
+  '@formo/analytics@1.30.0(@tanstack/react-query@5.97.0(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)(typescript@5.9.3)(viem@2.47.12(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@3.6.1)':
     dependencies:
       '@types/react': 19.2.14
       ethereum-cryptography: 3.2.0
