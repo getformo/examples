@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  ws@7.4.6: 7.5.10
+  ws@>=7.0.0 <7.5.10: 7.5.10
 
 importers:
 
