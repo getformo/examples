@@ -68,18 +68,18 @@ jobs:
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
           FULL='[
-            {"name":"with-react","dir":"with-react","pm":"yarn","build":"build","node":"20"},
-            {"name":"with-next-app-router","dir":"with-next-app-router","pm":"yarn-berry","build":"next:build","node":"20"},
-            {"name":"with-next-page-router","dir":"with-next-page-router","pm":"npm","build":"build","node":"20"},
-            {"name":"with-dynamic","dir":"with-dynamic","pm":"npm","build":"build","node":"20"},
-            {"name":"with-farcaster","dir":"with-farcaster","pm":"yarn","build":"build","node":"22"},
-            {"name":"with-metamask","dir":"with-metamask","pm":"npm","build":"build","node":"20"},
-            {"name":"with-porto","dir":"with-porto","pm":"bun","build":"build","node":"20"},
-            {"name":"with-tempo","dir":"with-tempo","pm":"npm","build":"build","node":"20"},
+            {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-next-app-router","dir":"with-next-app-router","pm":"pnpm","build":"next:build","node":"22"},
+            {"name":"with-next-page-router","dir":"with-next-page-router","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-dynamic","dir":"with-dynamic","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-farcaster","dir":"with-farcaster","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-metamask","dir":"with-metamask","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-porto","dir":"with-porto","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-tempo","dir":"with-tempo","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-privy","dir":"with-privy","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-reown","dir":"with-reown","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-thirdweb","dir":"with-thirdweb","pm":"npm-legacy-peer-deps","build":"build","node":"20"},
-            {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"npm","build":"build","node":"20"},
+            {"name":"with-thirdweb","dir":"with-thirdweb","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22"}
           ]'
           MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" \
