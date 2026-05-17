@@ -8,39 +8,72 @@ A [Scaffold-ETH 2](https://scaffoldeth.io) app wired up with `@formo/analytics` 
 ## Prerequisites
 
 - Node.js >= 18.18.0
-- Yarn (the repo pins yarn 3.2.3 via `packageManager`)
-- The SDK repo at `../sdk` (used via `portal:` resolution)
+- pnpm 11 (the repo pins `pnpm@11.1.2` via `packageManager`; `corepack enable` will pick it up)
+- For local SDK testing only: the [`@formo/analytics` SDK repo](https://github.com/getformo/sdk) cloned as a sibling of the `examples` repo so it resolves at `../../sdk` (see [SDK Linking](#sdk-linking-local-development))
 
 ## Quickstart
 
 ```bash
-# 1. Build the SDK
-cd ../sdk
-npm run build
-
-# 2. Install and start the example
-cd ../examples/with-next-app-router
-yarn install
-yarn start   # starts Next.js dev server on port 3002
+pnpm install
+pnpm start   # starts the Next.js dev server on port 3002
 ```
 
-Visit http://localhost:3002.
+Visit http://localhost:3002. This uses the published `@formo/analytics` from npm. To test against a local SDK build instead, see [SDK Linking](#sdk-linking-local-development) below.
 
 ## SDK Linking (local development)
 
-To test against a local SDK build, add a Yarn `resolutions` field to `package.json`:
+To run the example against a **local** SDK build instead of the published npm package, point the `@formo/analytics` dependency at your local SDK checkout using pnpm's `file:` protocol.
 
-```json
-{
-  "resolutions": {
-    "@formo/analytics": "portal:/path/to/sdk"
-  }
-}
-```
+1. Clone the SDK repo so it sits at `../../sdk` relative to this example (a sibling of the `examples` repo):
 
-Then run `yarn install` to relink. After changing SDK source, rebuild (`npm run build` in the SDK repo) and the Next.js dev server will pick up changes via Fast Refresh.
+   ```
+   your-code/
+   ├── examples/
+   │   └── with-next-app-router/   ← you are here
+   └── sdk/                        ← github.com/getformo/sdk
+   ```
 
-> **Note:** Do not commit the `resolutions` field — it uses an absolute local path that will break CI. After testing, remove the resolution and run `yarn install` again to restore the registry version.
+2. Build the SDK — the `file:` protocol consumes its `dist/`, not its source:
+
+   ```bash
+   cd ../../sdk
+   pnpm install
+   pnpm build
+   ```
+
+3. In this example's `package.json`, change the `@formo/analytics` dependency to the local path:
+
+   ```diff
+     "dependencies": {
+   -   "@formo/analytics": "^1.29.1"
+   +   "@formo/analytics": "file:../../sdk"
+     }
+   ```
+
+4. Re-install so pnpm relinks, then start the dev server:
+
+   ```bash
+   cd ../examples/with-next-app-router   # back to this example
+   pnpm install
+   pnpm start
+   ```
+
+After editing SDK source, rebuild it (`pnpm build` in `../../sdk`) and restart the dev server to pick up the new `dist/`.
+
+### Why `file:` and not `pnpm link`
+
+`pnpm link` (or a `link:` override) creates a **symlink**. The SDK's `peerDependencies` — `react`, `wagmi`, `viem`, `@tanstack/react-query`, `@types/react` — then resolve from `../../sdk/node_modules` instead of this project, so you load **two copies** of React and wagmi at once. That causes `Invalid hook call`, "must be used within `WagmiProvider`" errors, and a react-query cache that isn't shared. pnpm warns about exactly this:
+
+> The linked in dependency will not resolve the peer dependencies from the target node_modules. … To resolve this, you may use the "file:" protocol.
+
+The `file:` protocol resolves the SDK's peers from **this** project, keeping a single React/wagmi/viem instance.
+
+> **Note:** the `file:` change dirties `package.json` **and** `pnpm-lock.yaml` with a machine-specific path that will break CI. **Do not commit it.** Before committing, restore the registry version:
+>
+> ```bash
+> git checkout package.json pnpm-lock.yaml
+> pnpm install
+> ```
 
 ## Pages
 
@@ -70,7 +103,25 @@ The SDK is initialized in `packages/nextjs/components/ScaffoldEthAppWithProvider
 >
 ```
 
-Set `NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY` in a `.env` file to use a real write key.
+### Write key (`.env` location)
+
+Set your Formo project write key via the `NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY` env var. `ScaffoldEthAppWithProviders.tsx` reads it as `process.env.NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY` and passes it to `<AnalyticsProvider writeKey={...}>`.
+
+Copy `.env.example` to `.env` **at the example root** and fill in your key — same as every other example in this repo:
+
+```bash
+cp .env.example .env   # at with-next-app-router/ (the example root)
+# then edit .env:
+# NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY=<your real write key>
+```
+
+> **Why the example root, even though this is a pnpm workspace?**
+>
+> `pnpm start` runs `next dev` with its working directory set to `packages/nextjs/`, and Next.js natively only reads `.env*` from that directory — not the monorepo root. To keep env config in one obvious place (next to `.env.example`, matching the other examples), `packages/nextjs/next.config.js` explicitly loads the example-root `.env` via Next's own `@next/env` loader before `NEXT_PUBLIC_*` vars are inlined. So **put your key in `with-next-app-router/.env`**, not in `packages/nextjs/`.
+
+Env-file precedence at the example root (highest wins): `.env.local` → `.env.development` → `.env`. The root `.env` is gitignored.
+
+> **Restart the dev server after changing the key.** `NEXT_PUBLIC_*` values are inlined at server start, so a running `pnpm start` keeps serving the old value until restarted (then hard-reload the browser). A missing/invalid key makes the ingestion endpoint return `403 "...explicit deny in an identity-based policy"` (AWS) — see [Troubleshooting](#troubleshooting).
 
 ---
 
@@ -84,7 +135,7 @@ The `/cookies` page is a dedicated tool for verifying the `crossSubdomainCookies
 
 ### Test 1: Shared cookies (`crossSubdomainCookies: true`, the default)
 
-1. Start the dev server: `yarn start`
+1. Start the dev server: `pnpm start`
 2. Open http://app.lvh.me:3002/cookies
 3. Note the `anonymous-id` cookie value
 4. Open DevTools > Application > Cookies — confirm the cookie domain is `.lvh.me` (apex)
@@ -121,6 +172,24 @@ If `lvh.me` doesn't resolve (some corporate networks block it), add to `/etc/hos
 ```
 
 Then use `http://app.local.test:3002/cookies` and `http://www.local.test:3002/cookies`.
+
+---
+
+## Troubleshooting
+
+### `POST /api/events` → `403` `"User is not authorized to access this resource with an explicit deny in an identity-based policy"`
+
+Your write key is missing or invalid. The browser sends `Authorization: Bearer <writeKey>`; `/api/events` is rewritten (`next.config.js`) to `https://events.formo.so/v0/raw_events`, which is AWS-fronted and explicitly denies unrecognized keys with this IAM message (a *missing* key returns `401 Unauthorized` instead).
+
+Checklist:
+
+1. `NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY` is set to a **real** project key in `with-next-app-router/.env` (the example root — see [Write key](#write-key-env-location)). The default `ci_test_key` placeholder is rejected.
+2. You **restarted the dev server** after editing `.env` (`NEXT_PUBLIC_*` is inlined at server start) and hard-reloaded the browser.
+3. Confirm the running app picked it up: the browser console should log `[Formo SDK] Successfully initialized FormoAnalytics SDK` followed by `Events sent successfully`. No `[Formo SDK]` logs at all means the key is empty (provider skips init).
+
+### Unrelated console noise (safe to ignore)
+
+These come from the Scaffold-ETH base app / wallet libraries, not Formo: `eth.merkle.io` CORS / `ERR_FAILED` (Uniswap ETH-price hook), `logo.svg 404`, `@metamask/sdk` `@react-native-async-storage/async-storage` not found, `WalletConnect Core is already initialized`, `Lit is in dev mode`.
 
 ---
 

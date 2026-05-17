@@ -43,10 +43,10 @@ npm install
 
 3. Set up environment variables:
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-4. Edit `.env.local` and add your configuration:
+4. Edit `.env` and add your configuration:
 ```env
 NEXT_PUBLIC_FORMO_WRITE_KEY=your_formo_write_key_here
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
@@ -68,7 +68,7 @@ To get your Formo write key:
 1. Sign up at [formo.so](https://formo.so)
 2. Create a new project
 3. Go to your project settings and copy the **SDK Write Key**
-4. Add it to your `.env.local` file as `NEXT_PUBLIC_FORMO_WRITE_KEY`
+4. Add it to your `.env` file as `NEXT_PUBLIC_FORMO_WRITE_KEY`
 
 **Important**: The SDK is configured with debug logging enabled. You should see:
 - "Formo SDK loaded successfully" in the console
@@ -83,7 +83,7 @@ For WalletConnect support:
 
 1. Create a project at [WalletConnect Cloud](https://cloud.walletconnect.com)
 2. Get your project ID
-3. Add it to your `.env.local` file
+3. Add it to your `.env` file
 
 If not provided, the app will use a demo project ID with limited functionality.
 

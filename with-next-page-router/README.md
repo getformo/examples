@@ -61,10 +61,10 @@ bun install
 
 - Set up Environment Variables:
 
-Copy the .env.example file to .env.local and update the variables as needed:
+Copy the .env.example file to .env and update the variables as needed:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 - Start the development server:
