@@ -1,5 +1,9 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 minimumReleaseAge: 2880
+
+# Security: force patched transitive versions (Aikido CVE remediation).
+overrides:
+  socket.io-parser@<4.2.6: 4.2.6
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
