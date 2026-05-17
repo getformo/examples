@@ -1,0 +1,20 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+minimumReleaseAge: 2880
+# Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
+blockExoticSubdeps: true
+nodeLinker: hoisted
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+allowBuilds:
+  "@reown/appkit": true
+  sharp: true
+  keccak: true
+  secp256k1: true
+  bufferutil: true
+  utf-8-validate: true
+  unrs-resolver: true
+  esbuild: true
+  core-js: true
+  core-js-pure: true
+  es5-ext: true
+  protobufjs: true

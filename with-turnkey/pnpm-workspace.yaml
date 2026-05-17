@@ -1,0 +1,10 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+minimumReleaseAge: 2880
+# Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
+blockExoticSubdeps: true
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+# Allow the build scripts these trusted deps need.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

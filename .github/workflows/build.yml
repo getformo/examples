@@ -10,7 +10,8 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      examples: ${{ steps.filter.outputs.changes }}
+      matrix: ${{ steps.set.outputs.matrix }}
+      any: ${{ steps.set.outputs.any }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
@@ -57,96 +58,48 @@ jobs:
             with-react-native:
               - 'with-react-native/**'
               - '.github/workflows/build.yml'
+            with-solana:
+              - 'with-solana/**'
+              - '.github/workflows/build.yml'
+
+      # Build the matrix from a static config, filtered to changed examples.
+      # The matrix is consumed via `needs` (allowed in jobs.<id>.strategy);
+      # `matrix` itself is NOT available in jobs.<id>.if, so gating happens
+      # here by emitting only the changed entries.
+      - id: set
+        env:
+          CHANGED: ${{ steps.filter.outputs.changes }}
+        run: |
+          FULL='[
+            {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-next-app-router","dir":"with-next-app-router","pm":"pnpm","build":"next:build","node":"22"},
+            {"name":"with-next-page-router","dir":"with-next-page-router","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-dynamic","dir":"with-dynamic","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-farcaster","dir":"with-farcaster","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-metamask","dir":"with-metamask","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-porto","dir":"with-porto","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-tempo","dir":"with-tempo","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-privy","dir":"with-privy","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-reown","dir":"with-reown","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-thirdweb","dir":"with-thirdweb","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22"},
+            {"name":"with-solana","dir":"with-solana","pm":"pnpm","build":"build","node":"22"}
+          ]'
+          MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" \
+            '{include: [ $full[] | select(.name as $n | ($changed | index($n)) != null) ]}')
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "any=$(jq -n --argjson m "$MATRIX" '($m.include | length) > 0')" >> "$GITHUB_OUTPUT"
+          echo "Selected: $MATRIX"
 
   build:
     needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: with-react
-            dir: with-react
-            pm: yarn
-            build: build
-            node: 20
-
-          - name: with-next-app-router
-            dir: with-next-app-router
-            pm: yarn-berry
-            build: next:build
-            node: 20
-
-          - name: with-next-page-router
-            dir: with-next-page-router
-            pm: npm
-            build: build
-            node: 20
-
-          - name: with-dynamic
-            dir: with-dynamic
-            pm: npm
-            build: build
-            node: 20
-
-          - name: with-farcaster
-            dir: with-farcaster
-            pm: yarn
-            build: build
-            node: 22
-
-          - name: with-metamask
-            dir: with-metamask
-            pm: npm
-            build: build
-            node: 20
-
-          - name: with-porto
-            dir: with-porto
-            pm: bun
-            build: build
-            node: 20
-
-          - name: with-tempo
-            dir: with-tempo
-            pm: npm
-            build: build
-            node: 20
-
-          - name: with-privy
-            dir: with-privy
-            pm: pnpm
-            build: build
-            node: 20
-
-          - name: with-reown
-            dir: with-reown
-            pm: pnpm
-            build: build
-            node: 20
-
-          - name: with-thirdweb
-            dir: with-thirdweb
-            pm: npm-legacy-peer-deps
-            build: build
-            node: 20
-
-          - name: with-web3-onboard
-            dir: with-web3-onboard
-            pm: npm
-            build: build
-            node: 20
-
-          - name: with-react-native
-            dir: with-react-native
-            pm: pnpm
-            build: typecheck
-            node: 20
-
-          # with-solana: requires @formo/analytics@1.28.2 (not yet published)
-
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
     name: ${{ matrix.name }}
-    if: contains(fromJSON(needs.changes.outputs.examples), matrix.name)
     steps:
       - uses: actions/checkout@v4
 
@@ -158,7 +111,7 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
-          version: 9
+          version: 11
 
       - name: Install bun
         if: matrix.pm == 'bun'

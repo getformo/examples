@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Example React Native app demonstrating Formo Analytics SDK",
   "main": "expo-router/entry",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -19,7 +20,7 @@
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@tanstack/react-query": "^5.90.20",
     "@wagmi/connectors": "5.7.7",
-    "@wagmi/core": "2.13.0",
+    "@wagmi/core": "2.16.4",
     "@walletconnect/react-native-compat": "^2.23.4",
     "ethereum-cryptography": "3.2.0",
     "expo": "~52.0.0",
@@ -57,7 +58,8 @@
       "h3": "^1.15.9",
       "undici": "^7.24.1",
       "node-forge": "^1.4.0",
-      "@xmldom/xmldom": "^0.8.13"
+      "@xmldom/xmldom": "^0.8.13",
+      "@wagmi/core": "2.16.4"
     }
   },
   "private": true

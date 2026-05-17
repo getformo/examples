@@ -39,11 +39,11 @@ export function SignTypedData() {
     () => ({
       from: {
         name: "Alice",
-        wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+        wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826" as `0x${string}`,
       },
       to: {
         name: "Bob",
-        wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+        wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB" as `0x${string}`,
       },
       content: messageContent,
     }),
