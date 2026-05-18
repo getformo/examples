@@ -9,8 +9,9 @@ process.loadEnvFile();
 const app = express();
 app.use(express.json());
 
-// Custom CORS options
-app.use(cors());
+// Restrict CORS to the configured frontend origin (defaults to localhost dev server).
+const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
+app.use(cors({ origin: allowedOrigin }));
 
 // Ensure Openfort is only initialized once
 if (!process.env.OPENFORT_SECRET_KEY) {

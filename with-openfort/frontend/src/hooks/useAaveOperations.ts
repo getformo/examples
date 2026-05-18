@@ -90,21 +90,25 @@ export function useAaveOperations(
       } else {
         try {
           if (publicClient) {
-            await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            if (receipt.status === "success") {
+              // Track a custom Formo event on a successful Aave supply.
+              formo?.track("aave_supply", {
+                asset: "USDC",
+                amount: "0.1",
+                market: usdcReserve.marketAddress,
+                chainId: usdcReserve.chainId,
+                txHash: transactionResult.value,
+              });
+              await refetchUsdcBalance();
+              await refreshUserSupplies();
+            } else {
+              console.error("Supply transaction reverted on-chain");
+            }
           }
         } catch (receiptError) {
           console.error("Waiting for transaction receipt failed:", receiptError);
         }
-        // Track a custom Formo event on a successful Aave supply.
-        formo?.track("aave_supply", {
-          asset: "USDC",
-          amount: "0.1",
-          market: usdcReserve.marketAddress,
-          chainId: usdcReserve.chainId,
-          txHash: transactionResult.value,
-        });
-        await refetchUsdcBalance();
-        await refreshUserSupplies();
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -163,21 +167,25 @@ export function useAaveOperations(
       } else {
         try {
           if (publicClient) {
-            await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            if (receipt.status === "success") {
+              // Track a custom Formo event on a successful Aave withdrawal.
+              formo?.track("aave_withdraw", {
+                asset: "USDC",
+                amount: usdcSupplyData.rawBalance,
+                market: usdcReserve.marketAddress,
+                chainId: usdcReserve.chainId,
+                txHash: transactionResult.value,
+              });
+              await refetchUsdcBalance();
+              await refreshUserSupplies();
+            } else {
+              console.error("Withdraw transaction reverted on-chain");
+            }
           }
         } catch (receiptError) {
           console.error("Waiting for transaction receipt failed:", receiptError);
         }
-        // Track a custom Formo event on a successful Aave withdrawal.
-        formo?.track("aave_withdraw", {
-          asset: "USDC",
-          amount: usdcSupplyData.rawBalance,
-          market: usdcReserve.marketAddress,
-          chainId: usdcReserve.chainId,
-          txHash: transactionResult.value,
-        });
-        await refetchUsdcBalance();
-        await refreshUserSupplies();
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);

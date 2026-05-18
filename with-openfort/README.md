@@ -105,6 +105,7 @@ Visit `http://localhost:5173` to see the app.
 | `SHIELD_SECRET_KEY` | Openfort Shield secret key | Yes |
 | `SHIELD_ENCRYPTION_SHARE` | Openfort Shield encryption share | Yes |
 | `PORT` | Port the backend listens on (defaults to `3000`) | No |
+| `ALLOWED_ORIGIN` | Frontend origin allowed to call this backend (defaults to `http://localhost:5173`) | No |
 
 ## How It Works
 
