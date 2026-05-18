@@ -17,6 +17,7 @@ Check out the [SDK docs](https://docs.formo.so/sdks/web) for full installation i
 - [with-reown](./with-reown) - Next.js with Reown AppKit (WalletConnect)
 - [with-porto](./with-porto) - Next.js with Porto wallet
 - [with-tempo](./with-tempo) - Next.js with Tempo Accounts wallet
+- [with-openfort](./with-openfort) - Vite + React with Openfort embedded wallets (Shield) and Aave, plus an Express backend for Shield encryption sessions
 
 ## Blockchain Platforms
 
