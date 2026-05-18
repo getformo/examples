@@ -1,0 +1,212 @@
+import { useState } from 'react';
+import { useSupply, useWithdraw, evmAddress, bigDecimal } from "@aave/react";
+import { useSendTransaction } from "@aave/react/viem";
+import { useWalletClient, usePublicClient } from "wagmi";
+import { useFormo } from "@formo/analytics";
+
+interface UsdcReserve {
+  marketAddress: string;
+  currencyAddress: string;
+  chainId: number;
+  supplyCapReached: boolean;
+}
+
+interface UsdcSupplyData {
+  rawBalance: string;
+  apy: string;
+}
+
+export function useAaveOperations(
+  usdcReserve: UsdcReserve | null,
+  usdcSupplyData: UsdcSupplyData,
+  refetchUsdcBalance: () => Promise<unknown>,
+  refreshUserSupplies: () => Promise<void>,
+) {
+  const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
+  const formo = useFormo();
+  const [supply, supplying] = useSupply();
+  const [withdraw, withdrawing] = useWithdraw();
+  const [sendTransaction, sending] = useSendTransaction(walletClient);
+  const [isSupplying, setIsSupplying] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [supplyError, setSupplyError] = useState<string | null>(null);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
+
+  const handleDepositToAave = async () => {
+    if (!walletClient || !walletClient.account?.address || !usdcReserve) {
+      console.error("Missing requirements:", { walletClient: !!walletClient, address: !!walletClient?.account?.address, usdcReserve: !!usdcReserve });
+      return;
+    }
+    setIsSupplying(true);
+    setSupplyError(null);
+    try {
+      const supplyResult = await supply({
+        market: evmAddress(usdcReserve.marketAddress),
+        amount: {
+          erc20: {
+            currency: evmAddress(usdcReserve.currencyAddress),
+            value: bigDecimal(0.1), // 0.1 USDC
+          },
+        },
+        sender: evmAddress(walletClient.account.address),
+        chainId: usdcReserve.chainId,
+      });
+
+      if (supplyResult.isErr()) {
+        console.error("Supply preparation failed:", supplyResult.error);
+        setIsSupplying(false);
+        return;
+      }
+      const plan = supplyResult.value;
+      let transactionResult;
+      switch (plan.__typename) {
+        case "TransactionRequest":
+          transactionResult = await sendTransaction(plan);
+          break;
+        case "ApprovalRequired": {
+          const approvalResult = await sendTransaction(plan.approval);
+          if (approvalResult.isErr()) {
+            console.error("Approval failed:", approvalResult.error);
+            setIsSupplying(false);
+            return;
+          }
+          if (publicClient) {
+            await publicClient.waitForTransactionReceipt({ hash: approvalResult.value });
+          }
+          transactionResult = await sendTransaction(plan.originalTransaction);
+          break;
+        }
+        case "InsufficientBalanceError":
+          setIsSupplying(false);
+          return;
+        default:
+          console.error("Unknown plan type:", plan);
+          setIsSupplying(false);
+          return;
+      }
+      if (transactionResult.isErr()) {
+        console.error("Transaction failed:", transactionResult.error);
+      } else {
+        try {
+          if (publicClient) {
+            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            if (receipt.status === "success") {
+              // Track a custom Formo event on a successful Aave supply.
+              formo?.track("aave_supply", {
+                asset: "USDC",
+                amount: "0.1",
+                market: usdcReserve.marketAddress,
+                chainId: usdcReserve.chainId,
+                txHash: transactionResult.value,
+              });
+              await refetchUsdcBalance();
+              await refreshUserSupplies();
+            } else {
+              console.error("Supply transaction reverted on-chain");
+            }
+          }
+        } catch (receiptError) {
+          console.error("Waiting for transaction receipt failed:", receiptError);
+        }
+      }
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      const match = msg.match(/\[GraphQL\] Bad user input - (.+)/)
+      setSupplyError(match ? match[1] : msg);
+    } finally {
+      setIsSupplying(false);
+    }
+  };
+
+  const handleWithdrawFromAave = async () => {
+    if (!walletClient || !walletClient.account?.address || !usdcReserve) {
+      console.error("Missing requirements:", { walletClient: !!walletClient, address: !!walletClient?.account?.address, usdcReserve: !!usdcReserve });
+      return;
+    }
+    if (!usdcSupplyData.rawBalance || parseFloat(usdcSupplyData.rawBalance) === 0) {
+      console.error("No USDC supply to withdraw");
+      return;
+    }
+    setIsWithdrawing(true);
+    setWithdrawError(null);
+    try {
+      const withdrawResult = await withdraw({
+        market: evmAddress(usdcReserve.marketAddress),
+        amount: {
+          erc20: {
+            currency: evmAddress(usdcReserve.currencyAddress),
+            value: { max: true },  // Withdraw maximum available balance
+          },
+        },
+        sender: evmAddress(walletClient.account.address),
+        chainId: usdcReserve.chainId,
+      });
+      if (withdrawResult.isErr()) {
+        console.error("Withdraw preparation failed:", withdrawResult.error);
+        setIsWithdrawing(false);
+        return;
+      }
+      const plan = withdrawResult.value;
+      let transactionResult;
+      switch (plan.__typename) {
+        case "TransactionRequest":
+          transactionResult = await sendTransaction(plan);
+          break;
+        case "InsufficientBalanceError":
+          console.error(`Insufficient balance: ${plan.required.value} required.`);
+          setIsWithdrawing(false);
+          return;
+        default:
+          console.error("Unknown plan type:", plan);
+          setIsWithdrawing(false);
+          return;
+      }
+      if (transactionResult.isErr()) {
+        console.error("Withdraw transaction failed:", transactionResult.error);
+      } else {
+        try {
+          if (publicClient) {
+            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
+            if (receipt.status === "success") {
+              // Track a custom Formo event on a successful Aave withdrawal.
+              formo?.track("aave_withdraw", {
+                asset: "USDC",
+                amount: usdcSupplyData.rawBalance,
+                market: usdcReserve.marketAddress,
+                chainId: usdcReserve.chainId,
+                txHash: transactionResult.value,
+              });
+              await refetchUsdcBalance();
+              await refreshUserSupplies();
+            } else {
+              console.error("Withdraw transaction reverted on-chain");
+            }
+          }
+        } catch (receiptError) {
+          console.error("Waiting for transaction receipt failed:", receiptError);
+        }
+      }
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      const match = msg.match(/\[GraphQL\] Bad user input - (.+)/)
+      setWithdrawError(match ? match[1] : msg);
+    } finally {
+      setIsWithdrawing(false);
+    }
+  };
+
+  const isLoading = supplying.loading || sending.loading || isSupplying || withdrawing.loading || isWithdrawing;
+
+  return {
+    handleDepositToAave,
+    handleWithdrawFromAave,
+    isLoading,
+    isSupplying,
+    isWithdrawing,
+    supplying,
+    withdrawing,
+    supplyError,
+    withdrawError,
+  };
+}
