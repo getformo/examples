@@ -4,8 +4,24 @@ import { useSendTransaction } from "@aave/react/viem";
 import { useWalletClient, usePublicClient } from "wagmi";
 import { useFormo } from "@formo/analytics";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Aave SDK objects from the upstream recipe, loosely typed
-export function useAaveOperations(usdcReserve: any, usdcSupplyData: any, refetchUsdcBalance: any, refreshUserSupplies: any) {
+interface UsdcReserve {
+  marketAddress: string;
+  currencyAddress: string;
+  chainId: number;
+  supplyCapReached: boolean;
+}
+
+interface UsdcSupplyData {
+  rawBalance: string;
+  apy: string;
+}
+
+export function useAaveOperations(
+  usdcReserve: UsdcReserve | null,
+  usdcSupplyData: UsdcSupplyData,
+  refetchUsdcBalance: () => Promise<unknown>,
+  refreshUserSupplies: () => Promise<void>,
+) {
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const formo = useFormo();
@@ -54,6 +70,9 @@ export function useAaveOperations(usdcReserve: any, usdcSupplyData: any, refetch
             console.error("Approval failed:", approvalResult.error);
             setIsSupplying(false);
             return;
+          }
+          if (publicClient) {
+            await publicClient.waitForTransactionReceipt({ hash: approvalResult.value });
           }
           transactionResult = await sendTransaction(plan.originalTransaction);
           break;
