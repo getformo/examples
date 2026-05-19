@@ -137,7 +137,7 @@ export class WalletService {
     const provider = this.requireProvider();
 
     provider.on('accountsChanged', (accounts) => {
-      this.setAddress((accounts as Address[])[0] ?? null);
+      this.setAddress(accounts[0] ?? null);
     });
     provider.on('chainChanged', (chainIdHex) => {
       this.chainId.set(Number.parseInt(chainIdHex, 16));
