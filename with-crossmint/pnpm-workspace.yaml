@@ -1,0 +1,18 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+# Having this file also makes this example its own isolated workspace root.
+minimumReleaseAge: 2880
+# Allow freshly published Formo SDK releases through the release-age gate.
+minimumReleaseAgeExclude:
+  - '@formo/analytics'
+# Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
+blockExoticSubdeps: true
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+# Allow the build scripts these trusted deps need.
+allowBuilds:
+  '@tailwindcss/oxide': true
+  bigint-buffer: true
+  bufferutil: true
+  sharp: true
+  unrs-resolver: true
+  utf-8-validate: true

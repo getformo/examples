@@ -1,0 +1,32 @@
+{
+  "name": "formo-example-crossmint",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.1.2",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@crossmint/client-sdk-react-ui": "4.2.0",
+    "@formo/analytics": "^1.30.0",
+    "clsx": "^2.1.1",
+    "next": "^15.5.18",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-transition-group": "^4.4.5",
+    "tailwind-merge": "^3.0.2",
+    "tw-animate-css": "^1.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-transition-group": "^4.4.12",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
