@@ -14,6 +14,7 @@ export function TransferFunds() {
   const [amountInput, setAmountInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [explorerLink, setExplorerLink] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleOnTransfer() {
     if (wallet == null || recipient == null || amount == null) {
@@ -23,6 +24,7 @@ export function TransferFunds() {
 
     try {
       setIsLoading(true);
+      setError(null);
 
       // Formo: the transaction has started.
       formo?.transaction({
@@ -65,7 +67,9 @@ export function TransferFunds() {
       } else {
         // Operational failure (network, sponsorship, validation) — not a user
         // rejection. We don't emit REJECTED here so analytics stay accurate.
-        alert("Transfer: " + err);
+        const message =
+          err instanceof Error ? err.message : "Transfer failed. Please try again.";
+        setError(message);
       }
     } finally {
       setIsLoading(false);
@@ -150,6 +154,11 @@ export function TransferFunds() {
           >
             → View transaction
           </a>
+        )}
+
+        {/* Error Message */}
+        {error && !isLoading && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
         )}
       </div>
     </div>

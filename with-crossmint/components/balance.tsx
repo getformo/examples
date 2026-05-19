@@ -9,6 +9,7 @@ export function WalletBalance() {
   const { wallet } = useWallet();
   const [balances, setBalances] = useState<Balances | null>(null);
   const [isFunding, setIsFunding] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchBalances() {
@@ -16,9 +17,10 @@ export function WalletBalance() {
       try {
         const balances = await wallet.balances(["usdxm"]);
         setBalances(balances);
+        setError(null);
       } catch (error) {
         console.error("Error fetching wallet balances:", error);
-        alert("Error fetching wallet balances: " + error);
+        setError("Failed to fetch balance. Please refresh.");
       }
     }
     fetchBalances();
@@ -53,7 +55,8 @@ export function WalletBalance() {
         };
       });
     } catch (error) {
-      alert(`Error getting test USDXM: ${error}`);
+      console.error("Error getting test USDXM:", error);
+      setError("Failed to add funds. Please try again.");
     } finally {
       setIsFunding(false);
     }
@@ -100,6 +103,9 @@ export function WalletBalance() {
           Refresh the page after transferring. Balance may take a few seconds to
           update.
         </p>
+        {error && (
+          <p className="text-red-500 text-xs text-center">{error}</p>
+        )}
       </div>
     </div>
   );

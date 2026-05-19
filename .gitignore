@@ -78,3 +78,7 @@ next-env.d.ts
 # IDE
 .vscode
 .idea
+
+# agents
+.claude/
+.agents/

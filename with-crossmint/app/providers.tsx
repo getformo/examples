@@ -7,11 +7,20 @@ import {
 } from "@crossmint/client-sdk-react-ui";
 import { FormoAnalyticsProvider } from "@formo/analytics";
 import { FormoCrossmintBridge } from "@/components/formo-bridge";
+import { SUPPORTED_CHAINS, type SupportedChain } from "@/lib/chain";
 
-// Cast to the Crossmint chain literal type. The matching numeric chain ID
-// (84532) lives in lib/chain.ts and is used for Formo events — keep them in
-// sync when changing chains.
-const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "base-sepolia") as "base-sepolia";
+// Validate NEXT_PUBLIC_CHAIN against the supported list so mis-configurations
+// surface immediately rather than silently creating wallets on the wrong chain.
+const rawChain = process.env.NEXT_PUBLIC_CHAIN ?? "base-sepolia";
+const chain: SupportedChain =
+  rawChain in SUPPORTED_CHAINS
+    ? (rawChain as SupportedChain)
+    : (() => {
+        throw new Error(
+          `[with-crossmint] Unsupported chain: "${rawChain}". ` +
+            `Supported values: ${Object.keys(SUPPORTED_CHAINS).join(", ")}`,
+        );
+      })();
 
 const customAppearance = {
   colors: {
@@ -31,8 +40,8 @@ function ConfigError() {
           Configuration required
         </h2>
         <p className="mt-2 text-sm text-gray-600">
-          Set <code className="font-mono">NEXT_PUBLIC_CROSSMINT_API_KEY</code> in
-          a <code className="font-mono">.env</code> file. Copy{" "}
+          Set <code className="font-mono">NEXT_PUBLIC_CROSSMINT_API_KEY</code>{" "}
+          in a <code className="font-mono">.env</code> file. Copy{" "}
           <code className="font-mono">.env.example</code> and add your keys.
         </p>
       </div>
@@ -88,7 +97,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   if (!formoWriteKey) {
     if (typeof window !== "undefined") {
       console.warn(
-        "[with-crossmint] NEXT_PUBLIC_FORMO_WRITE_KEY is not set — Formo Analytics is disabled."
+        "[with-crossmint] NEXT_PUBLIC_FORMO_WRITE_KEY is not set — Formo Analytics is disabled.",
       );
     }
     return crossmintTree;

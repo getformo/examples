@@ -1,12 +1,26 @@
 /**
- * The chain this example's Crossmint embedded wallet is created on.
+ * Chains this example supports, mapped to their numeric EVM chain IDs.
  *
- * It must match `NEXT_PUBLIC_CHAIN` in your `.env` (default: `base-sepolia`).
- * Crossmint's wallet object exposes the chain as a string (`wallet.chain`),
- * but Formo Analytics events expect a numeric EVM chain ID — so we keep the
- * mapping in one place here.
+ * Keys must be valid Crossmint `EVMSmartWalletChain` values — see:
+ * https://docs.crossmint.com/introduction/supported-chains
+ *
+ * Set `NEXT_PUBLIC_CHAIN` in your `.env` to one of these keys (default:
+ * `base-sepolia`). The matching `CHAIN_ID` is used for all Formo event
+ * payloads.
  */
-export const CHAIN_NAME = "base-sepolia";
+export const SUPPORTED_CHAINS = {
+  "base-sepolia": 84532,
+  base: 8453,
+  polygon: 137,
+  optimism: 10,
+} as const satisfies Record<string, number>;
 
-/** Base Sepolia testnet chain ID. */
-export const CHAIN_ID = 84532;
+export type SupportedChain = keyof typeof SUPPORTED_CHAINS;
+
+/** The chain this example is configured to use (from NEXT_PUBLIC_CHAIN). */
+export const CHAIN_NAME: SupportedChain =
+  (process.env.NEXT_PUBLIC_CHAIN ?? "base-sepolia") as SupportedChain;
+
+/** Numeric EVM chain ID for Formo events. Falls back to Base Sepolia. */
+export const CHAIN_ID: number =
+  SUPPORTED_CHAINS[CHAIN_NAME] ?? SUPPORTED_CHAINS["base-sepolia"];

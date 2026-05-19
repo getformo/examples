@@ -71,7 +71,7 @@ export function Activity() {
         ) : transfers?.data && transfers.data.length > 0 ? (
           <div className="flex-1 overflow-hidden">
             <div className="max-h-[378px] overflow-y-auto space-y-3">
-              {transfers.data.map((tx: any, index: number) => {
+              {transfers.data.map((tx, index) => {
                 const isIncoming = tx.type === "wallets.transfer.in";
                 return (
                   <div
