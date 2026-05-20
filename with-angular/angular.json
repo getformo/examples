@@ -27,7 +27,7 @@
               }
             ],
             "styles": ["src/styles.css"],
-            "allowedCommonJsDependencies": ["react", "react/jsx-runtime", "react-dom", "viem"]
+            "allowedCommonJsDependencies": ["viem"]
           },
           "configurations": {
             "production": {

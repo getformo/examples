@@ -94,9 +94,10 @@ with-angular/
 
 ### 1. The SDK core in an Angular service
 
-`FormoAnalyticsService` wraps the framework-agnostic `FormoAnalytics.init()`
-and exposes `identify()` / `track()` to the rest of the app. The SDK is
-browser-only, so `init()` no-ops if `window` is unavailable (SSR/prerender).
+`FormoAnalyticsService` wraps the SDK's `FormoAnalytics.init()` core
+(imported from `@formo/analytics/core`) and exposes `identify()` / `track()`
+to the rest of the app. The SDK is browser-only, so `init()` no-ops if
+`window` is unavailable.
 
 ### 2. Initialize before bootstrap
 
@@ -158,21 +159,12 @@ rejected.
 
 ## Notes on SDK compatibility
 
-A couple of rough edges show up when using `@formo/analytics` outside a
-Webpack-based toolchain (it has so far been used mainly with Next.js / CRA):
-
-- **Node `Buffer` polyfill.** The SDK decodes signed-message payloads with
-  Node's `Buffer`. Webpack auto-polyfills Node globals; Angular's esbuild build
-  does not, so without a polyfill signing throws `ReferenceError: Buffer is not
-  defined`. [`src/polyfills.ts`](src/polyfills.ts) exposes `Buffer` globally and
-  is wired in via the `polyfills` option in `angular.json`.
-- **React in the bundle.** The SDK's single entrypoint also re-exports its
-  React provider, so a small amount of React is pulled in even though this
-  example never uses it. It is harmless (the React code path never runs); the
-  `allowedCommonJsDependencies` entry in `angular.json` silences the related
-  build warnings.
-
-Both would go away with a React-free, browser-native SDK entrypoint.
+`@formo/analytics` decodes signed-message payloads with Node's `Buffer`.
+Webpack auto-polyfills Node globals; Angular's esbuild build does not, so
+without a polyfill signing throws `ReferenceError: Buffer is not defined`.
+[`src/polyfills.ts`](src/polyfills.ts) exposes `Buffer` globally and is wired
+in via the `polyfills` option in `angular.json`. A browser-native decode in
+the SDK (`TextDecoder` instead of `Buffer.from`) would let this go away.
 
 ## Building
 

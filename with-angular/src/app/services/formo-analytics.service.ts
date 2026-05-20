@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FormoAnalytics } from '@formo/analytics';
-import type { IFormoAnalytics, IFormoEventProperties } from '@formo/analytics';
+import { FormoAnalytics } from '@formo/analytics/core';
+import type { IFormoAnalytics, IFormoEventProperties } from '@formo/analytics/core';
 
 /**
  * Thin singleton wrapper around the framework-agnostic Formo Web SDK.
