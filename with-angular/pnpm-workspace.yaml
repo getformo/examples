@@ -1,5 +1,5 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
-minimumReleaseAge: 2880
+minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
   - "@formo/analytics"
