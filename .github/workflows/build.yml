@@ -86,7 +86,7 @@ jobs:
             {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-next-app-router","dir":"with-next-app-router","pm":"pnpm","build":"next:build","node":"22"},
             {"name":"with-next-page-router","dir":"with-next-page-router","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-dynamic","dir":"with-dynamic","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-dynamic","dir":"with-dynamic","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-farcaster","dir":"with-farcaster","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-metamask","dir":"with-metamask","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-porto","dir":"with-porto","pm":"pnpm","build":"build","node":"22"},
@@ -95,10 +95,10 @@ jobs:
             {"name":"with-reown","dir":"with-reown","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-thirdweb","dir":"with-thirdweb","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22"},
+            {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22","audit":"critical"},
             {"name":"with-solana","dir":"with-solana","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-angular","dir":"with-angular","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-crossmint","dir":"with-crossmint","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-crossmint","dir":"with-crossmint","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-openfort","dir":"with-openfort/frontend","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-turnkey","dir":"with-turnkey","pm":"pnpm","build":"build","node":"22"}
           ]'
@@ -206,8 +206,14 @@ jobs:
         with:
           version: 11
 
-      - name: Audit production dependencies (high+)
+      - name: Audit production dependencies
         if: matrix.pm == 'pnpm'
         working-directory: ${{ matrix.dir }}
         shell: bash
-        run: pnpm audit --prod --audit-level=high
+        env:
+          # Default gate is `high`. Specific examples carry their own
+          # `audit` value in the matrix when their dep tree has known
+          # unfixable transitive findings (e.g. bigint-buffer has no
+          # patched upstream release yet).
+          AUDIT_LEVEL: ${{ matrix.audit || 'high' }}
+        run: pnpm audit --prod --audit-level=$AUDIT_LEVEL

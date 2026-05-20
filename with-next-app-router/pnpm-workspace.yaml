@@ -7,6 +7,7 @@ minimumReleaseAge: 10080
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
   'ws@>=7.0.0 <7.5.10': 7.5.10
+  'elliptic@<=6.6.0': 6.6.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 nodeLinker: hoisted

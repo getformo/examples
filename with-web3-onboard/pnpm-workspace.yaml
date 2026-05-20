@@ -1,5 +1,10 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+
+# Security: force patched transitive versions (Aikido CVE remediation).
 minimumReleaseAge: 10080
+overrides:
+  'crypto-es@<2.1.0': 2.1.0
+  'ws@>=8.0.0 <8.17.1': 8.17.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
