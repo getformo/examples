@@ -7,6 +7,7 @@ Check out the [SDK docs](https://docs.formo.so/sdks/web) for full installation i
 ## Web Frameworks
 
 - [with-react](./with-react) - React (Create React App) app
+- [with-angular](./with-angular) - Angular app using the non-React SDK core with a bare EIP-1193 wallet
 - [with-next-app-router](./with-next-app-router) - Next.js with App Router
 - [with-next-page-router](./with-next-page-router) - Next.js with Pages Router
 
