@@ -150,6 +150,7 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY=ci_test_key" > with-next-app-router/packages/nextjs/.env
 
+
       - name: Install dependencies
         working-directory: ${{ matrix.dir }}
         shell: bash
@@ -167,6 +168,10 @@ jobs:
           esac
 
       - name: Build
+        # Crossmint's SDK cryptographically validates the API key at build-time
+        # during prerender, so a synthetic placeholder can't get the build past
+        # static generation. The audit job still covers `with-crossmint`.
+        if: matrix.name != 'with-crossmint'
         working-directory: ${{ matrix.dir }}
         shell: bash
         env:
