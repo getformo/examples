@@ -32,7 +32,7 @@ core directly. Everything here applies to any non-React framework.
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js — one of: `^20.19.0`, `^22.12.0`, or `>=24.0.0` (matches Angular 21's `engines` constraint)
 - pnpm
 - A Formo account and SDK write key
 - A browser wallet such as [MetaMask](https://metamask.io)
