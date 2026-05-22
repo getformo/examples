@@ -1,12 +1,22 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 # Having this file also makes this example its own isolated workspace root.
-# Allow freshly published Formo SDK releases through the release-age gate.
 
+# Formo publishes its own SDK; don't hold it back behind the release-age gate.
+# Browser-compat data packages (browserslist ecosystem) update daily — exclude
+# from the release-age gate since they are pure data, not executable code.
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
+  - "baseline-browser-mapping"
+  - "caniuse-lite"
+  - "electron-to-chromium"
+  - "node-releases"
 # Security: force patched transitive versions (Aikido CVE remediation).
 minimumReleaseAge: 10080
 overrides:
   'valibot@>=0.31.0 <1.2.0': 1.2.0
   'axios@>=1.0.0 <1.15.2': 1.15.2
+  '@react-native-community/cli@>=1.0.0 <17.0.1': 17.0.1
+  '@react-native-community/cli-server-api@>=1.0.0 <17.0.1': 17.0.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
