@@ -58,8 +58,8 @@
       "h3": "^1.15.9",
       "undici": "^7.24.1",
       "node-forge": "^1.4.0",
-      "@xmldom/xmldom": "^0.8.13",
-      "@wagmi/core": "2.16.4"
+      "@wagmi/core": "2.16.4",
+      "@xmldom/xmldom": "0.8.13"
     }
   },
   "private": true
