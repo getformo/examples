@@ -4,6 +4,7 @@ minimumReleaseAge: 10080
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
   'axios@>=1.0.0 <1.15.2': 1.15.2
+  'js-cookie@<3.0.6': 3.0.6
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
