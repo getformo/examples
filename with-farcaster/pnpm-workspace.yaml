@@ -1,5 +1,8 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 minimumReleaseAge: 10080
+# Formo publishes its own SDK; don't hold it back behind the release-age gate.
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

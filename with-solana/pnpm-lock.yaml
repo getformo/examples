@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.30.0
-        version: 1.30.0(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)
+        specifier: ^1.32.0
+        version: 1.32.0(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)
       '@noble/ed25519':
         specifier: ^2.2.3
         version: 2.3.0
@@ -131,8 +131,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@formo/analytics@1.30.0':
-    resolution: {integrity: sha512-7P4vI4WyjTW4/GVoNyhKWD/0Wt6tdp3zsEtNYuUlhwWajBED1lo1dfoq8P7XqfRpeXLSfq4apsyFuYzOCSfB0g==}
+  '@formo/analytics@1.32.0':
+    resolution: {integrity: sha512-+89cGJbpWH1vitoIKT6hwNe8DcySqCaTc/wIiZwYcpEU6pOKT9tq0F/R8wBNXofFU2NpvJhDvvBrs+s0bqilCg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -142,6 +142,10 @@ packages:
       wagmi: '>=2.0.0'
     peerDependenciesMeta:
       '@tanstack/react-query':
+        optional: true
+      '@types/react':
+        optional: true
+      react:
         optional: true
       viem:
         optional: true
@@ -2904,11 +2908,12 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@formo/analytics@1.30.0(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)':
+  '@formo/analytics@1.32.0(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)':
     dependencies:
-      '@types/react': 18.3.28
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
+    optionalDependencies:
+      '@types/react': 18.3.28
       react: 18.3.1
     transitivePeerDependencies:
       - typescript

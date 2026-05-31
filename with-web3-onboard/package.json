@@ -39,7 +39,7 @@
     "typescript": "^5"
   },
   "overrides": {
-    "axios": "^1.15.1",
+    "axios": "^1.16.1",
     "crypto-es": "^2.1.0",
     "@web3-onboard/common": {
       "ws": "8.18.3"

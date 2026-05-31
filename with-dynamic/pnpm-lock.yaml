@@ -7,7 +7,7 @@ settings:
 overrides:
   i18next@<26.0.6: 26.0.6
   uuid@>=11.0.0 <11.1.1: 11.1.1
-  axios@>=1.0.0 <1.15.2: 1.15.2
+  axios@>=1.0.0 <1.16.1: 1.16.1
 
 importers:
 
@@ -23,8 +23,8 @@ importers:
         specifier: ^4.53.1
         version: 4.83.1(f41a5a8ca8827f4a620903fe413e8c2e)
       '@formo/analytics':
-        specifier: ^1.30.0
-        version: 1.30.0(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))
+        specifier: ^1.32.0
+        version: 1.32.0(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))
       '@tanstack/react-query':
         specifier: ^5.62.7
         version: 5.100.11(react@18.3.1)
@@ -582,8 +582,8 @@ packages:
   '@evervault/wasm-attestation-bindings@0.3.1':
     resolution: {integrity: sha512-pJsbax/pEPdRXSnFKahzGZeq2CNTZ0skAPWpnEZK/8vdcvlan7LE7wMSOVr+Z+MqTBnVEnS7O80TKpXKU5Rsbw==}
 
-  '@formo/analytics@1.30.0':
-    resolution: {integrity: sha512-7P4vI4WyjTW4/GVoNyhKWD/0Wt6tdp3zsEtNYuUlhwWajBED1lo1dfoq8P7XqfRpeXLSfq4apsyFuYzOCSfB0g==}
+  '@formo/analytics@1.32.0':
+    resolution: {integrity: sha512-+89cGJbpWH1vitoIKT6hwNe8DcySqCaTc/wIiZwYcpEU6pOKT9tq0F/R8wBNXofFU2NpvJhDvvBrs+s0bqilCg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -593,6 +593,10 @@ packages:
       wagmi: '>=2.0.0'
     peerDependenciesMeta:
       '@tanstack/react-query':
+        optional: true
+      '@types/react':
+        optional: true
+      react:
         optional: true
       viem:
         optional: true
@@ -1020,7 +1024,7 @@ packages:
 
   '@paulmillr/qr@0.2.1':
     resolution: {integrity: sha512-IHnV6A+zxU7XwmKFinmYjUcwlyK9+xkG3/s9KcQhI9BjQKycrJ1JRO+FbNYPwZiPKW3je/DR0k7w8/gLa5eaxQ==}
-    deprecated: 'The package is now available as "qr": npm install qr'
+    deprecated: 'Switch to "qr" (new package name) for security updates: npm install qr'
 
   '@protobuf-ts/grpcweb-transport@2.11.1':
     resolution: {integrity: sha512-1W4utDdvOB+RHMFQ0soL4JdnxjXV+ddeGIUg08DvZrA8Ms6k5NN6GBFU2oHZdTOcJVpPrDJ02RJlqtaoCMNBtw==}
@@ -2141,6 +2145,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  agent-base@6.0.2:
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
+    engines: {node: '>= 6.0.0'}
+
   agentkeepalive@4.6.0:
     resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
     engines: {node: '>= 8.0.0'}
@@ -2193,13 +2201,10 @@ packages:
   axios-retry@4.5.0:
     resolution: {integrity: sha512-aR99oXhpEDGo0UuAlYcn2iGRds30k366Zfa05XWScR9QaQD4JYiP3/1Qt1u7YlefUOK+cn0CcwoL1oefavQUlQ==}
     peerDependencies:
-      axios: 1.15.2
+      axios: 1.16.1
 
-  axios@1.15.2:
-    resolution: {integrity: sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==}
-
-  axios@1.16.0:
-    resolution: {integrity: sha512-6hp5CwvTPlN2A31g5dxnwAX0orzM7pmCRDLnZSX772mv8WDqICwFjowHuPs04Mc8deIld1+ejhtaMn5vp6b+1w==}
+  axios@1.16.1:
+    resolution: {integrity: sha512-caYkukvroVPO8KrzuJEb50Hm07KwfBZPEC3VeFHTsqWHvKTsy54hjJz9BS/cdaypROE2rH6xvm9mHX4fgWkr3A==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -2913,6 +2918,10 @@ packages:
   http2-wrapper@1.0.3:
     resolution: {integrity: sha512-V+23sDMr12Wnz7iTcDeJr3O6AIxlnvT/bmaAAAP/Xda35C90p9599p0F1eHR/N1KILWSoWVAiOMFjBBXaXSMxg==}
     engines: {node: '>=10.19.0'}
+
+  https-proxy-agent@5.0.1:
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+    engines: {node: '>= 6'}
 
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
@@ -4511,6 +4520,7 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - immer
       - react
+      - supports-color
       - typescript
       - use-sync-external-store
       - utf-8-validate
@@ -4522,8 +4532,8 @@ snapshots:
       '@solana-program/token': 0.9.0(@solana/kit@5.5.1(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@6.0.6))
       '@solana/kit': 5.5.1(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@6.0.6)
       abitype: 1.0.6(typescript@5.9.3)(zod@3.25.76)
-      axios: 1.16.0
-      axios-retry: 4.5.0(axios@1.16.0)
+      axios: 1.16.1
+      axios-retry: 4.5.0(axios@1.16.1)
       bs58: 6.0.0
       jose: 6.2.3
       md5: 2.3.0
@@ -4534,6 +4544,7 @@ snapshots:
       - bufferutil
       - debug
       - fastestsmallesttextencoderdecoder
+      - supports-color
       - typescript
       - utf-8-validate
 
@@ -4618,6 +4629,7 @@ snapshots:
       - debug
       - react
       - react-dom
+      - supports-color
       - utf-8-validate
 
   '@dynamic-labs-wallet/browser-wallet-client@0.0.325(@dynamic-labs-wallet/forward-mpc-client@0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6))':
@@ -4628,6 +4640,7 @@ snapshots:
     transitivePeerDependencies:
       - '@dynamic-labs-wallet/forward-mpc-client'
       - debug
+      - supports-color
 
   '@dynamic-labs-wallet/browser-wallet-client@0.0.337(@dynamic-labs-wallet/forward-mpc-client@0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6))':
     dependencies:
@@ -4637,25 +4650,28 @@ snapshots:
     transitivePeerDependencies:
       - '@dynamic-labs-wallet/forward-mpc-client'
       - debug
+      - supports-color
 
   '@dynamic-labs-wallet/core@0.0.325(@dynamic-labs-wallet/forward-mpc-client@0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6))':
     dependencies:
       '@dynamic-labs-wallet/forward-mpc-client': 0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       '@dynamic-labs/sdk-api-core': 0.0.900
-      axios: 1.15.2
+      axios: 1.16.1
       uuid: 11.1.1
     transitivePeerDependencies:
       - debug
+      - supports-color
 
   '@dynamic-labs-wallet/core@0.0.337(@dynamic-labs-wallet/forward-mpc-client@0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6))':
     dependencies:
       '@dynamic-labs-wallet/forward-mpc-client': 0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       '@dynamic-labs-wallet/primitives': 0.0.337
       '@dynamic-labs/sdk-api-core': 0.0.964
-      axios: 1.15.2
+      axios: 1.16.1
       uuid: 11.1.1
     transitivePeerDependencies:
       - debug
+      - supports-color
 
   '@dynamic-labs-wallet/forward-mpc-client@0.9.0(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(utf-8-validate@6.0.6)':
     dependencies:
@@ -4709,6 +4725,7 @@ snapshots:
       - encoding
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
       - zod
@@ -4733,6 +4750,7 @@ snapshots:
       - encoding
       - react
       - react-dom
+      - supports-color
       - utf-8-validate
 
   '@dynamic-labs/ethereum-core@4.83.1(@dynamic-labs-wallet/primitives@0.0.337)(bufferutil@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))':
@@ -4752,6 +4770,7 @@ snapshots:
       - debug
       - react
       - react-dom
+      - supports-color
       - utf-8-validate
 
   '@dynamic-labs/ethereum@4.83.1(@dynamic-labs-wallet/primitives@0.0.337)(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@18.3.1))(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76)':
@@ -4858,6 +4877,7 @@ snapshots:
       - debug
       - react
       - react-dom
+      - supports-color
       - utf-8-validate
 
   '@dynamic-labs/rpc-providers@4.83.1':
@@ -4908,6 +4928,7 @@ snapshots:
       - bufferutil
       - debug
       - react-native
+      - supports-color
       - typescript
       - utf-8-validate
 
@@ -4931,6 +4952,7 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
 
@@ -4960,6 +4982,7 @@ snapshots:
       - debug
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
 
@@ -4999,6 +5022,7 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
       - zod
@@ -5027,6 +5051,7 @@ snapshots:
       - fastestsmallesttextencoderdecoder
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
       - viem
@@ -5077,6 +5102,7 @@ snapshots:
       - debug
       - react
       - react-dom
+      - supports-color
       - utf-8-validate
 
   '@dynamic-labs/webauthn@4.83.1':
@@ -5241,14 +5267,14 @@ snapshots:
 
   '@evervault/wasm-attestation-bindings@0.3.1': {}
 
-  '@formo/analytics@1.30.0(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))':
+  '@formo/analytics@1.32.0(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.9.3)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))':
     dependencies:
-      '@types/react': 18.3.28
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
-      react: 18.3.1
     optionalDependencies:
       '@tanstack/react-query': 5.100.11(react@18.3.1)
+      '@types/react': 18.3.28
+      react: 18.3.1
       viem: 2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
       wagmi: 2.19.5(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.50.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76)
     transitivePeerDependencies:
@@ -7990,6 +8016,12 @@ snapshots:
 
   acorn@8.16.0: {}
 
+  agent-base@6.0.2:
+    dependencies:
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+
   agentkeepalive@4.6.0:
     dependencies:
       humanize-ms: 1.2.1
@@ -8039,26 +8071,20 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-retry@4.5.0(axios@1.16.0):
+  axios-retry@4.5.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.0
+      axios: 1.16.1
       is-retry-allowed: 2.2.0
 
-  axios@1.15.2:
+  axios@1.16.1:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
+      https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
-
-  axios@1.16.0:
-    dependencies:
-      follow-redirects: 1.16.0
-      form-data: 4.0.5
-      proxy-from-env: 2.1.0
-    transitivePeerDependencies:
-      - debug
+      - supports-color
 
   balanced-match@1.0.2: {}
 
@@ -8817,6 +8843,13 @@ snapshots:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
 
+  https-proxy-agent@5.0.1:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+
   humanize-ms@1.2.1:
     dependencies:
       ms: 2.1.3
@@ -9181,10 +9214,10 @@ snapshots:
   ox@0.6.7(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
-      '@noble/curves': 1.8.1
-      '@noble/hashes': 1.7.1
-      '@scure/bip32': 1.6.2
-      '@scure/bip39': 1.5.4
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
       abitype: 1.0.8(typescript@5.9.3)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
@@ -9210,7 +9243,7 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.2
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
@@ -9560,7 +9593,7 @@ snapshots:
       '@types/uuid': 10.0.0
       '@types/ws': 8.18.1
       buffer: 6.0.3
-      eventemitter3: 5.0.1
+      eventemitter3: 5.0.4
       uuid: 14.0.0
       ws: 8.20.1(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     optionalDependencies:

@@ -2,6 +2,9 @@
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 minimumReleaseAge: 10080
+# Formo publishes its own SDK; don't hold it back behind the release-age gate.
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
 overrides:
   'crypto-es@<2.1.0': 2.1.0
   'ws@>=8.0.0 <8.17.1': 8.17.1

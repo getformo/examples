@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.30.0
-        version: 1.30.0(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.5.3)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.28.13)(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
+        specifier: ^1.32.0
+        version: 1.32.0(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.5.3)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.28.13)(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
     devDependencies:
       ansi-regex:
         specifier: ^6.1.0
@@ -433,8 +433,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@formo/analytics@1.30.0':
-    resolution: {integrity: sha512-7P4vI4WyjTW4/GVoNyhKWD/0Wt6tdp3zsEtNYuUlhwWajBED1lo1dfoq8P7XqfRpeXLSfq4apsyFuYzOCSfB0g==}
+  '@formo/analytics@1.32.0':
+    resolution: {integrity: sha512-+89cGJbpWH1vitoIKT6hwNe8DcySqCaTc/wIiZwYcpEU6pOKT9tq0F/R8wBNXofFU2NpvJhDvvBrs+s0bqilCg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -444,6 +444,10 @@ packages:
       wagmi: '>=2.0.0'
     peerDependenciesMeta:
       '@tanstack/react-query':
+        optional: true
+      '@types/react':
+        optional: true
+      react:
         optional: true
       viem:
         optional: true
@@ -865,7 +869,7 @@ packages:
 
   '@paulmillr/qr@0.2.1':
     resolution: {integrity: sha512-IHnV6A+zxU7XwmKFinmYjUcwlyK9+xkG3/s9KcQhI9BjQKycrJ1JRO+FbNYPwZiPKW3je/DR0k7w8/gLa5eaxQ==}
-    deprecated: 'The package is now available as "qr": npm install qr'
+    deprecated: 'Switch to "qr" (new package name) for security updates: npm install qr'
 
   '@rainbow-me/rainbowkit@2.1.6':
     resolution: {integrity: sha512-DCt6VYuPPxcPY6veuSOa784mHHHN0uSdDBTivdUBssmjTwHMmOrEs6kuKSYTPRu8EAwA1AvIc+ulSVnS022nbg==}
@@ -5856,14 +5860,14 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@formo/analytics@1.30.0(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.5.3)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.28.13)(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
+  '@formo/analytics@1.32.0(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)(typescript@5.5.3)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.28.13)(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
     dependencies:
-      '@types/react': 18.3.28
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.5.3)
-      react: 18.3.1
     optionalDependencies:
       '@tanstack/react-query': 5.28.14(react@18.3.1)
+      '@types/react': 18.3.28
+      react: 18.3.1
       viem: 2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       wagmi: 2.19.5(@tanstack/query-core@5.28.13)(@tanstack/react-query@5.28.14(react@18.3.1))(@types/react@18.3.28)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.49.2(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
     transitivePeerDependencies:

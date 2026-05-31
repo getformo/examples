@@ -3,6 +3,9 @@ packages:
 
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc/.yarnrc).
 minimumReleaseAge: 10080
+# Formo publishes its own SDK; don't hold it back behind the release-age gate.
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:

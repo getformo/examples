@@ -33,7 +33,7 @@
   },
   "overrides": {
     "elliptic": "6.6.1",
-    "axios": "^1.15.1",
+    "axios": "^1.16.1",
     "protobufjs": "^7.5.5",
     "@safe-global/safe-ethers-lib": {
       "ws": "7.5.10"

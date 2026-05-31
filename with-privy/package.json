@@ -36,7 +36,7 @@
   "packageManager": "pnpm@11.1.2",
   "pnpm": {
     "overrides": {
-      "axios": "^1.13.5"
+      "axios": "^1.16.1"
     }
   }
 }
