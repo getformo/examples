@@ -15,7 +15,7 @@
     "@aave/client": "^0.4.0",
     "@aave/graphql": "^0.4.0",
     "@aave/react": "^0.4.0",
-    "@formo/analytics": "^1.30.0",
+    "@formo/analytics": "^1.32.0",
     "@metamask/sdk": "^0.33.1",
     "@openfort/react": "^1.0.1",
     "@tanstack/react-query": "^5.85.5",
