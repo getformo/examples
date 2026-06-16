@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  ws@>=8.0.0 <8.20.1: 8.20.1
   hono@<4.12.25: 4.12.25
+  ws@>=8.0.0 <8.21.0: 8.21.0
 
 importers:
 
@@ -730,7 +730,7 @@ packages:
   isows@1.0.7:
     resolution: {integrity: sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==}
     peerDependencies:
-      ws: 8.20.1
+      ws: 8.21.0
 
   load-tsconfig@0.2.5:
     resolution: {integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==}
@@ -945,8 +945,8 @@ packages:
   webauthx@0.1.2:
     resolution: {integrity: sha512-J0H9/BOW/aRtWa/rKsGjf1+YQ5xkfgycTT455fsHyqG4+hYJ5dPDrNcIXrjGnjBKGru/qxY75m68iHg27rHoUg==}
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1475,9 +1475,9 @@ snapshots:
       yaml: 2.9.0
       zod: 4.4.3
 
-  isows@1.0.7(ws@8.20.1):
+  isows@1.0.7(ws@8.21.0):
     dependencies:
-      ws: 8.20.1
+      ws: 8.21.0
 
   load-tsconfig@0.2.5: {}
 
@@ -1675,9 +1675,9 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@6.0.3)(zod@4.4.3)
-      isows: 1.0.7(ws@8.20.1)
+      isows: 1.0.7(ws@8.21.0)
       ox: 0.14.22(typescript@6.0.3)(zod@4.4.3)
-      ws: 8.20.1
+      ws: 8.21.0
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -1692,9 +1692,9 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@6.0.3)(zod@4.4.3)
-      isows: 1.0.7(ws@8.20.1)
+      isows: 1.0.7(ws@8.21.0)
       ox: 0.14.29(typescript@6.0.3)(zod@4.4.3)
-      ws: 8.20.1
+      ws: 8.21.0
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -1732,7 +1732,7 @@ snapshots:
       - typescript
       - zod
 
-  ws@8.20.1: {}
+  ws@8.21.0: {}
 
   yaml@2.9.0: {}
 
