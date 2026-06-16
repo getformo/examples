@@ -3,6 +3,9 @@ minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
   - "@formo/analytics"
+# Security: force patched transitive versions (Aikido CVE remediation).
+overrides:
+  'uuid@>=8.0.0 <11.1.1': 11.1.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

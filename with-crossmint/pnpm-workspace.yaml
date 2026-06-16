@@ -19,6 +19,8 @@ overrides:
   '@react-native-community/cli-server-api@>=1.0.0 <17.0.1': 17.0.1
   i18next@<=24.1.2: 24.1.2
   'shell-quote@>=1.1.0 <=1.8.3': 1.8.4
+  'ws@>=8.0.0 <8.20.1': 8.20.1
+  'uuid@>=8.0.0 <11.1.1': 11.1.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 # pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
