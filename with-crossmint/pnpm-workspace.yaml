@@ -17,9 +17,9 @@ overrides:
   'axios@>=1.0.0 <1.16.1': 1.16.1
   '@react-native-community/cli@>=1.0.0 <17.0.1': 17.0.1
   '@react-native-community/cli-server-api@>=1.0.0 <17.0.1': 17.0.1
+  i18next@<=24.1.2: 24.1.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
-
 # pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
 # Allow the build scripts these trusted deps need.
 allowBuilds:
