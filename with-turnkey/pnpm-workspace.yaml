@@ -1,11 +1,15 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 minimumReleaseAge: 10080
+# Formo publishes its own SDK; don't hold it back behind the release-age gate.
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
   'uuid@>=11.0.0 <11.1.1': 11.1.1
   'next@>=15.0.0 <15.5.18': 15.5.18
-  'ws@>=8.0.0 <8.17.1': 8.17.1
+  'ws@>=8.0.0 <8.21.0': 8.21.0
+  'ws@>=7.0.0 <7.5.11': 7.5.11
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

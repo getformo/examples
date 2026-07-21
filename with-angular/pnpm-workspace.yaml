@@ -1,8 +1,27 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
+# tldts/tldts-core publish metadata without per-version timestamps, which
+# trips the release-age gate; exclude since they're a TLD parser data lib.
 minimumReleaseAgeExclude:
   - "@formo/analytics"
+  - "tldts"
+  - "tldts-core"
+  # Angular ships security patches (21.2.17 fixes GHSA-rgjc-h3x7-9mwg,
+  # GHSA-39pv-4j6c-2g6v and related high advisories) that must be adopted
+  # before the 7-day gate elapses; exempt the framework packages so the
+  # only patched release can be installed in lockstep.
+  - "@angular/common"
+  - "@angular/compiler"
+  - "@angular/compiler-cli"
+  - "@angular/core"
+  - "@angular/forms"
+  - "@angular/platform-browser"
+  - "@angular/router"
+# Security: force patched transitive versions (CVE remediation).
+overrides:
+  # ws <8.21.0: memory-exhaustion DoS (GHSA-96hv-2xvq-fx4p), pulled in via viem.
+  'ws@>=8.0.0 <8.21.0': 8.21.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
