@@ -61,9 +61,10 @@ transport. Public RPCs hold no keys, so against them Send Tx fails with
 
 Start an [anvil](https://getfoundry.sh) node on the chain you want to test:
 
-```bash
-curl -L https://foundry.paradigm.xyz | bash && foundryup   # first time only
+Install Foundry first if you don't have it — see the
+[installation guide](https://getfoundry.sh/introduction/installation). Then:
 
+```bash
 anvil --chain-id 84532                    # Base Sepolia  → localhost:8545
 anvil --chain-id 11155420 --port 8546     # OP Sepolia    → localhost:8546
 ```
