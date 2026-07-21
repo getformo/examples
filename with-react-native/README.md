@@ -20,6 +20,7 @@ This is an example React Native app demonstrating the [@formo/react-native-analy
 - Xcode (for iOS development)
 - Android Studio (for Android development)
 - iOS Simulator or Android Emulator (Expo Go does not support custom native modules)
+- [Foundry](https://getfoundry.sh) — optional, only for the Mock Wallet buttons (see step 4)
 
 ### Installation
 
@@ -50,7 +51,36 @@ EXPO_PUBLIC_FORMO_WRITE_KEY=your_formo_write_key
 
 You can get your Formo write key from [app.formo.so](https://app.formo.so).
 
-4. Start the development server:
+4. (Optional) Start local chains for the Mock Wallet:
+
+The **Mock Wallet** buttons — Send Tx and Sign Message — need an RPC node that has
+the test account unlocked. wagmi's `mock` connector only intercepts a handful of
+methods and proxies the rest (`eth_sendTransaction`, `eth_sign`) straight to the
+transport. Public RPCs hold no keys, so against them Send Tx fails with
+`-32601 rpc method is unsupported` and Sign Message with `unknown account`.
+
+Start an [anvil](https://getfoundry.sh) node on the chain you want to test:
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash && foundryup   # first time only
+
+anvil --chain-id 84532                    # Base Sepolia  → localhost:8545
+anvil --chain-id 11155420 --port 8546     # OP Sepolia    → localhost:8546
+```
+
+Anvil pre-funds and unlocks `0xf39Fd6e5...fFb92266` — the same address the mock
+connector is configured with. The URLs are already wired up in `config/wagmi.ts`,
+so there is nothing to configure; just have the node running before you press the
+buttons. Chain state is in-memory and resets whenever anvil restarts.
+
+The second node is only needed if you want to send or sign **while on OP
+Sepolia** — switching chains itself works without any node, since the mock
+connector handles `wallet_switchEthereumChain` internally.
+
+You can skip this step entirely if you only need the **Direct SDK Testing**
+buttons, which call the SDK directly with no chain involved.
+
+5. Start the development server:
 
 ```bash
 pnpm start
@@ -94,6 +124,16 @@ cd ios && pod install && cd ..
 ### Android build fails
 
 Make sure you have the Android SDK installed and `ANDROID_HOME` environment variable set.
+
+### Send Tx or Sign Message fails
+
+A connection error means anvil isn't running — start it as described in
+[step 4](#installation). Nothing else needs configuring.
+
+`-32601 rpc method is unsupported` or `unknown account` means the Mock Wallet
+reached a public RPC instead of a local node. Check that `config/wagmi.ts` still
+overrides `rpcUrls` on the chain objects — overriding `transports` alone has no
+effect, since the mock connector reads the URL off the chain.
 
 ## Project Structure
 
