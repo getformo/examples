@@ -3,9 +3,28 @@ nodeLinker: hoisted
 minimumReleaseAge: 10080
 
 # Security: force patched transitive versions (Aikido CVE remediation).
+#
+# These MUST live here, not in package.json. pnpm 11 no longer reads the
+# "pnpm" field from package.json and silently ignores it — it only warns:
+#   [WARN] The "pnpm" field in package.json is no longer read by pnpm.
+#          The following keys were ignored: "pnpm.overrides"
+# The h3/undici/node-forge/@wagmi/core/@xmldom/xmldom pins below were stranded
+# in package.json by that change; undici stayed on 6.25.0 and @xmldom/xmldom
+# kept resolving 0.7.13 alongside 0.8.13 for as long as they sat there.
 overrides:
   fast-uri@<3.1.2: 3.1.2
   socket.io-parser@<4.2.6: 4.2.6
+  h3@<1.15.9: ^1.15.9
+  undici@<7.24.1: ^7.24.1
+  node-forge@<1.4.0: ^1.4.0
+  '@wagmi/core': 2.16.4
+  '@xmldom/xmldom@<0.8.13': 0.8.13
+  # GHSA-23hp-3jrh-7fpw (decompression DoS). No patched 6.x line exists, so
+  # remediation requires the 7.x major. Reached via expo > @expo/cli > tar.
+  tar@<7.5.19: ^7.5.19
+  # GHSA-w7jw-789q-3m8p, reached via react-native > react-devtools-core.
+  # Same pin the SDK repo uses.
+  shell-quote@<1.8.4: ^1.8.4
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
