@@ -59,9 +59,19 @@ jest.mock("wagmi", () => ({
   WagmiProvider: ({ children }) => children,
 }));
 
+// rpcUrls is part of viem's Chain shape and config/wagmi.ts overrides it to
+// point the mock wallet at a local node, so the stubs need it to stay realistic.
 jest.mock("wagmi/chains", () => ({
-  baseSepolia: { id: 84532, name: "Base Sepolia" },
-  optimismSepolia: { id: 11155420, name: "OP Sepolia" },
+  baseSepolia: {
+    id: 84532,
+    name: "Base Sepolia",
+    rpcUrls: { default: { http: ["https://sepolia.base.org"] } },
+  },
+  optimismSepolia: {
+    id: 11155420,
+    name: "OP Sepolia",
+    rpcUrls: { default: { http: ["https://sepolia.optimism.io"] } },
+  },
 }));
 
 jest.mock("wagmi/connectors", () => ({
@@ -74,8 +84,8 @@ jest.mock("@tanstack/react-query", () => ({
   QueryClientProvider: ({ children }) => children,
 }));
 
-// Mock @formo/react-native-analytics
-jest.mock("@formo/react-native-analytics", () => ({
+// Mock @formo/analytics-react-native
+jest.mock("@formo/analytics-react-native", () => ({
   FormoAnalyticsProvider: ({ children }) => children,
   useFormo: () => ({
     track: jest.fn(),
