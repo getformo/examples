@@ -9,6 +9,7 @@ This is an example React Native app demonstrating the [@formo/react-native-analy
 - **Semantic Events**: Track revenue, points, and volume events
 - **Automatic Wallet Event Tracking**: Wallet connect, disconnect, signatures, and transactions are automatically tracked via wagmi integration
 - **Consent Management**: Built-in opt-out/opt-in functionality for GDPR compliance
+- **Android Install Attribution**: `react-native-play-install-referrer` is installed so the SDK can read the Play Store install referrer. Real referrer data only comes back for installs that actually came from the Play Store — a dev build or sideload reports an organic install.
 
 ## Getting Started
 
@@ -70,9 +71,14 @@ anvil --chain-id 11155420 --port 8546     # OP Sepolia    → localhost:8546
 ```
 
 Anvil pre-funds and unlocks `0xf39Fd6e5...fFb92266` — the same address the mock
-connector is configured with. The URLs are already wired up in `config/wagmi.ts`,
-so there is nothing to configure; just have the node running before you press the
-buttons. Chain state is in-memory and resets whenever anvil restarts.
+connector is configured with. Chain state is in-memory and resets whenever anvil
+restarts.
+
+There is nothing to configure: `config/wagmi.ts` derives the RPC host from
+Expo's dev-server address, which is the machine running Metro — the same one
+running anvil. That matters because `localhost` only reaches the dev machine
+from the iOS simulator; an Android emulator resolves it to the emulator itself,
+and a physical device to the device.
 
 The second node is only needed if you want to send or sign **while on OP
 Sepolia** — switching chains itself works without any node, since the mock
