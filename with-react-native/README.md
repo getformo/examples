@@ -9,6 +9,7 @@ This is an example React Native app demonstrating the [@formo/react-native-analy
 - **Semantic Events**: Track revenue, points, and volume events
 - **Automatic Wallet Event Tracking**: Wallet connect, disconnect, signatures, and transactions are automatically tracked via wagmi integration
 - **Consent Management**: Built-in opt-out/opt-in functionality for GDPR compliance
+- **Android Install Attribution**: `react-native-play-install-referrer` is installed so the SDK can read the Play Store install referrer. Real referrer data only comes back for installs that actually came from the Play Store — a dev build or sideload reports an organic install.
 
 ## Getting Started
 
@@ -20,6 +21,7 @@ This is an example React Native app demonstrating the [@formo/react-native-analy
 - Xcode (for iOS development)
 - Android Studio (for Android development)
 - iOS Simulator or Android Emulator (Expo Go does not support custom native modules)
+- [Foundry](https://getfoundry.sh) — optional, only for the Mock Wallet buttons (see step 4)
 
 ### Installation
 
@@ -50,7 +52,42 @@ EXPO_PUBLIC_FORMO_WRITE_KEY=your_formo_write_key
 
 You can get your Formo write key from [app.formo.so](https://app.formo.so).
 
-4. Start the development server:
+4. (Optional) Start local chains for the Mock Wallet:
+
+The **Mock Wallet** buttons — Send Tx and Sign Message — need an RPC node that has
+the test account unlocked. wagmi's `mock` connector only intercepts a handful of
+methods and proxies the rest (`eth_sendTransaction`, `eth_sign`) straight to the
+transport. Public RPCs hold no keys, so against them Send Tx fails with
+`-32601 rpc method is unsupported` and Sign Message with `unknown account`.
+
+Start an [anvil](https://getfoundry.sh) node on the chain you want to test:
+
+Install Foundry first if you don't have it — see the
+[installation guide](https://getfoundry.sh/introduction/installation). Then:
+
+```bash
+anvil --chain-id 84532                    # Base Sepolia  → localhost:8545
+anvil --chain-id 11155420 --port 8546     # OP Sepolia    → localhost:8546
+```
+
+Anvil pre-funds and unlocks `0xf39Fd6e5...fFb92266` — the same address the mock
+connector is configured with. Chain state is in-memory and resets whenever anvil
+restarts.
+
+There is nothing to configure: `config/wagmi.ts` derives the RPC host from
+Expo's dev-server address, which is the machine running Metro — the same one
+running anvil. That matters because `localhost` only reaches the dev machine
+from the iOS simulator; an Android emulator resolves it to the emulator itself,
+and a physical device to the device.
+
+The second node is only needed if you want to send or sign **while on OP
+Sepolia** — switching chains itself works without any node, since the mock
+connector handles `wallet_switchEthereumChain` internally.
+
+You can skip this step entirely if you only need the **Direct SDK Testing**
+buttons, which call the SDK directly with no chain involved.
+
+5. Start the development server:
 
 ```bash
 pnpm start
@@ -94,6 +131,16 @@ cd ios && pod install && cd ..
 ### Android build fails
 
 Make sure you have the Android SDK installed and `ANDROID_HOME` environment variable set.
+
+### Send Tx or Sign Message fails
+
+A connection error means anvil isn't running — start it as described in
+[step 4](#installation). Nothing else needs configuring.
+
+`-32601 rpc method is unsupported` or `unknown account` means the Mock Wallet
+reached a public RPC instead of a local node. Check that `config/wagmi.ts` still
+overrides `rpcUrls` on the chain objects — overriding `transports` alone has no
+effect, since the mock connector reads the URL off the chain.
 
 ## Project Structure
 

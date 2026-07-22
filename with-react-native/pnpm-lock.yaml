@@ -11,6 +11,12 @@ overrides:
   ws@>=8.0.0 <8.21.0: 8.21.0
   ws@>=7.0.0 <7.5.11: 7.5.11
   shell-quote@>=1.1.0 <=1.8.3: 1.8.4
+  h3@<1.15.9: ^1.15.9
+  undici: 6.27.0
+  node-forge@<1.4.0: ^1.4.0
+  '@wagmi/core': 2.16.4
+  '@xmldom/xmldom@<0.8.13': 0.8.13
+  tar@<7.5.19: ^7.5.19
 
 importers:
 
@@ -20,8 +26,8 @@ importers:
         specifier: ^7.28.6
         version: 7.28.6
       '@formo/analytics-react-native':
-        specifier: ^0.1.6
-        version: 0.1.6(78ed9643f6886a8af59692e6f0b5effa)
+        specifier: ^1.0.0
+        version: 1.0.0(860098ce253bd693c9df0e9f7732888c)
       '@react-native-async-storage/async-storage':
         specifier: ^1.21.0
         version: 1.24.0(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
@@ -36,7 +42,7 @@ importers:
         version: 2.16.4(@tanstack/query-core@5.90.20)(@types/react@18.3.27)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.45.0(bufferutil@4.1.0)(typescript@5.3.3)(utf-8-validate@5.0.10))
       '@walletconnect/react-native-compat':
         specifier: ^2.23.4
-        version: 2.23.4(556bde76d3f9909724794be21dd0f734)
+        version: 2.23.4(20ce97657fb850f78397f4e3cb92a3fe)
       ethereum-cryptography:
         specifier: 3.2.0
         version: 3.2.0
@@ -46,6 +52,9 @@ importers:
       expo-application:
         specifier: ~6.0.0
         version: 6.0.2(expo@52.0.48(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@expo/metro-runtime@4.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(bufferutil@4.1.0)(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(utf-8-validate@5.0.10))
+      expo-constants:
+        specifier: ~17.0.8
+        version: 17.0.8(expo@52.0.48(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@expo/metro-runtime@4.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(bufferutil@4.1.0)(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(utf-8-validate@5.0.10))(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
       expo-crypto:
         specifier: ~14.0.0
         version: 14.0.2(expo@52.0.48(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@expo/metro-runtime@4.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(bufferutil@4.1.0)(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(utf-8-validate@5.0.10))
@@ -76,6 +85,9 @@ importers:
       react-native-modal:
         specifier: 14.0.0-rc.1
         version: 14.0.0-rc.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
+      react-native-play-install-referrer:
+        specifier: ^1.1.9
+        version: 1.1.9
       react-native-safe-area-context:
         specifier: ^4.12.0
         version: 4.14.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
@@ -1005,8 +1017,8 @@ packages:
     resolution: {integrity: sha512-o2qDlTqJ606h4xR36H2zWTywmZ3v3842K6TU8Ik2n1mfW0S580VHlt3eItVYdLYz+klaPp7CXqanja8eASZjRw==}
     hasBin: true
 
-  '@formo/analytics-react-native@0.1.6':
-    resolution: {integrity: sha512-xnABfmKYO4cPTImYUT4da61uY6G6sojav+C4o/uBFbQMQWhjlB/2XETb8k6fWSQFbUoTZ/OFpXvlzKvqk9uu8g==}
+  '@formo/analytics-react-native@1.0.0':
+    resolution: {integrity: sha512-b9ZxbNjfe4/4Z8c4/cC63cwB8qo5dhIYK3VljPEV9Y8l+diBzWZnvoZvWsFktiFlUzWcztafzFanfgnQgzA+uA==}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.17.0'
       '@tanstack/react-query': '>=5.0.0'
@@ -1015,6 +1027,7 @@ packages:
       react: '>=18.0.0'
       react-native: '>=0.70.0'
       react-native-device-info: '>=10.0.0'
+      react-native-play-install-referrer: '>=1.1.8'
       wagmi: '>=2.0.0'
     peerDependenciesMeta:
       '@tanstack/react-query':
@@ -1024,6 +1037,8 @@ packages:
       expo-device:
         optional: true
       react-native-device-info:
+        optional: true
+      react-native-play-install-referrer:
         optional: true
       wagmi:
         optional: true
@@ -1044,6 +1059,10 @@ packages:
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
+
+  '@isaacs/fs-minipass@4.0.1':
+    resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
+    engines: {node: '>=18.0.0'}
 
   '@isaacs/ttlcache@1.4.1':
     resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
@@ -1322,8 +1341,8 @@ packages:
     peerDependencies:
       react-native: ^0.0.0-0 || >=0.60 <1.0
 
-  '@react-native-community/netinfo@11.5.2':
-    resolution: {integrity: sha512-/g0m65BtX9HU+bPiCH2517bOHpEIUsGrWFXDzi1a5nNKn5KujQgm04WhL7/OSXWKHyrT8VVtUoJA0XKRxueBpQ==}
+  '@react-native-community/netinfo@12.0.1':
+    resolution: {integrity: sha512-P/3caXIvfYSJG8AWJVefukg+ZGRPs+M4Lp3pNJtgcTYoJxCjWrKQGNnCkj/Cz//zWa/avGed0i/wzm0T8vV2IQ==}
     peerDependencies:
       react: '*'
       react-native: '>=0.59'
@@ -2011,11 +2030,6 @@ packages:
   '@webassemblyjs/wast-printer@1.14.1':
     resolution: {integrity: sha512-kPSSXE6De1XOR820C90RIo2ogvZG+c3KiHzqUoO/F34Y2shGzesfqv7o57xrxovZJH/MetF5UjroJ/R/3isoiw==}
 
-  '@xmldom/xmldom@0.7.13':
-    resolution: {integrity: sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==}
-    engines: {node: '>=10.0.0'}
-    deprecated: this version has critical issues, please update to the latest version
-
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
@@ -2460,9 +2474,9 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
-  chownr@2.0.0:
-    resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
-    engines: {node: '>=10'}
+  chownr@3.0.0:
+    resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
+    engines: {node: '>=18'}
 
   chrome-launcher@0.15.2:
     resolution: {integrity: sha512-zdLEwNo3aUVzIhKhTtXfxhdvZhUghrnmkvcAq2NoDd+LeOHKf03H5jwZ8T/STsAlzyALkBVK552iaG1fGf1xVQ==}
@@ -3405,10 +3419,6 @@ packages:
   fs-extra@9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
-
-  fs-minipass@2.1.0:
-    resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
-    engines: {node: '>= 8'}
 
   fs-minipass@3.0.3:
     resolution: {integrity: sha512-XUBA9XClHbnJWSfBzjkm6RvPsyg3sryZt06BEQoXcF7EK/xpGaQYJgQKDJSUH5SGZ76Y7pFx1QBnXz09rU5Fbw==}
@@ -4470,17 +4480,13 @@ packages:
     resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
     engines: {node: '>=8'}
 
-  minipass@5.0.0:
-    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
-    engines: {node: '>=8'}
-
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  minizlib@2.1.2:
-    resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
-    engines: {node: '>= 8'}
+  minizlib@3.1.0:
+    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
+    engines: {node: '>= 18'}
 
   mipd@0.0.7:
     resolution: {integrity: sha512-aAPZPNDQ3uMTdKbuO2YmAw2TxLHO0moa4YKAyETM/DTj5FloZo+a+8tU+iv4GmW+sOxKLSRwcSFuczk+Cpt6fg==}
@@ -5016,6 +5022,9 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '>=0.70.0'
+
+  react-native-play-install-referrer@1.1.9:
+    resolution: {integrity: sha512-COKQA/eS2I9NigxZDVZuLFzGNLBXF4+o3o9EIgULx+aagjVQexlPBh4g9fdnhiSvZk1rzq/asVwIJKRPc9Cy7A==}
 
   react-native-safe-area-context@4.14.1:
     resolution: {integrity: sha512-+tUhT5WBl8nh5+P+chYhAjR470iCByf9z5EYdCEbPaAK3Yfzw+o8VRPnUgmPAKlSccOgQBxx3NOl/Wzckn9ujg==}
@@ -5616,10 +5625,9 @@ packages:
     resolution: {integrity: sha512-1MOpMXuhGzGL5TTCZFItxCc0AARf1EZFQkGqMm7ERKj8+Hgr5oLvJOVFcC+lRmR8hCe2S3jC4T5D7Vg/d7/fhA==}
     engines: {node: '>=6'}
 
-  tar@6.2.1:
-    resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
-    engines: {node: '>=10'}
-    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+  tar@7.5.20:
+    resolution: {integrity: sha512-9FcyK4PA6+WbzlTM9WhQm6vB5W7cP7dUiPsv1g7YDwEQnQ1CGpK3MGlKk/ITVWMk05kHZuBhmVhiv8LZoy/PFQ==}
+    engines: {node: '>=18'}
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -5798,8 +5806,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@6.25.0:
-    resolution: {integrity: sha512-ZgpWDC5gmNiuY9CnLVXEH8rl50xhRCuLNA97fAUnKi8RRuV4E6KG31pDTsLVUKnohJE0I3XDrTeEydAXRw47xg==}
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -6227,6 +6235,10 @@ packages:
 
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+
+  yallist@5.0.0:
+    resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
+    engines: {node: '>=18'}
 
   yargs-parser@18.1.3:
     resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
@@ -7337,11 +7349,11 @@ snapshots:
       source-map-support: 0.5.21
       stacktrace-parser: 0.1.11
       structured-headers: 0.4.1
-      tar: 6.2.1
+      tar: 7.5.20
       temp-dir: 2.0.0
       tempy: 0.7.1
       terminal-link: 2.1.1
-      undici: 6.25.0
+      undici: 6.27.0
       unique-string: 2.0.0
       wrap-ansi: 7.0.0
       ws: 8.21.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
@@ -7500,7 +7512,7 @@ snapshots:
 
   '@expo/plist@0.2.2':
     dependencies:
-      '@xmldom/xmldom': 0.7.13
+      '@xmldom/xmldom': 0.8.13
       base64-js: 1.5.1
       xmlbuilder: 14.0.0
 
@@ -7539,7 +7551,7 @@ snapshots:
       abort-controller: 3.0.0
       debug: 4.4.3
       source-map-support: 0.5.21
-      undici: 6.25.0
+      undici: 6.27.0
     transitivePeerDependencies:
       - supports-color
 
@@ -7561,10 +7573,10 @@ snapshots:
       chalk: 4.1.2
       js-yaml: 4.1.1
 
-  '@formo/analytics-react-native@0.1.6(78ed9643f6886a8af59692e6f0b5effa)':
+  '@formo/analytics-react-native@1.0.0(860098ce253bd693c9df0e9f7732888c)':
     dependencies:
       '@react-native-async-storage/async-storage': 1.24.0(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
-      '@react-native-community/netinfo': 11.5.2(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
+      '@react-native-community/netinfo': 12.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
       ethereum-cryptography: 3.2.0
       react: 18.3.1
       react-native: 0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)
@@ -7572,6 +7584,7 @@ snapshots:
       '@tanstack/react-query': 5.90.20(react@18.3.1)
       expo-application: 6.0.2(expo@52.0.48(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@expo/metro-runtime@4.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(bufferutil@4.1.0)(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(utf-8-validate@5.0.10))
       expo-device: 7.0.3(expo@52.0.48(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@expo/metro-runtime@4.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(bufferutil@4.1.0)(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(utf-8-validate@5.0.10))
+      react-native-play-install-referrer: 1.1.9
       wagmi: 2.14.11(@react-native-async-storage/async-storage@1.24.0(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@18.3.1))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.45.0(bufferutil@4.1.0)(typescript@5.3.3)(utf-8-validate@5.0.10))
 
   '@humanwhocodes/config-array@0.13.0':
@@ -7594,6 +7607,10 @@ snapshots:
       strip-ansi-cjs: strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
+
+  '@isaacs/fs-minipass@4.0.1':
+    dependencies:
+      minipass: 7.1.2
 
   '@isaacs/ttlcache@1.4.1': {}
 
@@ -8072,7 +8089,7 @@ snapshots:
       merge-options: 3.0.4
       react-native: 0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)
 
-  '@react-native-community/netinfo@11.5.2(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)':
+  '@react-native-community/netinfo@12.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)':
     dependencies:
       react: 18.3.1
       react-native: 0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)
@@ -9064,10 +9081,10 @@ snapshots:
       - '@types/react'
       - react
 
-  '@walletconnect/react-native-compat@2.23.4(556bde76d3f9909724794be21dd0f734)':
+  '@walletconnect/react-native-compat@2.23.4(20ce97657fb850f78397f4e3cb92a3fe)':
     dependencies:
       '@react-native-async-storage/async-storage': 1.24.0(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
-      '@react-native-community/netinfo': 11.5.2(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
+      '@react-native-community/netinfo': 12.0.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
       events: 3.3.0
       fast-text-encoding: 1.0.6
       react-native: 0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)
@@ -9318,8 +9335,6 @@ snapshots:
     dependencies:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
-
-  '@xmldom/xmldom@0.7.13': {}
 
   '@xmldom/xmldom@0.8.13': {}
 
@@ -9752,7 +9767,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 4.0.0
       ssri: 10.0.6
-      tar: 6.2.1
+      tar: 7.5.20
       unique-filename: 3.0.0
 
   call-bind-apply-helpers@1.0.2:
@@ -9816,7 +9831,7 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
-  chownr@2.0.0: {}
+  chownr@3.0.0: {}
 
   chrome-launcher@0.15.2:
     dependencies:
@@ -10994,10 +11009,6 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 6.2.0
       universalify: 2.0.1
-
-  fs-minipass@2.1.0:
-    dependencies:
-      minipass: 3.3.6
 
   fs-minipass@3.0.3:
     dependencies:
@@ -12404,14 +12415,11 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  minipass@5.0.0: {}
-
   minipass@7.1.2: {}
 
-  minizlib@2.1.2:
+  minizlib@3.1.0:
     dependencies:
-      minipass: 3.3.6
-      yallist: 4.0.0
+      minipass: 7.1.2
 
   mipd@0.0.7(typescript@5.3.3):
     optionalDependencies:
@@ -12934,6 +12942,8 @@ snapshots:
       react: 18.3.1
       react-native: 0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10)
       react-native-animatable: 1.4.0
+
+  react-native-play-install-referrer@1.1.9: {}
 
   react-native-safe-area-context@4.14.1(react-native@0.76.0(@babel/core@7.28.6)(@babel/preset-env@7.28.6(@babel/core@7.28.6))(@types/react@18.3.27)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1):
     dependencies:
@@ -13629,14 +13639,13 @@ snapshots:
 
   tapable@2.3.2: {}
 
-  tar@6.2.1:
+  tar@7.5.20:
     dependencies:
-      chownr: 2.0.0
-      fs-minipass: 2.1.0
-      minipass: 5.0.0
-      minizlib: 2.1.2
-      mkdirp: 1.0.4
-      yallist: 4.0.0
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.2
+      minizlib: 3.1.0
+      yallist: 5.0.0
 
   temp-dir@2.0.0: {}
 
@@ -13817,7 +13826,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@6.25.0: {}
+  undici@6.27.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
@@ -14237,6 +14246,8 @@ snapshots:
   yallist@3.1.1: {}
 
   yallist@4.0.0: {}
+
+  yallist@5.0.0: {}
 
   yargs-parser@18.1.3:
     dependencies:
