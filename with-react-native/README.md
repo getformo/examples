@@ -1,6 +1,6 @@
 # Formo Analytics React Native Example
 
-This is an example React Native app demonstrating the [@formo/react-native-analytics](https://github.com/getformo/sdk-react-native) SDK.
+This is an example React Native app demonstrating the [@formo/analytics-react-native](https://github.com/getformo/sdk-react-native) SDK.
 
 ## Features
 
@@ -141,7 +141,7 @@ export const formoOptions: Options = {
 ### Track Screen Views
 
 ```typescript
-import { useFormo } from "@formo/react-native-analytics";
+import { useFormo } from "@formo/analytics-react-native";
 import { useEffect } from "react";
 
 function MyScreen() {

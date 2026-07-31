@@ -74,8 +74,8 @@ jest.mock("@tanstack/react-query", () => ({
   QueryClientProvider: ({ children }) => children,
 }));
 
-// Mock @formo/react-native-analytics
-jest.mock("@formo/react-native-analytics", () => ({
+// Mock @formo/analytics-react-native
+jest.mock("@formo/analytics-react-native", () => ({
   FormoAnalyticsProvider: ({ children }) => children,
   useFormo: () => ({
     track: jest.fn(),

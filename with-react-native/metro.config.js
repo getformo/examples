@@ -4,6 +4,7 @@ const path = require("path");
 const config = getDefaultConfig(__dirname);
 
 // Handle linked SDK package
+const SDK_PACKAGE_NAME = "@formo/analytics-react-native";
 const sdkPath = path.resolve(__dirname, "../../sdk-react-native");
 const projectRoot = __dirname;
 const projectNodeModules = path.resolve(projectRoot, "node_modules");
@@ -30,6 +31,26 @@ config.resolver.extraNodeModules = {
 // Custom resolver to ensure SDK imports use example app's modules
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Resolve the SDK to its TypeScript source.
+  //
+  // Metro honours the package's `exports` map, which points at
+  // lib/commonjs/index.js — but sdk-react-native/.watchmanconfig lists "lib" in
+  // ignore_dirs, so Metro's crawler never sees that file and resolution fails
+  // with "none of these files exist" even when the build output is present.
+  // The `react-native` field (src/index.ts) would avoid this, but `exports`
+  // takes precedence over it.
+  //
+  // Pinning to source is also what the rest of this resolver assumes: the
+  // redirect below keys on originModulePath being inside sdkPath, which only
+  // happens when the SDK is consumed as source. It means edits to the SDK hot
+  // reload with no rebuild — the point of linking it in the first place.
+  if (moduleName === SDK_PACKAGE_NAME) {
+    return {
+      filePath: path.resolve(sdkPath, "src/index.ts"),
+      type: "sourceFile",
+    };
+  }
+
   // Block modules that are incompatible with React Native
   const blockedModules = [
     "@metamask/sdk",       // Node.js crypto dependencies
