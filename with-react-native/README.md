@@ -195,10 +195,8 @@ function MyScreen() {
   const formo = useFormo();
 
   useEffect(() => {
-    formo.screen("MyScreen", {
-      category: "main",
-      source: "navigation",
-    });
+    // screen(name, category?, properties?)
+    formo.screen("MyScreen", "main", { source: "navigation" });
   }, [formo]);
 
   return <View>...</View>;

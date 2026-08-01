@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require("expo/metro-config");
+const fs = require("fs");
 const path = require("path");
 
 const config = getDefaultConfig(__dirname);
@@ -8,6 +9,22 @@ const SDK_PACKAGE_NAME = "@formo/analytics-react-native";
 const sdkPath = path.resolve(__dirname, "../../sdk-react-native");
 const projectRoot = __dirname;
 const projectNodeModules = path.resolve(projectRoot, "node_modules");
+
+// Is the SDK a local link rather than an npm install? A `pnpm add link:` (or
+// `npm link`) leaves a symlink in node_modules; an npm install leaves a real
+// directory. Only in the link case should Metro resolve the package to the
+// sibling checkout's TypeScript source.
+const isSdkLinked = (() => {
+  try {
+    const installed = path.resolve(projectNodeModules, SDK_PACKAGE_NAME);
+    return (
+      fs.lstatSync(installed).isSymbolicLink() &&
+      fs.existsSync(path.resolve(sdkPath, "src/index.ts"))
+    );
+  } catch {
+    return false; // not installed at all, or no sibling checkout
+  }
+})();
 
 // Watch the SDK directory for changes
 // Note: sdk-react-native/.watchmanconfig excludes node_modules and lib
@@ -44,7 +61,13 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   // redirect below keys on originModulePath being inside sdkPath, which only
   // happens when the SDK is consumed as source. It means edits to the SDK hot
   // reload with no rebuild — the point of linking it in the first place.
-  if (moduleName === SDK_PACKAGE_NAME) {
+  // ONLY when the package is actually linked. Redirecting unconditionally
+  // would hijack an npm-installed SDK for anyone who happens to have a sibling
+  // sdk-react-native checkout — silently running unreleased local code instead
+  // of the pinned version — and would resolve to a non-existent path for anyone
+  // who does not. isSdkLinked is computed once at config load; swapping between
+  // a link and an npm install already requires a Metro restart.
+  if (moduleName === SDK_PACKAGE_NAME && isSdkLinked) {
     return {
       filePath: path.resolve(sdkPath, "src/index.ts"),
       type: "sourceFile",

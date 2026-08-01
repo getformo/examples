@@ -98,6 +98,13 @@ jest.mock("@formo/analytics-react-native", () => ({
   }),
 }));
 
+// Mock expo-constants with the real app.json, so config/formo.ts is exercised
+// through its actual source of truth rather than its fallbacks.
+jest.mock("expo-constants", () => ({
+  __esModule: true,
+  default: { expoConfig: require("./app.json").expo },
+}));
+
 // Mock react-native-safe-area-context
 jest.mock("react-native-safe-area-context", () => ({
   SafeAreaProvider: ({ children }) => children,
