@@ -1,6 +1,11 @@
 # pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
 nodeLinker: hoisted
 minimumReleaseAge: 10080
+# Our own package: the release-age guard exists to blunt supply-chain attacks on
+# third-party deps, and delaying our own SDK by a week defeats the point of an
+# example that demonstrates it.
+minimumReleaseAgeExclude:
+  - "@formo/analytics-react-native"
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 #
