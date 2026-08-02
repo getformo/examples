@@ -7,8 +7,45 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import { useFormo } from "@formo/analytics-react-native";
+
+/**
+ * Crash tracking is native-only.
+ *
+ * The SDK reports Application Crashed by wrapping React Native's ErrorUtils
+ * global handler. On React Native Web an uncaught error fires window.onerror
+ * and NEVER reaches ErrorUtils, so the handler is installed but nothing ever
+ * invokes it. Verified by probe: window.onerror fires, ErrorUtils does not.
+ *
+ * Rather than ship a button that silently does nothing on web, say so.
+ */
+const CRASH_TRACKING_SUPPORTED = Platform.OS !== "web";
+
+/**
+ * Confirm a destructive action on every platform.
+ *
+ * React Native Web's Alert is a no-op — literally `static alert() {}` — so it
+ * shows nothing AND never invokes the button callbacks. Anything gated behind
+ * Alert.alert is therefore dead code on web. Fall back to window.confirm there.
+ */
+const confirmDestructive = (
+  title: string,
+  message: string,
+  onConfirm: () => void,
+) => {
+  if (Platform.OS === "web") {
+    // eslint-disable-next-line no-alert
+    if (window.confirm(`${title}\n\n${message}`)) onConfirm();
+    return;
+  }
+
+  Alert.alert(title, message, [
+    { text: "Cancel", style: "cancel" },
+    { text: "Throw", style: "destructive", onPress: onConfirm },
+  ]);
+};
 
 export default function EventsScreen() {
   const formo = useFormo();
@@ -65,22 +102,25 @@ export default function EventsScreen() {
   // still see the redbox — that is the intended behaviour, not a failure. The
   // event is flushed before the handler chain continues.
   const handleTriggerCrash = () => {
-    Alert.alert(
+    if (!CRASH_TRACKING_SUPPORTED) {
+      sendEvent(
+        "unsupported",
+        "Crash tracking is native-only — see the note on this card.",
+      );
+      return;
+    }
+
+    confirmDestructive(
       "Trigger a crash?",
       "Throws an unhandled error so the SDK reports Application Crashed. " +
         "In development the redbox will appear afterwards.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Throw",
-          style: "destructive",
-          onPress: () => {
-            setTimeout(() => {
-              throw new Error("Demo crash from the Events screen");
-            }, 0);
-          },
-        },
-      ],
+      () => {
+        // Async so the throw escapes this handler and reaches the global
+        // handler, rather than being swallowed by the touch responder.
+        setTimeout(() => {
+          throw new Error("Demo crash from the Events screen");
+        }, 0);
+      },
     );
   };
 
@@ -239,7 +279,9 @@ export default function EventsScreen() {
           >
             <Text style={styles.semanticButtonText}>💥 Trigger Crash</Text>
             <Text style={styles.semanticButtonSubtext}>
-              Application Crashed
+              {CRASH_TRACKING_SUPPORTED
+                ? "Application Crashed"
+                : "Native only — ErrorUtils is not wired up on web"}
             </Text>
           </TouchableOpacity>
         </View>
