@@ -30,6 +30,21 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
       "com.formo.analytics.demo",
   },
 
+  // Autocapture. Wallet and lifecycle events are on by default; these two are
+  // opt-in because enabling them changes how an app behaves:
+  //   foregrounded — emits Application Foregrounded on every background ->
+  //     active transition, IN ADDITION to the Application Opened that already
+  //     fires there. Doubles foreground volume; enable it if you consume the
+  //     Segment spec name directly.
+  //   crashes — installs a global JS error handler (ErrorUtils) to report
+  //     Application Crashed. The previous handler always runs afterwards, so
+  //     the redbox and any existing crash reporter keep working.
+  // Both are enabled here so the demo exercises them.
+  autocapture: {
+    foregrounded: true,
+    crashes: true,
+  },
+
   // Event batching configuration
   flushAt: 10, // Flush after 10 events
   flushInterval: 15000, // Flush every 15 seconds

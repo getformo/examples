@@ -7,8 +7,45 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import { useFormo } from "@formo/analytics-react-native";
+
+/**
+ * Crash tracking is native-only.
+ *
+ * The SDK reports Application Crashed by wrapping React Native's ErrorUtils
+ * global handler. On React Native Web an uncaught error fires window.onerror
+ * and NEVER reaches ErrorUtils, so the handler is installed but nothing ever
+ * invokes it. Verified by probe: window.onerror fires, ErrorUtils does not.
+ *
+ * Rather than ship a button that silently does nothing on web, say so.
+ */
+const CRASH_TRACKING_SUPPORTED = Platform.OS !== "web";
+
+/**
+ * Confirm a destructive action on every platform.
+ *
+ * React Native Web's Alert is a no-op — literally `static alert() {}` — so it
+ * shows nothing AND never invokes the button callbacks. Anything gated behind
+ * Alert.alert is therefore dead code on web. Fall back to window.confirm there.
+ */
+const confirmDestructive = (
+  title: string,
+  message: string,
+  onConfirm: () => void,
+) => {
+  if (Platform.OS === "web") {
+    // eslint-disable-next-line no-alert
+    if (window.confirm(`${title}\n\n${message}`)) onConfirm();
+    return;
+  }
+
+  Alert.alert(title, message, [
+    { text: "Cancel", style: "cancel" },
+    { text: "Throw", style: "destructive", onPress: onConfirm },
+  ]);
+};
 
 export default function EventsScreen() {
   const formo = useFormo();
@@ -35,6 +72,56 @@ export default function EventsScreen() {
 
     formo.track(customEventName, properties);
     sendEvent("track", `Event: ${customEventName}`);
+  };
+
+  // Push notification lifecycle events (Segment spec names).
+  //
+  // These are NOT autocaptured: push delivery is invisible to JavaScript
+  // without a native module, so your push handler forwards them. In a real app
+  // these calls live inside @react-native-firebase/messaging or
+  // expo-notifications callbacks rather than behind a button.
+  const handlePushNotification = (
+    kind: "Received" | "Tapped" | "Bounced",
+  ) => {
+    const properties = {
+      campaign_id: "demo-campaign-1",
+      message_id: `demo-${Date.now()}`,
+    };
+
+    if (kind === "Received") formo.pushNotificationReceived(properties);
+    if (kind === "Tapped") formo.pushNotificationTapped(properties);
+    if (kind === "Bounced") formo.pushNotificationBounced(properties);
+
+    sendEvent("track", `Push Notification ${kind}`);
+  };
+
+  // Deliberately throw so the SDK's global error handler reports
+  // `Application Crashed`. Requires autocapture.crashes (see config/formo.ts).
+  //
+  // The previous handler always runs afterwards, so in development you will
+  // still see the redbox — that is the intended behaviour, not a failure. The
+  // event is flushed before the handler chain continues.
+  const handleTriggerCrash = () => {
+    if (!CRASH_TRACKING_SUPPORTED) {
+      sendEvent(
+        "unsupported",
+        "Crash tracking is native-only — see the note on this card.",
+      );
+      return;
+    }
+
+    confirmDestructive(
+      "Trigger a crash?",
+      "Throws an unhandled error so the SDK reports Application Crashed. " +
+        "In development the redbox will appear afterwards.",
+      () => {
+        // Async so the throw escapes this handler and reaches the global
+        // handler, rather than being swallowed by the touch responder.
+        setTimeout(() => {
+          throw new Error("Demo crash from the Events screen");
+        }, 0);
+      },
+    );
   };
 
   // Track revenue event
@@ -143,6 +230,59 @@ export default function EventsScreen() {
           >
             <Text style={styles.semanticButtonText}>📈 Volume Event</Text>
             <Text style={styles.semanticButtonSubtext}>1.5 ETH</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Lifecycle Events</Text>
+        <Text style={styles.cardSubtitle}>
+          Application Installed / Opened / Backgrounded / Foregrounded and Deep
+          Link Opened are tracked automatically. The ones below cannot be —
+          push delivery needs a native module, and a crash needs a crash.
+        </Text>
+
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity
+            style={styles.semanticButton}
+            onPress={() => handlePushNotification("Received")}
+          >
+            <Text style={styles.semanticButtonText}>🔔 Push Received</Text>
+            <Text style={styles.semanticButtonSubtext}>
+              Push Notification Received
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.semanticButton}
+            onPress={() => handlePushNotification("Tapped")}
+          >
+            <Text style={styles.semanticButtonText}>👆 Push Tapped</Text>
+            <Text style={styles.semanticButtonSubtext}>
+              Push Notification Tapped
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.semanticButton}
+            onPress={() => handlePushNotification("Bounced")}
+          >
+            <Text style={styles.semanticButtonText}>↩️ Push Bounced</Text>
+            <Text style={styles.semanticButtonSubtext}>
+              Push Notification Bounced
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.semanticButton}
+            onPress={handleTriggerCrash}
+          >
+            <Text style={styles.semanticButtonText}>💥 Trigger Crash</Text>
+            <Text style={styles.semanticButtonSubtext}>
+              {CRASH_TRACKING_SUPPORTED
+                ? "Application Crashed"
+                : "Native only — ErrorUtils is not wired up on web"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
