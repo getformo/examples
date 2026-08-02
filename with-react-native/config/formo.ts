@@ -1,4 +1,5 @@
 import type { Options } from "@formo/analytics-react-native";
+import Constants from "expo-constants";
 import type { Config } from "wagmi";
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -6,13 +7,27 @@ import type { QueryClient } from "@tanstack/react-query";
 export const FORMO_WRITE_KEY =
   process.env.EXPO_PUBLIC_FORMO_WRITE_KEY || "YOUR_FORMO_WRITE_KEY";
 
+// Read app identity from the Expo config (app.json) rather than hardcoding it,
+// so there is one source of truth. These reach Formo as `app_version` and as
+// the mobile `origin`, which means a hardcoded value that drifts from app.json
+// silently reports the wrong version on every event forever.
+const expoConfig = Constants.expoConfig;
+
 // Base Formo Analytics configuration (without wagmi)
 export const baseFormoOptions: Omit<Options, "wagmi"> = {
-  // App information for context enrichment
+  // App information for context enrichment.
+  //
+  // Worth setting explicitly even though the SDK can auto-detect: in Expo Go
+  // the native modules report EXPO GO's identity (its bundle id and version),
+  // not your app's, and on React Native Web nothing resolves a bundle id at
+  // all. Configuring these keeps dev and web builds reporting the real app.
   app: {
-    name: "Formo Analytics Demo",
-    version: "1.1.0",
-    bundleId: "com.formo.analytics.demo",
+    name: expoConfig?.name ?? "Formo Analytics Demo",
+    version: expoConfig?.version ?? "0.0.0",
+    bundleId:
+      expoConfig?.ios?.bundleIdentifier ??
+      expoConfig?.android?.package ??
+      "com.formo.analytics.demo",
   },
 
   // Event batching configuration
