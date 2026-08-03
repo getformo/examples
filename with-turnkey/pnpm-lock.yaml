@@ -35,8 +35,8 @@ importers:
         specifier: ^5.5.6
         version: 5.5.8(@types/node@22.20.1)(@types/react@19.2.17)(prop-types@15.8.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
       '@turnkey/sdk-server':
-        specifier: ^5.1.1
-        version: 5.3.0(typescript@5.9.3)
+        specifier: ^7.0.0
+        version: 7.0.0(typescript@5.9.3)
       next:
         specifier: ^15.5.21
         version: 15.5.22(@types/node@22.20.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -944,6 +944,10 @@ packages:
     resolution: {integrity: sha512-X+CpGxq+IGOwmNJpb8dScT9R67om9azM+DxQ+2RH7L5G5axSBVlQWsoSKnMSwROrc31+F5e6t4MMd9rUfrjYww==}
     engines: {node: '>=18.0.0'}
 
+  '@turnkey/sdk-server@7.0.0':
+    resolution: {integrity: sha512-3KDVR+qV1ZoS/30Gn8EgWiAn57SFUPp8Uw3tuQuAEsPjN5pR/WZfW3bZIjo84QIWY4pi45TnE0SpjAJwBCld/g==}
+    engines: {node: '>=18.0.0'}
+
   '@turnkey/sdk-types@0.14.0':
     resolution: {integrity: sha512-FLN4p3Jc3rBMvM17tgFrO4VpqkQN0RgWtLknqcqpLuNgTJ7oqgvzm42YIrzvBlW6DPsnFjVZMzc4yCfaRN7Lmg==}
     engines: {node: '>=18.0.0'}
@@ -954,6 +958,9 @@ packages:
 
   '@turnkey/wallet-stamper@1.1.16':
     resolution: {integrity: sha512-IdgoIRQr5RoiHAPnVag2QyaYg6cmmkZQs1rOig57/tQ/fXdPsC1+2660RisIAvv69ZFrArG8Z8wHaGSQMkStlw==}
+
+  '@turnkey/wallet-stamper@1.1.20':
+    resolution: {integrity: sha512-UWSsmwsveAclZB6CxLtVIYe3Aa88Tgu6eK3bIuDswnv96dVRL2zIzOqbzdDktKyMlXe8UcoJtv/jB+3BL6xqew==}
 
   '@turnkey/webauthn-stamper@0.6.0':
     resolution: {integrity: sha512-jdN17QEnn7RBykEOhtKIialWmDjnDAH8DzbyITwn8jsKcwT1TBNYge89hTUTjbdsDLBAqQw8cHujPdy0RaAqvw==}
@@ -3908,6 +3915,21 @@ snapshots:
       - utf-8-validate
       - zod
 
+  '@turnkey/sdk-server@7.0.0(typescript@5.9.3)':
+    dependencies:
+      '@turnkey/api-key-stamper': 0.6.8
+      '@turnkey/http': 5.0.0
+      '@turnkey/sdk-types': 1.2.0
+      '@turnkey/wallet-stamper': 1.1.20(typescript@5.9.3)
+      buffer: 6.0.3
+      cross-fetch: 3.2.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
+
   '@turnkey/sdk-types@0.14.0': {}
 
   '@turnkey/sdk-types@1.2.0': {}
@@ -3915,6 +3937,18 @@ snapshots:
   '@turnkey/wallet-stamper@1.1.16(typescript@5.9.3)':
     dependencies:
       '@turnkey/crypto': 2.8.14
+      '@turnkey/encoding': 0.6.0
+    optionalDependencies:
+      viem: 2.55.8(typescript@5.9.3)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@turnkey/wallet-stamper@1.1.20(typescript@5.9.3)':
+    dependencies:
+      '@turnkey/crypto': 2.10.1
       '@turnkey/encoding': 0.6.0
     optionalDependencies:
       viem: 2.55.8(typescript@5.9.3)
