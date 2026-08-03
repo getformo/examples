@@ -31,7 +31,7 @@
     "eslint-config-next": "^15.5.22",
     "postcss": "^8.5.23",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "packageManager": "pnpm@11.1.2"
 }
