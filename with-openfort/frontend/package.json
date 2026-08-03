@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aave/client": "^0.4.0",
+    "@aave/client": "^6.2.1",
     "@aave/graphql": "^0.4.0",
     "@aave/react": "^0.4.0",
     "@formo/analytics": "^1.33.1",
