@@ -1,0 +1,25 @@
+# pnpm 11 reads pnpm-specific settings from here (no longer from .npmrc).
+minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
+
+# pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
+# Biome's postinstall fetches its platform-native binary, so the lint/format
+# scripts don't work without it.
+allowBuilds:
+  '@biomejs/biome': true
+
+overrides:
+  # Migrated from the package.json "pnpm" field. This project was the only one
+  # still declaring pnpm 9, which reads overrides from package.json; it now
+  # declares pnpm 11 like its siblings, so they belong here instead.
+  'qs@<6.14.1': '>=6.14.1'
+  'diff@<8.0.3': '>=8.0.3'
+  'axios@<1.16.1': '1.16.1'
+  'ws@>=8.0.0 <8.21.0': '8.21.0'
+  'axios@>=1.0.0 <1.18.0': '>=1.18.0'
+  'axios@>=1.15.2 <1.18.0': '>=1.18.0'
+  'axios@>=1.7.0 <1.18.0': '>=1.18.0'
+  'axios@>=1.15.0 <1.18.0': '>=1.18.0'
+  'axios@>=1.15.1 <1.18.0': '>=1.18.0'
+  'axios@>=1.13.0 <1.18.0': '>=1.18.0'

@@ -4,22 +4,47 @@
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
+  # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
+  # 7-day gate, so the package is exempted by name rather than by version.
+  - brace-expansion
   - "@formo/analytics"
   # Security patch <7d old; allow past the release-age gate.
   - "form-data"
   - "esbuild"
   - "@esbuild/*"
+  - svelte@4.2.19
+  - '@metamask/sdk-communication-layer@0.33.1'
+  - '@metamask/sdk@0.33.1'
+  - nanoid@5.0.9
+  - svelte@5.51.5
+  - svelte@5.53.5
+  - postcss@8.5.10
+  - svelte@5.55.7
+  - joi@17.13.4
+  - hono@4.12.27
+  - sharp@0.35.0
+  - postcss@8.5.12
+  - postcss@8.5.18
 overrides:
   'crypto-es@<2.1.0': 2.1.0
-  'hono@<4.12.25': 4.12.25
-  'axios@>=1.0.0 <1.16.1': 1.16.1
+  hono@<4.12.27: ^4.12.27
+  axios@<1.18.0: ^1.18.0
   'uuid@>=8.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
-  'form-data@>=4.0.0 <4.0.6': 4.0.6
-  'form-data@>=3.0.0 <3.0.5': 3.0.5
+  form-data@<4.0.6: ^4.0.6
   'esbuild@>=0.17.0 <0.28.1': 0.28.1
-  axios@<=1.18.0: 1.18.0
+  '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
+  '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
+  brace-expansion@<1.1.17: ^1.1.17
+  joi@<17.13.4: ^17.13.4
+  nanoid@>=4.0.0 <5.0.9: ^5.0.9
+  postcss@<8.5.18: ^8.5.18
+  sharp@<0.35.0: ^0.35.0
+  svelte@<4.2.19: ^4.2.19
+  svelte@<=5.51.4: ^5.51.5
+  svelte@<=5.53.4: ^5.53.5
+  svelte@<=5.55.6: ^5.55.7
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 # pnpm 11 blocks dependency build scripts by default (strictDepBuilds).

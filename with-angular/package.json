@@ -12,26 +12,26 @@
     "test": "ng test"
   },
   "dependencies": {
-    "@angular/common": "^21.2.17",
-    "@angular/compiler": "^21.2.17",
-    "@angular/core": "^21.2.17",
-    "@angular/forms": "^21.2.17",
-    "@angular/platform-browser": "^21.2.17",
-    "@angular/router": "^21.2.17",
-    "@formo/analytics": "^1.32.0",
+    "@angular/common": "^21.2.19",
+    "@angular/compiler": "^21.2.19",
+    "@angular/core": "^21.2.19",
+    "@angular/forms": "^21.2.19",
+    "@angular/platform-browser": "^21.2.19",
+    "@angular/router": "^21.2.19",
+    "@formo/analytics": "^1.33.1",
     "buffer": "^6.0.3",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "viem": "^2.37.5"
+    "rxjs": "~7.8.2",
+    "tslib": "^2.8.1",
+    "viem": "^2.55.8"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.11",
-    "@angular/cli": "^21.2.11",
-    "@angular/compiler-cli": "^21.2.17",
+    "@angular/build": "^21.2.19",
+    "@angular/cli": "^21.2.19",
+    "@angular/compiler-cli": "^21.2.19",
     "@ngx-env/builder": "^21.0.1",
-    "jsdom": "^28.0.0",
-    "prettier": "^3.8.1",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "jsdom": "^28.1.0",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10"
   }
 }

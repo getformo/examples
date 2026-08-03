@@ -3,9 +3,16 @@ minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
   - "@formo/analytics"
+  - postcss@8.5.10
+  - hono@4.12.27
+  - sharp@0.35.0
+  - postcss@8.5.12
+  - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
-  'hono@<4.12.25': 4.12.25
+  hono@<4.12.27: ^4.12.27
+  postcss@<8.5.18: ^8.5.18
+  sharp@<0.35.0: ^0.35.0
   'ws@>=8.0.0 <8.21.0': 8.21.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
