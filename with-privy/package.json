@@ -18,8 +18,8 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-toastify": "^11.1.0",
-    "viem": "^2.55.8",
-    "wagmi": "^3.3.4"
+    "viem": "^2.55.10",
+    "wagmi": "^3.7.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
