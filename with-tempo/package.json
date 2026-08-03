@@ -23,7 +23,7 @@
     "wagmi": "latest"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.1.1",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@wagmi/cli": "latest",
