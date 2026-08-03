@@ -4,9 +4,16 @@ minimumReleaseAge: 10080
 # tldts/tldts-core publish metadata without per-version timestamps, which
 # trips the release-age gate; exclude since they're a TLD parser data lib.
 minimumReleaseAgeExclude:
+  # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
+  # 7-day gate, so the package is exempted by name rather than by version.
+  - brace-expansion
   - "@formo/analytics"
   - "tldts"
   - "tldts-core"
+  # Same missing-timestamp problem, reached via the Angular 21 CLI/build stack.
+  - "@modelcontextprotocol/sdk"
+  - "@oxc-project/types"
+  - "tinyrainbow"
   # Angular ships security patches (21.2.17 fixes GHSA-rgjc-h3x7-9mwg,
   # GHSA-39pv-4j6c-2g6v and related high advisories) that must be adopted
   # before the 7-day gate elapses; exempt the framework packages so the
@@ -18,9 +25,12 @@ minimumReleaseAgeExclude:
   - "@angular/forms"
   - "@angular/platform-browser"
   - "@angular/router"
+  - '@hono/node-server@2.0.5'
 # Security: force patched transitive versions (CVE remediation).
 overrides:
   # ws <8.21.0: memory-exhaustion DoS (GHSA-96hv-2xvq-fx4p), pulled in via viem.
+  '@hono/node-server@<2.0.5': ^2.0.5
+  brace-expansion@>=2.0.0 <2.1.3: ^2.1.3
   'ws@>=8.0.0 <8.21.0': 8.21.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true

@@ -10,24 +10,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.32.0",
+    "@formo/analytics": "^1.33.1",
     "@tanstack/react-query": "latest",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.5.4",
     "next": "latest",
     "porto": "^0.2.37",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.23",
     "react": "latest",
     "react-dom": "latest",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.3.3",
     "viem": "latest",
     "wagmi": "latest"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.13.3",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@wagmi/cli": "latest",
-    "typescript": "latest"
+    "typescript": "^6.0.3"
   },
   "overrides": {
     "hono": "^4.12.14"

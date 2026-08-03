@@ -9,34 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.32.0",
+    "@formo/analytics": "^1.33.1",
     "@heroicons/react": "^2.2.0",
     "@privy-io/react-auth": "^3.11.0",
     "@privy-io/wagmi": "^3.0.0",
-    "@tanstack/react-query": "^5.90.19",
-    "next": "^15.5.18",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.5",
-    "viem": "^2.44.4",
+    "@tanstack/react-query": "^5.101.4",
+    "next": "^15.5.22",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-toastify": "^11.1.0",
+    "viem": "^2.55.8",
     "wagmi": "^3.3.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "^22.12.0",
-    "@types/react": "^19.0.7",
-    "@types/react-dom": "^19.0.3",
-    "eslint": "^9.18.0",
-    "eslint-config-next": "^15.5.18",
-    "postcss": "^8.5.1",
-    "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.3"
+    "@eslint/eslintrc": "^3.3.6",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.20.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.22",
+    "postcss": "^8.5.23",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@11.1.2",
-  "pnpm": {
-    "overrides": {
-      "axios": "^1.16.1"
-    }
-  }
+  "packageManager": "pnpm@11.1.2"
 }

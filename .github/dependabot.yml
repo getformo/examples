@@ -1,0 +1,46 @@
+version: 2
+
+updates:
+  # Every example is an independent pnpm project with its own lockfile, so
+  # Dependabot has to be pointed at each one. `directories` globbing covers the
+  # top-level `with-*` examples; with-openfort keeps its manifests one level
+  # down, so its two projects are listed explicitly.
+  - package-ecosystem: npm
+    directories:
+      - "/with-*"
+      - "/with-openfort/frontend"
+      - "/with-openfort/backend"
+    schedule:
+      interval: weekly
+    # These are reference examples, not deployed apps. Without grouping, a
+    # single shared transitive advisory (postcss, brace-expansion) opens one PR
+    # per example — the PR volume is what caused updates to be ignored before.
+    groups:
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    # Majors land as their own PR: examples double as upgrade documentation, so
+    # a Next or React major needs the code reviewed alongside the bump.
+    open-pull-requests-limit: 10
+    # Must stay >= the `minimumReleaseAge: 10080` (7 days) that every example's
+    # pnpm-workspace.yaml sets. A shorter cooldown would open PRs that CI then
+    # fails to install, because pnpm refuses versions younger than the gate.
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - "*"

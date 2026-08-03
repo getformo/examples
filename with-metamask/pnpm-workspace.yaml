@@ -2,18 +2,32 @@
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
+  # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
+  # 7-day gate, so the package is exempted by name rather than by version.
+  - brace-expansion
   - "@formo/analytics"
   # Security patch <7d old; allow past the release-age gate.
   - "form-data"
+  - postcss@8.5.10
+  - axios@1.18.0
+  - hono@4.12.27
+  - sharp@0.35.0
+  - postcss@8.5.12
+  - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
-  'hono@<4.12.25': 4.12.25
-  'axios@>=1.0.0 <1.16.1': 1.16.1
+  # 1.54.0 imports @x402/{core,evm,svm} subpaths that aren't installable
+  # here, breaking the webpack build. Hold at the last version that built.
+  '@coinbase/cdp-sdk': '1.49.2'
+  hono@<4.12.27: ^4.12.27
+  axios@<1.18.0: ^1.18.0
   'uuid@>=8.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
-  'form-data@>=4.0.0 <4.0.6': 4.0.6
-  'form-data@>=3.0.0 <3.0.5': 3.0.5
+  form-data@<4.0.6: ^4.0.6
+  brace-expansion@<1.1.17: ^1.1.17
+  postcss@<8.5.18: ^8.5.18
+  sharp@<0.35.0: ^0.35.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

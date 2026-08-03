@@ -28,27 +28,15 @@
     "verify": "pnpm --filter @se-2/foundry verify"
   },
   "devDependencies": {
-    "ansi-regex": "^6.1.0",
+    "ansi-regex": "^6.2.2",
     "husky": "~8.0.3",
-    "lint-staged": "~13.2.2"
+    "lint-staged": "~13.2.3"
   },
   "packageManager": "pnpm@11.1.2",
   "engines": {
     "node": ">=18.18.0"
   },
   "dependencies": {
-    "@formo/analytics": "^1.32.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "axios": "^1.16.1",
-      "lodash": "^4.18.1",
-      "h3": "^1.15.9",
-      "hono": "^4.12.14",
-      "undici": "^7.24.1",
-      "next": "~15.5.15",
-      "elliptic": "^6.6.1",
-      "viem": "2.49.2"
-    }
+    "@formo/analytics": "^1.33.1"
   }
 }

@@ -5,21 +5,73 @@ packages:
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
+  # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
+  # 7-day gate, so the package is exempted by name rather than by version.
+  - brace-expansion
   - "@formo/analytics"
   # Security patch <7d old; allow past the release-age gate.
   - "form-data"
+  - debug@4.3.1
+  - tar@6.2.1
+  - undici@5.28.5
+  - path-to-regexp@6.3.0
+  - esbuild@0.24.3
+  - elliptic@6.6.2
+  - undici@6.23.0
+  - tar@7.5.7
+  - semver@7.5.2
+  - undici@5.29.0
+  - tar@7.5.3
+  - tar@7.5.8
+  - ajv@8.18.0
+  - tar@7.5.10
+  - tar@7.5.11
+  - undici@6.24.0
+  - tar@7.5.4
+  - postcss@8.5.10
+  - '@tootallnate/once@2.0.1'
+  - uuid@11.1.1
+  - tar@7.5.16
+  - undici@6.27.0
+  - axios@1.18.0
+  - tar@7.5.18
+  - tar@7.5.19
+  - tar@7.5.17
+  - hono@4.12.27
+  - sharp@0.35.0
+  - postcss@8.5.12
+  - tar@7.5.21
+  - postcss@8.5.18
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
-  'elliptic@<=6.6.0': 6.6.1
+  # 1.54.0 imports @x402/{core,evm,svm} subpaths that aren't installable
+  # here, breaking the webpack build. Hold at the last version that built.
+  '@coinbase/cdp-sdk': '1.49.2'
+  # Migrated from the package.json "pnpm" field, which pnpm 11 ignores.
+  axios: '^1.18.0'
+  lodash: '^4.18.1'
+  h3: '^1.15.9'
+  hono: '^4.12.27'
+  undici: '^7.28.0'
+  next: '^15.5.15'
+  elliptic: '^6.6.1'
+  viem: '^2.49.2'
   '@babel/traverse@<7.23.2': 7.23.2
-  'hono@<4.12.25': 4.12.25
-  'axios@>=1.0.0 <1.16.1': 1.16.1
   'uuid@>=8.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
-  'form-data@>=4.0.0 <4.0.6': 4.0.6
-  'form-data@>=3.0.0 <3.0.5': 3.0.5
+  form-data@<4.0.6: ^4.0.6
+  '@tootallnate/once@<2.0.1': ^2.0.1
+  ajv@>=7.0.0-alpha.0 <8.18.0: ^8.18.0
+  brace-expansion@<1.1.17: ^1.1.17
+  debug@>=4.0.0 <4.3.1: ^4.3.1
+  path-to-regexp@>=4.0.0 <6.3.0: ^6.3.0
+  postcss@<8.5.18: ^8.5.18
+  semver@>=7.0.0 <7.5.2: ^7.5.2
+  sharp@<0.35.0: ^0.35.0
+  tar@<7.5.21: ^7.5.21
+  uuid@<11.1.1: ^11.1.1
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 nodeLinker: hoisted
