@@ -88,7 +88,7 @@ jobs:
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
           FULL='[
-            {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-next-app-router","dir":"with-next-app-router","pm":"pnpm","build":"next:build","node":"22"},
             {"name":"with-next-page-router","dir":"with-next-page-router","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-dynamic","dir":"with-dynamic","pm":"pnpm","build":"build","node":"22","audit":"critical"},
@@ -229,5 +229,10 @@ jobs:
           # `audit` value in the matrix when their dep tree has known
           # unfixable transitive findings (e.g. bigint-buffer has no
           # patched upstream release yet).
+          #
+          # with-react is on `critical` because both of its high findings
+          # come from react-scripts (CRA) and neither can be resolved:
+          # shell-quote 1.8.5 was never published, and svgo >=2.8.3 drops
+          # css-select-base-adapter, which @svgr/plugin-svgo still needs.
           AUDIT_LEVEL: ${{ matrix.audit || 'high' }}
         run: pnpm audit --prod --audit-level="$AUDIT_LEVEL"
