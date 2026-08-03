@@ -23,7 +23,7 @@
     "react-dom": "^19.2.8",
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "~2.55.8",
+    "viem": "~2.55.10",
     "wagmi": "^2.19.5"
   },
   "overrides": {
