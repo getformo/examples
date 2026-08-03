@@ -127,8 +127,8 @@ importers:
         specifier: ~2.4.1
         version: 2.4.1(csstype@3.2.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       use-debounce:
-        specifier: ~8.0.4
-        version: 8.0.4(react@18.3.1)
+        specifier: ~10.1.1
+        version: 10.1.1(react@18.3.1)
       usehooks-ts:
         specifier: 2.13.0
         version: 2.13.0(react@18.3.1)
@@ -4580,6 +4580,7 @@ packages:
 
   stream-to-promise@2.2.0:
     resolution: {integrity: sha512-HAGUASw8NT0k8JvIVutB2Y/9iBk7gpgEyAudXwNJmZERdMITGdajOa4VJfD/kNiA3TppQpTP4J+CtcHwdzKBAw==}
+    deprecated: Deprecated. Use node:stream/promises and node:stream/consumers instead.
 
   strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -4970,11 +4971,11 @@ packages:
       '@types/react':
         optional: true
 
-  use-debounce@8.0.4:
-    resolution: {integrity: sha512-fGqsYQzl8kLHF2QpQSgIwgOgJmnh6j5L6SIzQiHdLfwp3q1egUL3btq5Bg2SJysH6A0ILLgT2IqXZKoNJr0nFw==}
-    engines: {node: '>= 10.0.0'}
+  use-debounce@10.1.1:
+    resolution: {integrity: sha512-kvds8BHR2k28cFsxW8k3nc/tRga2rs1RHYCqmmGqb90MEeE++oALwzh2COiuBLO1/QXiOuShXoSN2ZpWnMmvuQ==}
+    engines: {node: '>= 16.0.0'}
     peerDependencies:
-      react: '>=16.8.0'
+      react: '*'
 
   use-sidecar@1.1.3:
     resolution: {integrity: sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ==}
@@ -11500,7 +11501,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.31
 
-  use-debounce@8.0.4(react@18.3.1):
+  use-debounce@10.1.1(react@18.3.1):
     dependencies:
       react: 18.3.1
 
