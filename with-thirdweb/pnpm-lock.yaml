@@ -26,10 +26,10 @@ importers:
     dependencies:
       '@formo/analytics':
         specifier: ^1.33.1
-        version: 1.33.1(@tanstack/react-query@4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.13.7(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        version: 1.33.1(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.13.7(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@tanstack/react-query':
-        specifier: ^4.44.0
-        version: 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^5.101.4
+        version: 5.101.4(react@18.3.1)
       '@thirdweb-dev/chains':
         specifier: ^0.1.120
         version: 0.1.120
@@ -1703,6 +1703,9 @@ packages:
   '@tanstack/query-core@4.44.0':
     resolution: {integrity: sha512-swSgb7OiPRR3UuIL7NuDrZNSMGmQD+wdtHxPD7j60SvBEnxbXurl5XOirtGEX2gm2hbK6mC8kMV1I+uO3l0UOw==}
 
+  '@tanstack/query-core@5.101.4':
+    resolution: {integrity: sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==}
+
   '@tanstack/query-core@5.29.0':
     resolution: {integrity: sha512-WgPTRs58hm9CMzEr5jpISe8HXa3qKQ8CxewdYZeVnA54JrPY9B1CZiwsCoLpLkf0dGRZq+LcX5OiJb0bEsOFww==}
 
@@ -1717,6 +1720,11 @@ packages:
         optional: true
       react-native:
         optional: true
+
+  '@tanstack/react-query@5.101.4':
+    resolution: {integrity: sha512-yRg2pfOCxIs4ZJW3XYYHU/WgtD04FHSnfHlpRT7h7pR77hwkdRG4wxbKe4aq6P0RvXUTBSQpQeadS1SUYUe+KA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/react-query@5.29.2':
     resolution: {integrity: sha512-nyuWILR4u7H5moLGSiifLh8kIqQDLNOHGuSz0rcp+J75fNc8aQLyr5+I2JCHU3n+nJrTTW1ssgAD8HiKD7IFBQ==}
@@ -6266,12 +6274,12 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.33.1(@tanstack/react-query@4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.13.7(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+  '@formo/analytics@1.33.1(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.13.7(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
     optionalDependencies:
-      '@tanstack/react-query': 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-query': 5.101.4(react@18.3.1)
       '@types/react': 18.3.31
       react: 18.3.1
       viem: 2.13.7(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -7482,6 +7490,8 @@ snapshots:
 
   '@tanstack/query-core@4.44.0': {}
 
+  '@tanstack/query-core@5.101.4': {}
+
   '@tanstack/query-core@5.29.0': {}
 
   '@tanstack/react-query@4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -7491,6 +7501,11 @@ snapshots:
       use-sync-external-store: 1.6.0(react@18.3.1)
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
+
+  '@tanstack/react-query@5.101.4(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.101.4
+      react: 18.3.1
 
   '@tanstack/react-query@5.29.2(react@18.3.1)':
     dependencies:
