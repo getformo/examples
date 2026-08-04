@@ -5,6 +5,8 @@ This is an example Next.js application demonstrating integration between [Privy]
 ## Features
 
 - **Privy Authentication**: Login with external wallets or email to create embedded wallets
+- **Account Linking**: Link and unlink email, phone, wallets, passkeys, and socials via [`useLinkAccount`](https://docs.privy.io/user-management/users/linking-accounts)
+- **Identity Clustering**: Every linked wallet is identified under one Privy DID, so a multi-wallet user is a single Formo user
 - **Formo Analytics Integration**: Track wallet events and custom analytics
 - **Wallet Connection**: View connected wallets (embedded and external)
 - **Event Testing UI**: Test all major Formo SDK event types:
@@ -71,9 +73,87 @@ src/
 │   ├── layout.tsx        # Root layout with providers
 │   ├── page.tsx          # Main demo page with wallet UI and event testing
 │   └── providers.tsx     # Privy, wagmi, and Formo providers
+├── components/
+│   └── LinkedAccounts.tsx # Account linking/unlinking + identify() payload preview
 └── config/
     └── wagmi.ts          # Wagmi configuration for Privy
 ```
+
+## Account Linking & Identity Clustering
+
+A Privy user is **one account (a DID) with many linked accounts** — an embedded
+wallet, external wallets they connect over time, an email, socials, passkeys.
+Without help, each wallet address looks like a separate Formo user, so an
+8-wallet Privy user fragments into 8 users.
+
+The SDK solves this in one call. Pass the `usePrivy()` user with
+`{ privy: true }` and it identifies **every** linked wallet under that user's
+DID, so Formo clusters them server-side:
+
+```typescript
+import { useFormo } from "@formo/analytics";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
+
+const { user } = usePrivy();
+const { wallets } = useWallets();
+const formo = useFormo();
+
+// Depend on the address string, not the `wallets` array: useWallets() returns
+// a new array reference on many renders, which would re-run this every render.
+const activeWalletAddress = wallets[0]?.address;
+
+useEffect(() => {
+  if (!user || !formo) return;
+
+  formo.identify(user, {
+    privy: true,
+    // Optional: pin event attribution to the wallet active in wagmi.
+    // Other linked wallets are recorded for clustering only.
+    activeAddress: activeWalletAddress,
+  });
+}, [user, formo, activeWalletAddress]);
+```
+
+`user` is reactive, so this effect re-runs automatically on login and on every
+`link`/`unlink`, keeping the identity graph current.
+
+### What gets sent
+
+The SDK parses `user.linkedAccounts` and sends, with **each** wallet's identify:
+
+| Property | Source |
+| --- | --- |
+| `privyDid`, `privyCreatedAt` | The Privy user |
+| `email`, `phone` | Linked email / phone account |
+| `google`, `twitter`, `discord`, `github`, `farcaster`, `telegram`, `apple`, `linkedin`, `spotify`, `tiktok`, `instagram`, `twitch`, `line` | Linked social accounts |
+| `customUserId` | A linked `custom_auth` account |
+| `wallet_client`, `chain_type`, `is_embedded` | Per-wallet metadata |
+
+Linked wallets include `wallet` and `smart_wallet` accounts plus the
+`embeddedWallets`/`smartWallets` of a `cross_app` account, deduplicated by
+address. The **Linked Accounts** card in the demo renders this exact payload
+live via `parsePrivyProperties(user)`.
+
+### Linking accounts
+
+The demo uses Privy's [`useLinkAccount`](https://docs.privy.io/user-management/users/linking-accounts)
+hook, which opens Privy's UI for each method and reports the result:
+
+```typescript
+const { linkWallet, linkEmail, linkGoogle, linkPasskey /* … */ } = useLinkAccount({
+  onSuccess: ({ user, linkMethod, linkedAccount }) => {
+    // Surface the result only. Don't re-identify here: the reactive `user`
+    // already re-runs the effect above, so identifying from this callback just
+    // emits a redundant, out-of-order identify against a possibly pre-link
+    // `user` right before the effect emits the correct one.
+  },
+  onError: (error) => console.error(error),
+});
+```
+
+Unlinking uses the matching `usePrivy()` methods (`unlinkWallet`,
+`unlinkEmail`, `unlinkOAuth`, …). Privy requires a user to keep at least one
+linked account, so the demo disables unlink when only one remains.
 
 ## Formo SDK Events
 

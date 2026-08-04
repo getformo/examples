@@ -4,8 +4,9 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useSetActiveWallet } from "@privy-io/wagmi";
 import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction } from "wagmi";
 import { formatUnits } from "viem";
-import { useFormo, parsePrivyProperties } from "@formo/analytics";
+import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useRef } from "react";
+import { LinkedAccounts } from "@/components/LinkedAccounts";
 
 export default function Home() {
   const { ready, authenticated, login, logout, user } = usePrivy();
@@ -81,16 +82,34 @@ export default function Home() {
     });
   };
 
-  // Identify user with Privy profile on connect
+  // Identify every wallet linked to the Privy user under that user's DID.
+  //
+  // `{ privy: true }` expands `user.linkedAccounts` for us: one identify per
+  // linked wallet, each tagged with `user.id`, carrying the profile properties
+  // parsed from the linked accounts (email, phone, socials, …) plus per-wallet
+  // metadata. Formo clusters them into a single user server-side.
+  //
+  // `activeAddress` pins event attribution to the wallet that is actually
+  // active in wagmi; the other linked wallets are recorded for clustering only.
+  //
+  // `user` is reactive, so this re-runs on login and on every link/unlink — no
+  // manual re-identify is needed from the linking UI. Calling identify from a
+  // link callback would run against a possibly pre-link `user` and emit a
+  // redundant, out-of-order identify just before this effect emits the correct
+  // one.
+  //
+  // Depend on `wallets[0]?.address`, not the `wallets` array: useWallets()
+  // returns a new array reference on many renders, which would re-run this on
+  // every render.
+  const activeWalletAddress = address ?? wallets[0]?.address;
   useEffect(() => {
     if (!user || !formo) return;
 
-    const { properties, wallets } = parsePrivyProperties(user);
-
-    for (const wallet of wallets) {
-      formo.identify({ address: wallet.address, userId: user.id }, properties);
-    }
-  }, [user, formo]);
+    formo.identify(user, {
+      privy: true,
+      activeAddress: activeWalletAddress,
+    });
+  }, [user, formo, activeWalletAddress]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)
   const handleSignMessage = () => {
@@ -314,6 +333,9 @@ export default function Home() {
               </p>
             </div>
           </div>
+
+          {/* Account Linking Card */}
+          <LinkedAccounts />
 
           {/* Auto-tracked Events Info Card */}
           <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700 md:col-span-2">
