@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 /**
  * Login methods offered in the Privy login modal.
  *
- * This only controls the *login* UI. It does NOT control what can be linked —
+ * This only controls the *login* UI. It does NOT control what can be linked -
  * see {@link useLinkableMethods}.
  */
 export const PRIVY_LOGIN_METHODS = ["wallet", "email"] as const;

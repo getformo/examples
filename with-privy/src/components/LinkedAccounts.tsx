@@ -76,7 +76,7 @@ const UNLINKABLE_TYPES = new Set([
  * `unlinkOAuth`. Built-in providers are suffixed `_oauth`; custom OAuth
  * providers are typed `custom:<provider>` and pass through unchanged.
  *
- * Note `custom_auth` (underscore) is NOT this — it's a custom-JWT account, has
+ * Note `custom_auth` (underscore) is NOT this - it's a custom-JWT account, has
  * no `subject`, and is not an OAuth provider.
  */
 function isOAuthType(type: string): boolean {
@@ -96,27 +96,27 @@ function isUnlinkable(type: string): boolean {
 function accountValue(account: LinkedAccount): string {
   switch (account.type) {
     case "email":
-      return account.address ?? "—";
+      return account.address ?? "-";
     case "phone":
-      return account.number ?? "—";
+      return account.number ?? "-";
     case "wallet":
     case "smart_wallet":
-      return account.address ? shortAddress(account.address) : "—";
+      return account.address ? shortAddress(account.address) : "-";
     case "passkey":
-      return account.authenticatorName ?? account.credentialId ?? "—";
+      return account.authenticatorName ?? account.credentialId ?? "-";
     case "farcaster":
-      return account.username ?? (account.fid ? `fid:${account.fid}` : "—");
+      return account.username ?? (account.fid ? `fid:${account.fid}` : "-");
     case "telegram":
-      return account.username ?? account.telegramUserId ?? "—";
+      return account.username ?? account.telegramUserId ?? "-";
     case "custom_auth":
-      return account.customUserId ?? "—";
+      return account.customUserId ?? "-";
     default:
       return (
         account.username ??
         account.email ??
         account.name ??
         account.subject ??
-        "—"
+        "-"
       );
   }
 }
@@ -124,7 +124,7 @@ function accountValue(account: LinkedAccount): string {
 export function LinkedAccounts() {
   const privy = usePrivy();
   // What this app can actually link, read from Privy's app config rather than
-  // assumed from `loginMethods` — the two are independent.
+  // assumed from `loginMethods` - the two are independent.
   const linkable = useLinkableMethods(
     process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ""
   );
@@ -134,7 +134,7 @@ export function LinkedAccounts() {
 
   // Privy fires these once a link flow completes. Formo re-identifies on its
   // own: `user` is reactive, so the page's identify effect re-runs with the new
-  // linked account. These callbacks only surface the result — deliberately not
+  // linked account. These callbacks only surface the result - deliberately not
   // a manual re-identify, which would run against a possibly pre-link `user`
   // and emit a redundant, out-of-order identify just before the effect emits
   // the correct one.
@@ -158,7 +158,7 @@ export function LinkedAccounts() {
     onSuccess: ({ linkMethod, linkedAccount }) => {
       const label =
         TYPE_LABELS[(linkedAccount as LinkedAccount).type] ?? linkMethod;
-      setStatus(`Linked ${label} — Formo will re-identify automatically.`);
+      setStatus(`Linked ${label} - Formo will re-identify automatically.`);
       setTimeout(() => setStatus(null), 4000);
     },
     onError: (error) => {
@@ -251,7 +251,7 @@ export function LinkedAccounts() {
   };
 
   // Only offer link buttons for account types the user hasn't linked yet.
-  // Wallets and passkeys are the exception — Privy allows many of each.
+  // Wallets and passkeys are the exception - Privy allows many of each.
   const linkedTypes = new Set(accounts.map((a) => a.type));
   // `method` is Privy's own loginMethod id, used to check whether the provider
   // is actually enabled for this app. Offering a disabled provider produces a
@@ -281,7 +281,7 @@ export function LinkedAccounts() {
   const MULTI_LINKABLE = new Set(["wallet", "passkey"]);
   // Keep providers that aren't enabled yet, but render them disabled with an
   // explanation. Hiding them entirely leaves no discoverable way to add socials
-  // — the reader can't tell whether the demo lacks the feature or the app lacks
+  // - the reader can't tell whether the demo lacks the feature or the app lacks
   // the config. Showing them greyed out makes the next step obvious.
   const availableLinks = linkActions
     .filter((a) => MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type))
@@ -375,7 +375,7 @@ export function LinkedAccounts() {
               ) : (
                 <span
                   key={action.type}
-                  title={`Enable ${action.label} in the Privy dashboard (Login methods) and reload — no code change needed`}
+                  title={`Enable ${action.label} in the Privy dashboard (Login methods) and reload - no code change needed`}
                   className="text-xs px-3 py-1.5 rounded-lg bg-ink-400/15 border border-dashed border-ink-400/60 text-ink-300 cursor-not-allowed"
                 >
                   + {action.label}
@@ -396,7 +396,7 @@ export function LinkedAccounts() {
               >
                 Privy dashboard
               </a>{" "}
-              under <em>Login methods</em>, then reload — this list reads your app
+              under <em>Login methods</em>, then reload - this list reads your app
               config, so no code change is needed. Linking a provider that&apos;s
               disabled there rejects with{" "}
               <code className="text-ink-100">

@@ -5,7 +5,7 @@
  * (formono/apps/frontend/src/styles/formo-ui-build.css) so this example reads
  * as part of the same product rather than a generic dark demo.
  *
- * `lemon` is the brand primary — used sparingly, on near-black, always with
+ * `lemon` is the brand primary - used sparingly, on near-black, always with
  * dark text on top. `ink` is Formo's neutral ramp (its `black-*` scale, renamed
  * here so it doesn't collide with Tailwind's own `black`).
  */

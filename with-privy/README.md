@@ -81,7 +81,7 @@ src/
 
 ## Account Linking & Identity Clustering
 
-A Privy user is **one account (a DID) with many linked accounts** — an embedded
+A Privy user is **one account (a DID) with many linked accounts** - an embedded
 wallet, external wallets they connect over time, an email, socials, passkeys.
 Without help, each wallet address looks like a separate Formo user, so an
 8-wallet Privy user fragments into 8 users.

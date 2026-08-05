@@ -83,7 +83,7 @@ export default function Home() {
   // `activeAddress` pins event attribution to the wallet that is actually
   // active in wagmi; the other linked wallets are recorded for clustering only.
   //
-  // `user` is reactive, so this re-runs on login and on every link/unlink — no
+  // `user` is reactive, so this re-runs on login and on every link/unlink - no
   // manual re-identify is needed from the linking UI. Calling identify from a
   // link callback would run against a possibly pre-link `user` and emit a
   // redundant, out-of-order identify just before this effect emits the correct
@@ -92,12 +92,27 @@ export default function Home() {
   // Depend on `wallets[0]?.address`, not the `wallets` array: useWallets()
   // returns a new array reference on many renders, which would re-run this on
   // every render.
+  //
+  // The branch below is the pattern for any app where some sessions are Privy
+  // and some aren't - including this one, since a browser wallet can be
+  // connected through wagmi before the user ever logs into Privy. Check `user`
+  // FIRST: a Privy session usually also has a wagmi `address`, so testing the
+  // address first would send Privy users down the single-address path and lose
+  // the clustering entirely. `else if`, not a second `if`, so a Privy user
+  // doesn't also emit a redundant identify for the connected wallet with no DID
+  // attached.
   const activeWalletAddress = address ?? wallets[0]?.address;
   useEffect(() => {
-    if (!user || !formo) return;
+    if (!formo) return;
 
-    formo.identify(user, { activeAddress: activeWalletAddress });
-  }, [user, formo, activeWalletAddress]);
+    if (user) {
+      // Privy session: every linked wallet, under the user's DID.
+      formo.identify(user, { activeAddress: activeWalletAddress });
+    } else if (address) {
+      // Plain wallet session: just the connected address.
+      formo.identify({ address });
+    }
+  }, [user, formo, address, activeWalletAddress]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)
   const handleSignMessage = () => {
