@@ -3,7 +3,7 @@
 import { usePrivy, useLinkAccount } from "@privy-io/react-auth";
 import { parsePrivyProperties } from "@formo/analytics";
 import { useState } from "react";
-import { isLoginMethodEnabled } from "@/config/privy";
+import { useLinkableMethods } from "@/config/privy";
 
 /**
  * A linked account as it appears in `user.linkedAccounts`.
@@ -123,6 +123,11 @@ function accountValue(account: LinkedAccount): string {
 
 export function LinkedAccounts() {
   const privy = usePrivy();
+  // What this app can actually link, read from Privy's app config rather than
+  // assumed from `loginMethods` — the two are independent.
+  const linkable = useLinkableMethods(
+    process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ""
+  );
   const { user, authenticated } = privy;
   const [status, setStatus] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
@@ -280,7 +285,9 @@ export function LinkedAccounts() {
   // the config. Showing them greyed out makes the next step obvious.
   const availableLinks = linkActions
     .filter((a) => MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type))
-    .map((a) => ({ ...a, enabled: isLoginMethodEnabled(a.method) }));
+    // While the config is loading, treat everything as enabled rather than
+    // flashing 15 greyed-out buttons.
+    .map((a) => ({ ...a, enabled: linkable === null || linkable.has(a.method) }));
   const disabledCount = availableLinks.filter((a) => !a.enabled).length;
 
   // Exactly what the SDK derives from this user and sends with identify().
@@ -368,7 +375,7 @@ export function LinkedAccounts() {
               ) : (
                 <span
                   key={action.type}
-                  title={`Enable ${action.label} in the Privy dashboard, then add "${action.method}" to PRIVY_LOGIN_METHODS`}
+                  title={`Enable ${action.label} in the Privy dashboard (Login methods) and reload — no code change needed`}
                   className="text-xs px-3 py-1.5 rounded-lg bg-gray-800/40 border border-dashed border-gray-700 text-gray-600 cursor-not-allowed"
                 >
                   + {action.label}
@@ -380,7 +387,7 @@ export function LinkedAccounts() {
             <p className="text-gray-500 text-xs mt-2">
               {disabledCount} provider{disabledCount === 1 ? " is" : "s are"}{" "}
               greyed out because {disabledCount === 1 ? "it isn't" : "they aren't"}{" "}
-              enabled for this app. To link socials, enable them in the{" "}
+              enabled for this app in Privy. To link socials, enable them in the{" "}
               <a
                 href="https://dashboard.privy.io"
                 target="_blank"
@@ -389,10 +396,15 @@ export function LinkedAccounts() {
               >
                 Privy dashboard
               </a>{" "}
-              and add them to <code className="text-gray-400">PRIVY_LOGIN_METHODS</code>{" "}
-              in <code className="text-gray-400">src/config/privy.ts</code>. Calling a
-              disabled provider&apos;s link method fails at runtime, so the demo
-              doesn&apos;t offer it as a working button.
+              under <em>Login methods</em>, then reload — this list reads your app
+              config, so no code change is needed. Linking a provider that&apos;s
+              disabled there rejects with{" "}
+              <code className="text-gray-400">
+                &quot;Login with X not allowed&quot;
+              </code>{" "}
+              as an unhandled rejection (it never reaches{" "}
+              <code className="text-gray-400">onError</code>), which is why the
+              demo disables the button rather than letting it fail silently.
             </p>
           )}
 
