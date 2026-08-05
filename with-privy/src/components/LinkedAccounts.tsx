@@ -274,13 +274,14 @@ export function LinkedAccounts() {
     { type: "telegram", method: "telegram", label: "Telegram", run: () => linkTelegram() },
   ];
   const MULTI_LINKABLE = new Set(["wallet", "passkey"]);
-  const availableLinks = linkActions.filter(
-    (a) =>
-      // Enabled in the Privy dashboard for this app…
-      isLoginMethodEnabled(a.method) &&
-      // …and either repeatable, or not already linked.
-      (MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type))
-  );
+  // Keep providers that aren't enabled yet, but render them disabled with an
+  // explanation. Hiding them entirely leaves no discoverable way to add socials
+  // — the reader can't tell whether the demo lacks the feature or the app lacks
+  // the config. Showing them greyed out makes the next step obvious.
+  const availableLinks = linkActions
+    .filter((a) => MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type))
+    .map((a) => ({ ...a, enabled: isLoginMethodEnabled(a.method) }));
+  const disabledCount = availableLinks.filter((a) => !a.enabled).length;
 
   // Exactly what the SDK derives from this user and sends with identify().
   const { properties, wallets } = parsePrivyProperties(user);
@@ -355,8 +356,8 @@ export function LinkedAccounts() {
         <div>
           <h3 className="text-white font-medium mb-2 text-sm">Link another</h3>
           <div className="flex flex-wrap gap-2">
-            {availableLinks.length > 0 ? (
-              availableLinks.map((action) => (
+            {availableLinks.map((action) =>
+              action.enabled ? (
                 <button
                   key={action.type}
                   onClick={action.run}
@@ -364,27 +365,36 @@ export function LinkedAccounts() {
                 >
                   + {action.label}
                 </button>
-              ))
-            ) : (
-              <p className="text-gray-500 text-xs">
-                Everything enabled for this app is already linked. Enable more
-                login methods in the{" "}
-                <a
-                  href="https://dashboard.privy.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-400 hover:underline"
+              ) : (
+                <span
+                  key={action.type}
+                  title={`Enable ${action.label} in the Privy dashboard, then add "${action.method}" to PRIVY_LOGIN_METHODS`}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-800/40 border border-dashed border-gray-700 text-gray-600 cursor-not-allowed"
                 >
-                  Privy dashboard
-                </a>{" "}
-                and add them to <code>PRIVY_LOGIN_METHODS</code>.
-              </p>
+                  + {action.label}
+                </span>
+              )
             )}
           </div>
-          <p className="text-gray-500 text-xs mt-2">
-            Only methods enabled for this app are offered — linking a provider
-            that&apos;s disabled in the Privy dashboard fails at runtime.
-          </p>
+          {disabledCount > 0 && (
+            <p className="text-gray-500 text-xs mt-2">
+              {disabledCount} provider{disabledCount === 1 ? " is" : "s are"}{" "}
+              greyed out because {disabledCount === 1 ? "it isn't" : "they aren't"}{" "}
+              enabled for this app. To link socials, enable them in the{" "}
+              <a
+                href="https://dashboard.privy.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-400 hover:underline"
+              >
+                Privy dashboard
+              </a>{" "}
+              and add them to <code className="text-gray-400">PRIVY_LOGIN_METHODS</code>{" "}
+              in <code className="text-gray-400">src/config/privy.ts</code>. Calling a
+              disabled provider&apos;s link method fails at runtime, so the demo
+              doesn&apos;t offer it as a working button.
+            </p>
+          )}
 
           <h3 className="text-white font-medium mt-6 mb-2 text-sm">
             identify() payload
