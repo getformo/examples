@@ -8,6 +8,7 @@ import { sepolia, mainnet, polygon, arbitrum, optimism, base } from "viem/chains
 import { ReactNode, useState } from "react";
 
 import { wagmiConfig } from "@/config/wagmi";
+import { PRIVY_LOGIN_METHODS } from "@/config/privy";
 
 const supportedChains = [mainnet, sepolia, polygon, arbitrum, optimism, base];
 
@@ -65,11 +66,16 @@ export function Providers({ children }: { children: ReactNode }) {
       appId={privyAppId}
       config={{
         appearance: {
-          theme: "dark",
-          accentColor: "#6366f1",
+          // Match Formo's palette so Privy's own modals and the UserPill don't
+          // read as a different product: lemon accent on Formo's near-black.
+          // Values mirror --color-lemon-500 / --color-ink-500 in globals.css.
+          theme: "#030712",
+          accentColor: "#C1F005",
           showWalletLoginFirst: true,
         },
-        loginMethods: ["wallet", "email"],
+        // Single source of truth, shared with the account-linking UI so it only
+        // offers providers this app actually has enabled.
+        loginMethods: [...PRIVY_LOGIN_METHODS],
         embeddedWallets: {
           ethereum: {
             createOnLogin: "users-without-wallets",
