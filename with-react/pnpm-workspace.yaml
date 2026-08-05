@@ -39,7 +39,12 @@ overrides:
   # css-select-base-adapter, so forcing 1.x -> 2.x breaks the CRA build. The
   # 1.x advisory has no patched release (the line is EOL) and is build-only.
   svgo@>=2.0.0 <2.8.3: ^2.8.3
-  webpack-dev-server@<5.2.6: ^5.2.6
+  # Scoped to the 5.x line, same reasoning as svgo above: react-scripts 5.0.1
+  # depends on webpack-dev-server ^4.6.0 and calls onAfterSetupMiddleware,
+  # which v5 removed, so forcing 4.x -> 5.x makes `react-scripts start` fail
+  # with an options-schema error. The 4.x advisories have no patched release
+  # (the line is EOL) and affect the dev server only, never the build output.
+  webpack-dev-server@>=5.0.0 <5.2.6: ^5.2.6
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

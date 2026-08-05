@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.33.1",
+    "@formo/analytics": "^1.34.1",
     "@tanstack/react-query": "latest",
     "accounts": "latest",
     "autoprefixer": "^10.5.4",

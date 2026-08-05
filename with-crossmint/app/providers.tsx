@@ -29,8 +29,8 @@ const customAppearance = {
 };
 
 /**
- * Small fallback shown when the Crossmint API key is missing, so the app
- * (and `next build`) never crash on a fresh clone.
+ * Small fallback shown when the Crossmint API key is missing or clearly not a
+ * Crossmint key, so the app (and `next build`) never crash on a fresh clone.
  */
 function ConfigError() {
   return (
@@ -53,7 +53,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const crossmintApiKey = process.env.NEXT_PUBLIC_CROSSMINT_API_KEY;
   const formoWriteKey = process.env.NEXT_PUBLIC_FORMO_WRITE_KEY;
 
-  if (!crossmintApiKey) {
+  // Crossmint client keys are `ck_`-prefixed and cryptographically signed, so
+  // a placeholder can never be valid. Check the shape as well as presence:
+  // without this, a stand-in value (CI fills empty vars with `ci_test_key`)
+  // passes the truthiness check and then fails signature validation while
+  // Next prerenders the page, failing the build rather than rendering this
+  // fallback.
+  if (!crossmintApiKey?.startsWith("ck_")) {
     return <ConfigError />;
   }
 
