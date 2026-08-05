@@ -3,6 +3,7 @@
 import { usePrivy, useLinkAccount } from "@privy-io/react-auth";
 import { parsePrivyProperties } from "@formo/analytics";
 import { useState } from "react";
+import { isLoginMethodEnabled } from "@/config/privy";
 
 /**
  * A linked account as it appears in `user.linkedAccounts`.
@@ -247,26 +248,38 @@ export function LinkedAccounts() {
   // Only offer link buttons for account types the user hasn't linked yet.
   // Wallets and passkeys are the exception — Privy allows many of each.
   const linkedTypes = new Set(accounts.map((a) => a.type));
-  const linkActions: Array<{ type: string; label: string; run: () => void }> = [
-    { type: "wallet", label: "Wallet", run: () => linkWallet() },
-    { type: "email", label: "Email", run: linkEmail },
-    { type: "phone", label: "Phone", run: linkPhone },
-    { type: "passkey", label: "Passkey", run: () => linkPasskey() },
-    { type: "google_oauth", label: "Google", run: linkGoogle },
-    { type: "twitter_oauth", label: "X (Twitter)", run: linkTwitter },
-    { type: "discord_oauth", label: "Discord", run: linkDiscord },
-    { type: "github_oauth", label: "GitHub", run: linkGithub },
-    { type: "apple_oauth", label: "Apple", run: linkApple },
-    { type: "linkedin_oauth", label: "LinkedIn", run: linkLinkedIn },
-    { type: "spotify_oauth", label: "Spotify", run: linkSpotify },
-    { type: "tiktok_oauth", label: "TikTok", run: linkTiktok },
-    { type: "instagram_oauth", label: "Instagram", run: linkInstagram },
-    { type: "farcaster", label: "Farcaster", run: linkFarcaster },
-    { type: "telegram", label: "Telegram", run: () => linkTelegram() },
+  // `method` is Privy's own loginMethod id, used to check whether the provider
+  // is actually enabled for this app. Offering a disabled provider produces a
+  // button that simply fails when clicked.
+  const linkActions: Array<{
+    type: string;
+    method: string;
+    label: string;
+    run: () => void;
+  }> = [
+    { type: "wallet", method: "wallet", label: "Wallet", run: () => linkWallet() },
+    { type: "email", method: "email", label: "Email", run: linkEmail },
+    { type: "phone", method: "sms", label: "Phone", run: linkPhone },
+    { type: "passkey", method: "passkey", label: "Passkey", run: () => linkPasskey() },
+    { type: "google_oauth", method: "google", label: "Google", run: linkGoogle },
+    { type: "twitter_oauth", method: "twitter", label: "X (Twitter)", run: linkTwitter },
+    { type: "discord_oauth", method: "discord", label: "Discord", run: linkDiscord },
+    { type: "github_oauth", method: "github", label: "GitHub", run: linkGithub },
+    { type: "apple_oauth", method: "apple", label: "Apple", run: linkApple },
+    { type: "linkedin_oauth", method: "linkedin", label: "LinkedIn", run: linkLinkedIn },
+    { type: "spotify_oauth", method: "spotify", label: "Spotify", run: linkSpotify },
+    { type: "tiktok_oauth", method: "tiktok", label: "TikTok", run: linkTiktok },
+    { type: "instagram_oauth", method: "instagram", label: "Instagram", run: linkInstagram },
+    { type: "farcaster", method: "farcaster", label: "Farcaster", run: linkFarcaster },
+    { type: "telegram", method: "telegram", label: "Telegram", run: () => linkTelegram() },
   ];
   const MULTI_LINKABLE = new Set(["wallet", "passkey"]);
   const availableLinks = linkActions.filter(
-    (a) => MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type)
+    (a) =>
+      // Enabled in the Privy dashboard for this app…
+      isLoginMethodEnabled(a.method) &&
+      // …and either repeatable, or not already linked.
+      (MULTI_LINKABLE.has(a.type) || !linkedTypes.has(a.type))
   );
 
   // Exactly what the SDK derives from this user and sends with identify().
@@ -342,26 +355,61 @@ export function LinkedAccounts() {
         <div>
           <h3 className="text-white font-medium mb-2 text-sm">Link another</h3>
           <div className="flex flex-wrap gap-2">
-            {availableLinks.map((action) => (
-              <button
-                key={action.type}
-                onClick={action.run}
-                className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/50 border border-gray-600 text-gray-200 hover:bg-gray-700 hover:border-purple-500 transition-colors"
-              >
-                + {action.label}
-              </button>
-            ))}
+            {availableLinks.length > 0 ? (
+              availableLinks.map((action) => (
+                <button
+                  key={action.type}
+                  onClick={action.run}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/50 border border-gray-600 text-gray-200 hover:bg-gray-700 hover:border-purple-500 transition-colors"
+                >
+                  + {action.label}
+                </button>
+              ))
+            ) : (
+              <p className="text-gray-500 text-xs">
+                Everything enabled for this app is already linked. Enable more
+                login methods in the{" "}
+                <a
+                  href="https://dashboard.privy.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:underline"
+                >
+                  Privy dashboard
+                </a>{" "}
+                and add them to <code>PRIVY_LOGIN_METHODS</code>.
+              </p>
+            )}
           </div>
+          <p className="text-gray-500 text-xs mt-2">
+            Only methods enabled for this app are offered — linking a provider
+            that&apos;s disabled in the Privy dashboard fails at runtime.
+          </p>
 
           <h3 className="text-white font-medium mt-6 mb-2 text-sm">
             identify() payload
           </h3>
           <p className="text-gray-500 text-xs mb-2">
-            Parsed from <code>user.linkedAccounts</code> by the SDK and sent with
-            every wallet&apos;s identify.
+            What the SDK sends for <strong>each</strong> of the {wallets.length}{" "}
+            linked wallet{wallets.length === 1 ? "" : "s"}: the shared profile
+            parsed from <code>user.linkedAccounts</code>, plus that
+            wallet&apos;s own metadata.
           </p>
-          <pre className="bg-gray-900/70 rounded-lg p-3 text-xs text-gray-300 overflow-x-auto max-h-64">
-            {JSON.stringify(properties, null, 2)}
+          <pre className="bg-gray-900/70 rounded-lg p-3 text-xs text-gray-300 overflow-x-auto max-h-72">
+            {JSON.stringify(
+              wallets.map((w) => ({
+                address: w.address,
+                userId: user.id,
+                properties: {
+                  ...properties,
+                  is_embedded: w.isEmbedded,
+                  ...(w.walletClient ? { wallet_client: w.walletClient } : {}),
+                  ...(w.chainType ? { chain_type: w.chainType } : {}),
+                },
+              })),
+              null,
+              2
+            )}
           </pre>
         </div>
       </div>

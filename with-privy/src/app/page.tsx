@@ -1,6 +1,7 @@
 "use client";
 
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { UserPill } from "@privy-io/react-auth/ui";
 import { useSetActiveWallet } from "@privy-io/wagmi";
 import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction } from "wagmi";
 import { formatUnits } from "viem";
@@ -70,16 +71,6 @@ export default function Home() {
     setCustomEventSent(true);
     setTimeout(() => setCustomEventSent(false), 2000);
     setCustomEventName("");
-  };
-
-  // Handle page view tracking
-  const handleTrackPageView = async () => {
-    if (!formo) return;
-
-    await formo.page("demo", "wallet_demo", {
-      walletConnected: isConnected,
-      address: address || "not_connected",
-    });
   };
 
   // Identify every wallet linked to the Privy user under that user's DID.
@@ -174,19 +165,20 @@ export default function Home() {
               Use Privy to connect your wallet or create an embedded wallet.
               Formo will automatically track wallet events via wagmi integration.
             </p>
-            {authenticated ? (
+            {/* Privy's prebuilt account UI: renders a login button when logged
+                out, and the connected account with its management menu when
+                logged in. https://docs.privy.io/guide/react/recipes/user-pill */}
+            <UserPill
+              action={{ type: "login" }}
+              expanded
+              ui={{ background: "accent" }}
+            />
+            {authenticated && (
               <button
                 onClick={logout}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                className="mt-3 w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 Disconnect
-              </button>
-            ) : (
-              <button
-                onClick={login}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Connect Wallet
               </button>
             )}
           </div>
@@ -276,13 +268,6 @@ export default function Home() {
               Manually trigger Formo events. Wallet events are auto-tracked.
             </p>
             <div className="space-y-3">
-              <button
-                onClick={handleTrackPageView}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Track Page View
-              </button>
-
               <div className="flex gap-2">
                 <input
                   type="text"

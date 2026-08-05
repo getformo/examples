@@ -8,6 +8,7 @@ import { sepolia, mainnet, polygon, arbitrum, optimism, base } from "viem/chains
 import { ReactNode, useState } from "react";
 
 import { wagmiConfig } from "@/config/wagmi";
+import { PRIVY_LOGIN_METHODS } from "@/config/privy";
 
 const supportedChains = [mainnet, sepolia, polygon, arbitrum, optimism, base];
 
@@ -69,7 +70,9 @@ export function Providers({ children }: { children: ReactNode }) {
           accentColor: "#6366f1",
           showWalletLoginFirst: true,
         },
-        loginMethods: ["wallet", "email"],
+        // Single source of truth, shared with the account-linking UI so it only
+        // offers providers this app actually has enabled.
+        loginMethods: [...PRIVY_LOGIN_METHODS],
         embeddedWallets: {
           ethereum: {
             createOnLogin: "users-without-wallets",
