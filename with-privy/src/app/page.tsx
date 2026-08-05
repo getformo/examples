@@ -11,7 +11,7 @@ import { LinkedAccounts } from "@/components/LinkedAccounts";
 
 export default function Home() {
   const { ready, authenticated, login, logout, user } = usePrivy();
-  const { wallets, ready: walletsReady } = useWallets();
+  const { wallets } = useWallets();
   const { setActiveWallet } = useSetActiveWallet();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
@@ -80,46 +80,38 @@ export default function Home() {
   // parsed from the linked accounts (email, phone, socials, …) plus per-wallet
   // metadata. Formo clusters them into a single user server-side.
   //
-  // `activeAddress` pins event attribution to the wallet that is actually
-  // active in wagmi; the other linked wallets are recorded for clustering only.
-  //
   // `user` is reactive, so this re-runs on login and on every link/unlink - no
   // manual re-identify is needed from the linking UI. Calling identify from a
   // link callback would run against a possibly pre-link `user` and emit a
   // redundant, out-of-order identify just before this effect emits the correct
   // one.
   //
-  // Depend on `wallets[0]?.address`, not the `wallets` array: useWallets()
-  // returns a new array reference on many renders, which would re-run this on
-  // every render.
-  //
   // The branch below is the pattern for any app where some sessions are Privy
-  // and some aren't - including this one, since a browser wallet can be
+  // and some aren't, including this one, since a browser wallet can be
   // connected through wagmi before the user ever logs into Privy. Check `user`
   // FIRST: a Privy session usually also has a wagmi `address`, so testing the
   // address first would send Privy users down the single-address path and lose
   // the clustering entirely. `else if`, not a second `if`, so a Privy user
   // doesn't also emit a redundant identify for the connected wallet with no DID
   // attached.
-  const activeWalletAddress = address ?? wallets[0]?.address;
+  //
+  // No `activeAddress` is passed. identify() runs before the wagmi connect
+  // event on first load, so the active wallet can briefly resolve to Privy's
+  // primary, but identify() applies its active-wallet promotion before the
+  // dedup check, so the next run corrects attribution even though the events
+  // themselves dedupe. Pinning it would mean gating on useWallets().ready,
+  // which risks never identifying at all if that flag never flips.
   useEffect(() => {
     if (!formo) return;
-    // Wait for Privy to finish discovering wallets. `user` can be ready before
-    // `wallets` is populated, and identifying in that window resolves no active
-    // address, so attribution falls back to `user.wallet` (usually the embedded
-    // wallet) rather than the external wallet the user is actually transacting
-    // with. The effect re-runs once wallets load, but events emitted in between
-    // would already be attributed to the wrong wallet.
-    if (!walletsReady) return;
 
     if (user) {
       // Privy session: every linked wallet, under the user's DID.
-      formo.identify(user, { activeAddress: activeWalletAddress });
+      formo.identify(user);
     } else if (address) {
       // Plain wallet session: just the connected address.
       formo.identify({ address });
     }
-  }, [user, formo, address, activeWalletAddress, walletsReady]);
+  }, [user, formo, address]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)
   const handleSignMessage = () => {
