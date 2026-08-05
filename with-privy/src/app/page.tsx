@@ -11,7 +11,7 @@ import { LinkedAccounts } from "@/components/LinkedAccounts";
 
 export default function Home() {
   const { ready, authenticated, login, logout, user } = usePrivy();
-  const { wallets } = useWallets();
+  const { wallets, ready: walletsReady } = useWallets();
   const { setActiveWallet } = useSetActiveWallet();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
@@ -104,6 +104,13 @@ export default function Home() {
   const activeWalletAddress = address ?? wallets[0]?.address;
   useEffect(() => {
     if (!formo) return;
+    // Wait for Privy to finish discovering wallets. `user` can be ready before
+    // `wallets` is populated, and identifying in that window resolves no active
+    // address, so attribution falls back to `user.wallet` (usually the embedded
+    // wallet) rather than the external wallet the user is actually transacting
+    // with. The effect re-runs once wallets load, but events emitted in between
+    // would already be attributed to the wrong wallet.
+    if (!walletsReady) return;
 
     if (user) {
       // Privy session: every linked wallet, under the user's DID.
@@ -112,7 +119,7 @@ export default function Home() {
       // Plain wallet session: just the connected address.
       formo.identify({ address });
     }
-  }, [user, formo, address, activeWalletAddress]);
+  }, [user, formo, address, activeWalletAddress, walletsReady]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)
   const handleSignMessage = () => {
