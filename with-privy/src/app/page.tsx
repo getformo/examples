@@ -75,7 +75,7 @@ export default function Home() {
 
   // Identify every wallet linked to the Privy user under that user's DID.
   //
-  // `{ privy: true }` expands `user.linkedAccounts` for us: one identify per
+  // Passing the Privy user expands `user.linkedAccounts` for us: one identify per
   // linked wallet, each tagged with `user.id`, carrying the profile properties
   // parsed from the linked accounts (email, phone, socials, …) plus per-wallet
   // metadata. Formo clusters them into a single user server-side.
@@ -96,10 +96,7 @@ export default function Home() {
   useEffect(() => {
     if (!user || !formo) return;
 
-    formo.identify(user, {
-      privy: true,
-      activeAddress: activeWalletAddress,
-    });
+    formo.identify(user, { activeAddress: activeWalletAddress });
   }, [user, formo, activeWalletAddress]);
 
   // Handle sign message (Formo automatically tracks this via wagmi integration)

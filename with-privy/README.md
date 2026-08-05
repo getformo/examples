@@ -86,9 +86,9 @@ wallet, external wallets they connect over time, an email, socials, passkeys.
 Without help, each wallet address looks like a separate Formo user, so an
 8-wallet Privy user fragments into 8 users.
 
-The SDK solves this in one call. Pass the `usePrivy()` user with
-`{ privy: true }` and it identifies **every** linked wallet under that user's
-DID, so Formo clusters them server-side:
+The SDK solves this in one call. Pass the `usePrivy()` user straight to
+`identify()` and it identifies **every** linked wallet under that user's DID,
+so Formo clusters them server-side:
 
 ```typescript
 import { useFormo } from "@formo/analytics";
@@ -105,12 +105,9 @@ const activeWalletAddress = wallets[0]?.address;
 useEffect(() => {
   if (!user || !formo) return;
 
-  formo.identify(user, {
-    privy: true,
-    // Optional: pin event attribution to the wallet active in wagmi.
-    // Other linked wallets are recorded for clustering only.
-    activeAddress: activeWalletAddress,
-  });
+  // activeAddress is optional: it pins event attribution to the wallet
+  // active in wagmi. Other linked wallets are recorded for clustering only.
+  formo.identify(user, { activeAddress: activeWalletAddress });
 }, [user, formo, activeWalletAddress]);
 ```
 
