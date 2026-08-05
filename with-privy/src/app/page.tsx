@@ -342,7 +342,7 @@ export default function Home() {
           <LinkedAccounts />
 
           {/* Auto-tracked Events Info Card */}
-          <div className="bg-ink-400/25 backdrop-blur rounded-xl p-6 border border-ink-400/60 md:col-span-2">
+          <div className="bg-ink-400/25 backdrop-blur rounded-xl p-6 border border-ink-400/60 md:col-span-2 lg:col-span-3">
             <h2 className="text-xl font-semibold text-white mb-4">Auto-tracked Events</h2>
             <p className="text-ink-100 text-sm mb-4">
               The following events are automatically captured by Formo when using the wagmi integration:
