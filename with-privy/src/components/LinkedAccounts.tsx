@@ -169,11 +169,11 @@ export function LinkedAccounts() {
 
   if (!authenticated || !user) {
     return (
-      <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700 md:col-span-2">
+      <div className="bg-ink-400/25 backdrop-blur rounded-xl p-6 border border-ink-400/60 md:col-span-2">
         <h2 className="text-xl font-semibold text-white mb-2">
           Linked Accounts
         </h2>
-        <p className="text-gray-400 text-sm">
+        <p className="text-ink-100 text-sm">
           Log in to link additional accounts and wallets to your Privy user.
         </p>
       </div>
@@ -294,18 +294,18 @@ export function LinkedAccounts() {
   const { properties, wallets } = parsePrivyProperties(user);
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700 md:col-span-2">
+    <div className="bg-ink-400/25 backdrop-blur rounded-xl p-6 border border-ink-400/60 md:col-span-2">
       <h2 className="text-xl font-semibold text-white mb-1">Linked Accounts</h2>
-      <p className="text-gray-400 text-sm mb-4">
+      <p className="text-ink-100 text-sm mb-4">
         Every account linked here belongs to one Privy user (
-        <code className="text-purple-300">{user.id}</code>). Formo identifies all{" "}
+        <code className="text-lemon-300">{user.id}</code>). Formo identifies all{" "}
         {wallets.length} linked wallet{wallets.length === 1 ? "" : "s"} under
         that DID, so they cluster into a single user instead of{" "}
         {wallets.length} separate ones.
       </p>
 
       {status && (
-        <p className="text-sm text-purple-300 mb-4 bg-purple-500/10 border border-purple-500/30 rounded-lg px-3 py-2">
+        <p className="text-sm text-lemon-300 mb-4 bg-lemon-500/10 border border-lemon-500/30 rounded-lg px-3 py-2">
           {status}
         </p>
       )}
@@ -324,13 +324,13 @@ export function LinkedAccounts() {
               return (
                 <div
                   key={`${key}-${index}`}
-                  className="flex items-center justify-between gap-3 bg-gray-700/50 rounded-lg px-3 py-2"
+                  className="flex items-center justify-between gap-3 bg-ink-400/25 rounded-lg px-3 py-2"
                 >
                   <div className="min-w-0">
-                    <span className="text-gray-300 text-xs block">
+                    <span className="text-ink-50 text-xs block">
                       {TYPE_LABELS[account.type] ?? account.type}
                       {isWallet && account.walletClientType === "privy" && (
-                        <span className="ml-2 text-blue-300">embedded</span>
+                        <span className="ml-2 text-lemon-300">embedded</span>
                       )}
                     </span>
                     <span className="text-white text-sm font-mono break-all">
@@ -349,7 +349,7 @@ export function LinkedAccounts() {
                           ? "Unlink this account"
                           : "Privy requires at least one linked account"
                     }
-                    className="shrink-0 text-xs px-2 py-1 rounded border border-red-500/40 text-red-300 hover:bg-red-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="shrink-0 text-xs px-2 py-1 rounded border border-danger/40 text-danger hover:bg-danger/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     {pending === key ? "…" : "Unlink"}
                   </button>
@@ -368,7 +368,7 @@ export function LinkedAccounts() {
                 <button
                   key={action.type}
                   onClick={action.run}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/50 border border-gray-600 text-gray-200 hover:bg-gray-700 hover:border-purple-500 transition-colors"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-ink-400/25 border border-ink-400 text-ink-50 hover:bg-ink-400/50 hover:border-lemon-500 transition-colors"
                 >
                   + {action.label}
                 </button>
@@ -376,7 +376,7 @@ export function LinkedAccounts() {
                 <span
                   key={action.type}
                   title={`Enable ${action.label} in the Privy dashboard (Login methods) and reload — no code change needed`}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-800/40 border border-dashed border-gray-700 text-gray-600 cursor-not-allowed"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-ink-400/15 border border-dashed border-ink-400/60 text-ink-300 cursor-not-allowed"
                 >
                   + {action.label}
                 </span>
@@ -384,7 +384,7 @@ export function LinkedAccounts() {
             )}
           </div>
           {disabledCount > 0 && (
-            <p className="text-gray-500 text-xs mt-2">
+            <p className="text-ink-200 text-xs mt-2">
               {disabledCount} provider{disabledCount === 1 ? " is" : "s are"}{" "}
               greyed out because {disabledCount === 1 ? "it isn't" : "they aren't"}{" "}
               enabled for this app in Privy. To link socials, enable them in the{" "}
@@ -392,18 +392,18 @@ export function LinkedAccounts() {
                 href="https://dashboard.privy.io"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-purple-400 hover:underline"
+                className="text-lemon-500 hover:underline"
               >
                 Privy dashboard
               </a>{" "}
               under <em>Login methods</em>, then reload — this list reads your app
               config, so no code change is needed. Linking a provider that&apos;s
               disabled there rejects with{" "}
-              <code className="text-gray-400">
+              <code className="text-ink-100">
                 &quot;Login with X not allowed&quot;
               </code>{" "}
               as an unhandled rejection (it never reaches{" "}
-              <code className="text-gray-400">onError</code>), which is why the
+              <code className="text-ink-100">onError</code>), which is why the
               demo disables the button rather than letting it fail silently.
             </p>
           )}
@@ -411,13 +411,13 @@ export function LinkedAccounts() {
           <h3 className="text-white font-medium mt-6 mb-2 text-sm">
             identify() payload
           </h3>
-          <p className="text-gray-500 text-xs mb-2">
+          <p className="text-ink-200 text-xs mb-2">
             What the SDK sends for <strong>each</strong> of the {wallets.length}{" "}
             linked wallet{wallets.length === 1 ? "" : "s"}: the shared profile
             parsed from <code>user.linkedAccounts</code>, plus that
             wallet&apos;s own metadata.
           </p>
-          <pre className="bg-gray-900/70 rounded-lg p-3 text-xs text-gray-300 overflow-x-auto max-h-72">
+          <pre className="bg-ink-900/70 rounded-lg p-3 text-xs text-ink-50 overflow-x-auto max-h-72">
             {JSON.stringify(
               wallets.map((w) => ({
                 address: w.address,

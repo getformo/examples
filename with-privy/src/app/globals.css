@@ -1,12 +1,50 @@
 @import "tailwindcss";
 
+/*
+ * Formo's brand palette, lifted from the app's own design tokens
+ * (formono/apps/frontend/src/styles/formo-ui-build.css) so this example reads
+ * as part of the same product rather than a generic dark demo.
+ *
+ * `lemon` is the brand primary — used sparingly, on near-black, always with
+ * dark text on top. `ink` is Formo's neutral ramp (its `black-*` scale, renamed
+ * here so it doesn't collide with Tailwind's own `black`).
+ */
+@theme {
+  --color-lemon-50: #f9fee6;
+  --color-lemon-100: #ecfab2;
+  --color-lemon-200: #e2f88c;
+  --color-lemon-300: #d5f558;
+  --color-lemon-400: #cdf337;
+  --color-lemon-500: #c1f005;
+  --color-lemon-600: #b0da05;
+  --color-lemon-700: #89aa04;
+  --color-lemon-800: #6a8403;
+  --color-lemon-900: #516502;
+
+  --color-ink-50: #e6e6e7;
+  --color-ink-100: #b1b2b6;
+  --color-ink-200: #8b8d92;
+  --color-ink-300: #565960;
+  --color-ink-400: #353941;
+  --color-ink-500: #030712;
+  --color-ink-600: #030610;
+  --color-ink-700: #02050d;
+  --color-ink-800: #02040a;
+  --color-ink-900: #010308;
+
+  /* Brand secondary and semantic accents, also from Formo's tokens. */
+  --color-forest: #0c373c;
+  --color-safe: #25b24a;
+  --color-danger: #e5484d;
+}
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: var(--color-ink-500);
+  --foreground: var(--color-ink-50);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }

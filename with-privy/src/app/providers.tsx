@@ -66,8 +66,11 @@ export function Providers({ children }: { children: ReactNode }) {
       appId={privyAppId}
       config={{
         appearance: {
-          theme: "dark",
-          accentColor: "#6366f1",
+          // Match Formo's palette so Privy's own modals and the UserPill don't
+          // read as a different product: lemon accent on Formo's near-black.
+          // Values mirror --color-lemon-500 / --color-ink-500 in globals.css.
+          theme: "#030712",
+          accentColor: "#C1F005",
           showWalletLoginFirst: true,
         },
         // Single source of truth, shared with the account-linking UI so it only
