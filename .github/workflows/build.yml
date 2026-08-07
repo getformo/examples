@@ -87,6 +87,11 @@ jobs:
         env:
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
+          # with-thirdweb is temporarily excluded: npm persistently 429s the
+          # deprecated @thirdweb-dev/react-core@4.9.4 tarball for this runner
+          # fleet's shared IP, failing every install (the example builds fine
+          # locally). Re-add it after migrating the example to thirdweb v5 or
+          # adding pnpm store caching so CI stops refetching the tarball.
           FULL='[
             {"name":"with-react","dir":"with-react","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-next-app-router","dir":"with-next-app-router","pm":"pnpm","build":"next:build","node":"22"},
@@ -98,7 +103,6 @@ jobs:
             {"name":"with-tempo","dir":"with-tempo","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-privy","dir":"with-privy","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-reown","dir":"with-reown","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-thirdweb","dir":"with-thirdweb","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22","audit":"critical"},
             {"name":"with-solana","dir":"with-solana","pm":"pnpm","build":"build","node":"22"},
