@@ -36,8 +36,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7
       '@formo/analytics-react-native':
-        specifier: ^1.0.2
-        version: 1.0.2(15246c57f0533038d85bc7fcfc8594c3)
+        specifier: ^1.1.0
+        version: 1.1.0(15246c57f0533038d85bc7fcfc8594c3)
       '@react-native-async-storage/async-storage':
         specifier: ^1.24.0
         version: 1.24.0(react-native@0.76.0(@babel/core@7.29.7)(@babel/preset-env@7.28.6(@babel/core@7.29.7))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
@@ -1027,8 +1027,8 @@ packages:
     resolution: {integrity: sha512-4aQzz9vgxcNXFfo/iyNgDDYfsU5XGKKxWxZopw0cVotHiW+U8IJbIxMaxsINs6bHhtkG3StKNPcOrn3eBuxKPw==}
     hasBin: true
 
-  '@formo/analytics-react-native@1.0.2':
-    resolution: {integrity: sha512-+fGbpGzx8VhJBc6rWzPwZCFVbByx62GnviI0BkF8Tty1+oxvpFW4mTE00E3NefRGd4wVGWGZlNoy0z9nihMU1g==}
+  '@formo/analytics-react-native@1.1.0':
+    resolution: {integrity: sha512-ZO5rSQCj6hFjYijiod+T267TCmA7ORlbr+UYiELd7X6gDBD1/yJb1+S4bkSZ2QxY3Te5Yx4p6+/GBNxyXwrReA==}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.17.0'
       '@tanstack/react-query': '>=5.0.0'
@@ -7693,7 +7693,7 @@ snapshots:
       chalk: 4.1.2
       js-yaml: 4.3.0
 
-  '@formo/analytics-react-native@1.0.2(15246c57f0533038d85bc7fcfc8594c3)':
+  '@formo/analytics-react-native@1.1.0(15246c57f0533038d85bc7fcfc8594c3)':
     dependencies:
       '@react-native-async-storage/async-storage': 1.24.0(react-native@0.76.0(@babel/core@7.29.7)(@babel/preset-env@7.28.6(@babel/core@7.29.7))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))
       '@react-native-community/netinfo': 12.0.1(react-native@0.76.0(@babel/core@7.29.7)(@babel/preset-env@7.28.6(@babel/core@7.29.7))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)
