@@ -8,12 +8,15 @@ minimumReleaseAgeExclude:
   - "@formo/analytics"
   - postcss@8.5.10
   - sharp@0.35.0
-  - next@15.5.21
   - postcss@8.5.12
   - postcss@8.5.18
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # Dedupe: a second copy (7.0.0) arrives via the sdk-react/sdk-server bump
   # and yields two incompatible TurnkeyBrowserClient types at the call site.
   '@turnkey/sdk-browser': '5.16.1'
@@ -21,11 +24,12 @@ overrides:
   # Raised from 8.18.3: as a bare 8.x rule this matched first and shadowed the
   # 'ws@>=8.0.0 <8.21.0' security rule below, pinning ws to a vulnerable build.
   'ws@^8.0.0': '8.21.0'
-  next: '^15.5.21'
+  # Turnkey's current SDK combination is verified against Next 15.
+  next: '^15.5.22'
   'uuid@>=11.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.0: ^0.35.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).

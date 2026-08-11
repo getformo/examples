@@ -25,7 +25,7 @@ A comprehensive example application demonstrating the integration of [Formo Anal
 ## 🛠️ Setup
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 20.9+
 - npm or yarn
 - A Thirdweb Client ID
 - A Formo Analytics Write Key

@@ -1,30 +1,26 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAaveClient } from "@aave/react";
-import { userSupplies as fetchUserSupplies } from "@aave/client/actions";
-import type { MarketUserReserveSupplyPosition } from "@aave/graphql";
+import { useCallback, useEffect, useState } from "react";
+import {
+  chainId,
+  type EvmAddress,
+  type UserSupplyItem,
+  useUserSuppliesAction,
+} from "@aave/react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Aave SDK objects from the upstream recipe, loosely typed
-export function useAaveSupplies(user: any, markets: any) {
-  const aaveClient = useAaveClient();
-  const [userSupplyPositions, setUserSupplyPositions] = useState<MarketUserReserveSupplyPosition[] | undefined>(undefined);
+export function useAaveSupplies(
+  user: EvmAddress | undefined,
+  connectedChainId: number | undefined,
+) {
+  const [fetchUserSupplies] = useUserSuppliesAction();
+  const [userSupplyPositions, setUserSupplyPositions] = useState<
+    UserSupplyItem[] | undefined
+  >(undefined);
   const [suppliesLoading, setSuppliesLoading] = useState(true);
   const [suppliesError, setSuppliesError] = useState<Error | null>(null);
 
   const refreshUserSupplies = useCallback(async () => {
-    if (!aaveClient || !user) {
+    if (!user || !connectedChainId) {
       setUserSupplyPositions(undefined);
       setSuppliesLoading(false);
-      setSuppliesError(null);
-      return;
-    }
-    if (!markets || markets.length === 0) {
-      if (!markets) {
-        setUserSupplyPositions(undefined);
-        setSuppliesLoading(true);
-      } else {
-        setUserSupplyPositions([]);
-        setSuppliesLoading(false);
-      }
       setSuppliesError(null);
       return;
     }
@@ -32,13 +28,13 @@ export function useAaveSupplies(user: any, markets: any) {
     setSuppliesLoading(true);
     setSuppliesError(null);
 
-    const result = await fetchUserSupplies(aaveClient, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Aave SDK market object from the upstream recipe
-      markets: markets.map((market: any) => ({
-        chainId: market.chain.chainId,
-        address: market.address,
-      })),
-      user,
+    const result = await fetchUserSupplies({
+      query: {
+        userChains: {
+          chainIds: [chainId(connectedChainId)],
+          user,
+        },
+      },
     });
 
     if (result.isErr()) {
@@ -50,7 +46,7 @@ export function useAaveSupplies(user: any, markets: any) {
     }
 
     setSuppliesLoading(false);
-  }, [aaveClient, user, markets]);
+  }, [connectedChainId, fetchUserSupplies, user]);
 
   useEffect(() => {
     void refreshUserSupplies();
@@ -60,6 +56,6 @@ export function useAaveSupplies(user: any, markets: any) {
     userSupplyPositions,
     suppliesLoading,
     suppliesError,
-    refreshUserSupplies
+    refreshUserSupplies,
   };
 }

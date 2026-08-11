@@ -6,8 +6,5 @@
   },
   "linter": {
     "enabled": true
-  },
-  "organizeImports": {
-    "enabled": true
   }
 }

@@ -1,5 +1,5 @@
 import { farcasterMiniApp } from "@farcaster/miniapp-wagmi-connector";
-import { http, createConfig } from "wagmi";
+import { createConfig, http } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
 
@@ -7,7 +7,7 @@ import { injected } from "wagmi/connectors";
 const connectors = [
   farcasterMiniApp(),
   // Fallback connector for development/testing outside Farcaster
-  injected()
+  injected(),
 ];
 
 export const config = createConfig({

@@ -1,12 +1,20 @@
-import { useState } from 'react';
-import { useSupply, useWithdraw, evmAddress, bigDecimal } from "@aave/react";
-import { useSendTransaction } from "@aave/react/viem";
-import { useWalletClient, usePublicClient } from "wagmi";
+import { useState } from "react";
+import {
+  bigDecimal,
+  evmAddress,
+  type ReserveId,
+  useSupply,
+  useWithdraw,
+} from "@aave/react";
+import {
+  useSendTransaction,
+  useSignTypedData,
+} from "@aave/react/viem";
+import { usePublicClient, useWalletClient } from "wagmi";
 import { useFormo } from "@formo/analytics";
 
 interface UsdcReserve {
-  marketAddress: string;
-  currencyAddress: string;
+  id: ReserveId;
   chainId: number;
   supplyCapReached: boolean;
 }
@@ -25,178 +33,132 @@ export function useAaveOperations(
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const formo = useFormo();
-  const [supply, supplying] = useSupply();
-  const [withdraw, withdrawing] = useWithdraw();
   const [sendTransaction, sending] = useSendTransaction(walletClient);
+  const [signTypedData, signing] = useSignTypedData(walletClient);
+  const [supply, supplying] = useSupply((plan) => {
+    switch (plan.__typename) {
+      case "TransactionRequest":
+        return sendTransaction(plan);
+      case "Erc20Approval":
+        return plan.bySignature
+          ? signTypedData(plan.bySignature)
+          : sendTransaction(plan.byTransaction);
+      case "PreContractActionRequired":
+        return sendTransaction(plan.transaction);
+    }
+  });
+  const [withdraw, withdrawing] = useWithdraw((plan) => {
+    switch (plan.__typename) {
+      case "TransactionRequest":
+        return sendTransaction(plan);
+      case "PreContractActionRequired":
+        return sendTransaction(plan.transaction);
+    }
+  });
   const [isSupplying, setIsSupplying] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [supplyError, setSupplyError] = useState<string | null>(null);
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
 
   const handleDepositToAave = async () => {
-    if (!walletClient || !walletClient.account?.address || !usdcReserve) {
-      console.error("Missing requirements:", { walletClient: !!walletClient, address: !!walletClient?.account?.address, usdcReserve: !!usdcReserve });
-      return;
-    }
+    if (!walletClient?.account?.address || !usdcReserve) return;
+
     setIsSupplying(true);
     setSupplyError(null);
     try {
-      const supplyResult = await supply({
-        market: evmAddress(usdcReserve.marketAddress),
-        amount: {
-          erc20: {
-            currency: evmAddress(usdcReserve.currencyAddress),
-            value: bigDecimal(0.1), // 0.1 USDC
-          },
-        },
+      const result = await supply({
+        reserve: usdcReserve.id,
+        amount: { erc20: { value: bigDecimal(0.1) } },
         sender: evmAddress(walletClient.account.address),
-        chainId: usdcReserve.chainId,
       });
 
-      if (supplyResult.isErr()) {
-        console.error("Supply preparation failed:", supplyResult.error);
-        setIsSupplying(false);
+      if (result.isErr()) {
+        setSupplyError(result.error.message);
         return;
       }
-      const plan = supplyResult.value;
-      let transactionResult;
-      switch (plan.__typename) {
-        case "TransactionRequest":
-          transactionResult = await sendTransaction(plan);
-          break;
-        case "ApprovalRequired": {
-          const approvalResult = await sendTransaction(plan.approval);
-          if (approvalResult.isErr()) {
-            console.error("Approval failed:", approvalResult.error);
-            setIsSupplying(false);
-            return;
-          }
-          if (publicClient) {
-            await publicClient.waitForTransactionReceipt({ hash: approvalResult.value });
-          }
-          transactionResult = await sendTransaction(plan.originalTransaction);
-          break;
-        }
-        case "InsufficientBalanceError":
-          setIsSupplying(false);
-          return;
-        default:
-          console.error("Unknown plan type:", plan);
-          setIsSupplying(false);
-          return;
+
+      if (!publicClient) {
+        setSupplyError("Unable to confirm the supply transaction");
+        return;
       }
-      if (transactionResult.isErr()) {
-        console.error("Transaction failed:", transactionResult.error);
-      } else {
-        try {
-          if (publicClient) {
-            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
-            if (receipt.status === "success") {
-              // Track a custom Formo event on a successful Aave supply.
-              formo?.track("aave_supply", {
-                asset: "USDC",
-                amount: "0.1",
-                market: usdcReserve.marketAddress,
-                chainId: usdcReserve.chainId,
-                txHash: transactionResult.value,
-              });
-              await refetchUsdcBalance();
-              await refreshUserSupplies();
-            } else {
-              console.error("Supply transaction reverted on-chain");
-            }
-          }
-        } catch (receiptError) {
-          console.error("Waiting for transaction receipt failed:", receiptError);
-        }
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: result.value.txHash,
+      });
+      if (receipt.status !== "success") {
+        setSupplyError("Supply transaction reverted on-chain");
+        return;
       }
+      formo?.track("aave_supply", {
+        asset: "USDC",
+        amount: "0.1",
+        reserve: usdcReserve.id,
+        chainId: usdcReserve.chainId,
+        txHash: result.value.txHash,
+      });
+      await refetchUsdcBalance();
+      await refreshUserSupplies();
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      const match = msg.match(/\[GraphQL\] Bad user input - (.+)/)
-      setSupplyError(match ? match[1] : msg);
+      setSupplyError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsSupplying(false);
     }
   };
 
   const handleWithdrawFromAave = async () => {
-    if (!walletClient || !walletClient.account?.address || !usdcReserve) {
-      console.error("Missing requirements:", { walletClient: !!walletClient, address: !!walletClient?.account?.address, usdcReserve: !!usdcReserve });
+    if (!walletClient?.account?.address || !usdcReserve) return;
+    if (!usdcSupplyData.rawBalance || Number(usdcSupplyData.rawBalance) === 0) {
+      setWithdrawError("No USDC supply to withdraw");
       return;
     }
-    if (!usdcSupplyData.rawBalance || parseFloat(usdcSupplyData.rawBalance) === 0) {
-      console.error("No USDC supply to withdraw");
-      return;
-    }
+
     setIsWithdrawing(true);
     setWithdrawError(null);
     try {
-      const withdrawResult = await withdraw({
-        market: evmAddress(usdcReserve.marketAddress),
-        amount: {
-          erc20: {
-            currency: evmAddress(usdcReserve.currencyAddress),
-            value: { max: true },  // Withdraw maximum available balance
-          },
-        },
+      const result = await withdraw({
+        reserve: usdcReserve.id,
+        amount: { erc20: { max: true } },
         sender: evmAddress(walletClient.account.address),
-        chainId: usdcReserve.chainId,
       });
-      if (withdrawResult.isErr()) {
-        console.error("Withdraw preparation failed:", withdrawResult.error);
-        setIsWithdrawing(false);
+
+      if (result.isErr()) {
+        setWithdrawError(result.error.message);
         return;
       }
-      const plan = withdrawResult.value;
-      let transactionResult;
-      switch (plan.__typename) {
-        case "TransactionRequest":
-          transactionResult = await sendTransaction(plan);
-          break;
-        case "InsufficientBalanceError":
-          console.error(`Insufficient balance: ${plan.required.value} required.`);
-          setIsWithdrawing(false);
-          return;
-        default:
-          console.error("Unknown plan type:", plan);
-          setIsWithdrawing(false);
-          return;
+
+      if (!publicClient) {
+        setWithdrawError("Unable to confirm the withdrawal transaction");
+        return;
       }
-      if (transactionResult.isErr()) {
-        console.error("Withdraw transaction failed:", transactionResult.error);
-      } else {
-        try {
-          if (publicClient) {
-            const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionResult.value });
-            if (receipt.status === "success") {
-              // Track a custom Formo event on a successful Aave withdrawal.
-              formo?.track("aave_withdraw", {
-                asset: "USDC",
-                amount: usdcSupplyData.rawBalance,
-                market: usdcReserve.marketAddress,
-                chainId: usdcReserve.chainId,
-                txHash: transactionResult.value,
-              });
-              await refetchUsdcBalance();
-              await refreshUserSupplies();
-            } else {
-              console.error("Withdraw transaction reverted on-chain");
-            }
-          }
-        } catch (receiptError) {
-          console.error("Waiting for transaction receipt failed:", receiptError);
-        }
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: result.value.txHash,
+      });
+      if (receipt.status !== "success") {
+        setWithdrawError("Withdraw transaction reverted on-chain");
+        return;
       }
+      formo?.track("aave_withdraw", {
+        asset: "USDC",
+        amount: usdcSupplyData.rawBalance,
+        reserve: usdcReserve.id,
+        chainId: usdcReserve.chainId,
+        txHash: result.value.txHash,
+      });
+      await refetchUsdcBalance();
+      await refreshUserSupplies();
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      const match = msg.match(/\[GraphQL\] Bad user input - (.+)/)
-      setWithdrawError(match ? match[1] : msg);
+      setWithdrawError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsWithdrawing(false);
     }
   };
 
-  const isLoading = supplying.loading || sending.loading || isSupplying || withdrawing.loading || isWithdrawing;
+  const isLoading =
+    supplying.loading ||
+    withdrawing.loading ||
+    sending.loading ||
+    signing.loading ||
+    isSupplying ||
+    isWithdrawing;
 
   return {
     handleDepositToAave,

@@ -6,6 +6,7 @@ minimumReleaseAgeExclude:
   # 7-day gate, so the package is exempted by name rather than by version.
   - brace-expansion
   - "@formo/analytics"
+  - "@privy-io/wagmi"
   # Security patch <7d old; allow past the release-age gate.
   - "form-data"
   - postcss@8.5.10
@@ -17,6 +18,10 @@ minimumReleaseAgeExclude:
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # 3.6.4's tempo/Connectors.js imports a bare 'accounts' specifier that
   # doesn't resolve, breaking the build. 3.4.2 is the last good 3.x.
   '@wagmi/core@>=3.0.0 <4.0.0': '3.4.2'
@@ -30,7 +35,7 @@ overrides:
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
   form-data@<4.0.6: ^4.0.6
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.0: ^0.35.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).

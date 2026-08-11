@@ -26,6 +26,10 @@ minimumReleaseAgeExclude:
   - postcss@8.5.12
   - postcss@8.5.18
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'crypto-es@<2.1.0': 2.1.0
   hono@<4.12.27: ^4.12.27
   axios@<1.18.0: ^1.18.0
@@ -36,7 +40,7 @@ overrides:
   'esbuild@>=0.17.0 <0.28.1': 0.28.1
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   joi@<17.13.4: ^17.13.4
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18

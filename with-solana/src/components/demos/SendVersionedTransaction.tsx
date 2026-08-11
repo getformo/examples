@@ -8,6 +8,7 @@ import {
 } from "@solana/react-hooks";
 import { createWalletTransactionSigner } from "@solana/client";
 import { getTransferSolInstruction } from "@solana-program/system";
+import { address } from "@solana/kit";
 import { useFormo } from "@formo/analytics";
 import { TransactionStatus } from "@formo/analytics";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
@@ -34,16 +35,20 @@ export const SendVersionedTransaction: FC = () => {
     }
 
     setIsLoading(true);
-    const address = wallet.account.address.toString();
+    const walletAddress = wallet.account.address.toString();
 
-    formo?.transaction({ status: TransactionStatus.STARTED, chainId: chainId, address });
+    formo?.transaction({
+      status: TransactionStatus.STARTED,
+      chainId,
+      address: walletAddress,
+    });
 
     try {
       const { signer } = createWalletTransactionSigner(session);
 
       const instruction = getTransferSolInstruction({
         source: signer,
-        destination: DEMO_DESTINATION as any,
+        destination: address(DEMO_DESTINATION),
         amount: 1_000_000n, // 0.001 SOL
       });
 
@@ -51,7 +56,12 @@ export const SendVersionedTransaction: FC = () => {
       const signature = await pool.prepareAndSend({ feePayer: signer });
 
       const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: chainId, address, transactionHash: sigStr });
+      formo?.transaction({
+        status: TransactionStatus.CONFIRMED,
+        chainId,
+        address: walletAddress,
+        transactionHash: sigStr,
+      });
 
       toast.success("Transaction Sent!", {
         description: `Successfully sent 0.001 SOL via useTransactionPool`,
@@ -65,7 +75,11 @@ export const SendVersionedTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: chainId, address });
+      formo?.transaction({
+        status: TransactionStatus.REJECTED,
+        chainId,
+        address: walletAddress,
+      });
       toast.error("Transaction Failed", { description: errorMessage });
     } finally {
       pool.reset();

@@ -28,7 +28,7 @@ Compare this with [`with-openfort`](../with-openfort) and [`with-privy`](../with
 
 ## Tech Stack
 
-- [Next.js 15](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)
+- [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/) + [Tailwind CSS](https://tailwindcss.com/)
 - [@crossmint/client-sdk-react-ui](https://docs.crossmint.com/wallets/quickstarts/react) — embedded wallets
 - [@formo/analytics](https://docs.formo.so/) — web3 analytics

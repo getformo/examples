@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { useFormo } from "@formo/analytics";
 import { usdcAbi, USDC_ADDRESSES } from "./contracts/usdc";
-import { evmAddress, useAaveMarkets, chainId } from "@aave/react";
+import { chainId, evmAddress, useReserves } from "@aave/react";
 import { MainLayout } from "./components/MainLayout";
 import { WalletBalanceCard } from "./components/WalletBalanceCard";
 import { AaveSupplyCard } from "./components/AaveSupplyCard";
@@ -42,10 +42,13 @@ function App() {
 
   const user = address ? evmAddress(address) : undefined;
 
-  // Fetch all Aave markets
-  const { data: markets } = useAaveMarkets({
-    chainIds: currentChainId ? [chainId(currentChainId)] : [],
+  // Fetch Aave v4 reserves on the connected chain.
+  const { data: reserves } = useReserves({
+    query: {
+      chainIds: currentChainId ? [chainId(currentChainId)] : [],
+    },
     user,
+    pause: !currentChainId,
   });
 
   // Use custom hooks
@@ -54,7 +57,7 @@ function App() {
     suppliesLoading,
     suppliesError,
     refreshUserSupplies,
-  } = useAaveSupplies(user, markets);
+  } = useAaveSupplies(user, currentChainId);
 
   // Find USDC supply balance and APY
   const usdcSupplyData = useMemo(() => {
@@ -62,12 +65,14 @@ function App() {
       return { rawBalance: "0", apy: "0.00" };
     }
     const usdcSupply = userSupplyPositions.find(
-      (supply) => supply.currency?.symbol === "USDC",
+      (supply) => supply.balance.token.info.symbol === "USDC",
     );
-    if (usdcSupply?.balance?.amount?.value && usdcSupply?.apy) {
+    if (usdcSupply) {
       return {
-        rawBalance: usdcSupply.balance.amount.value,
-        apy: usdcSupply.apy.formatted,
+        rawBalance: String(usdcSupply.balance.amount.value),
+        apy: Number(
+          usdcSupply.reserve.summary.supplyApy.normalized,
+        ).toFixed(2),
       };
     }
     return { rawBalance: "0", apy: "0.00" };
@@ -75,22 +80,21 @@ function App() {
 
   // Get USDC reserve for operations
   const usdcReserve = useMemo(() => {
-    if (!markets || markets.length === 0) return null;
-    const market = markets[0];
-    const usdcSupplyReserve = market.supplyReserves.find(
-      (reserve) => reserve.underlyingToken.symbol === "USDC",
+    if (!reserves || reserves.length === 0) return null;
+    const reserve = reserves.find(
+      (candidate) =>
+        candidate.summary.supplied.token.info.symbol === "USDC",
     );
-    if (usdcSupplyReserve) {
+    if (reserve) {
       return {
-        marketAddress: market.address,
-        currencyAddress: usdcSupplyReserve.underlyingToken.address,
-        chainId: market.chain.chainId,
+        id: reserve.id,
+        chainId: reserve.chain.chainId,
         supplyCapReached:
-          usdcSupplyReserve.supplyInfo?.supplyCapReached ?? false,
+          Number(reserve.summary.suppliable.amount.value) <= 0,
       };
     }
     return null;
-  }, [markets]);
+  }, [reserves]);
 
   // Use Aave operations hook
   const {

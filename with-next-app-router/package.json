@@ -30,11 +30,11 @@
   "devDependencies": {
     "ansi-regex": "^6.2.2",
     "husky": "~8.0.3",
-    "lint-staged": "~13.2.3"
+    "lint-staged": "~16.1.6"
   },
   "packageManager": "pnpm@11.1.2",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20.17.0"
   },
   "dependencies": {
     "@formo/analytics": "^1.35.0"

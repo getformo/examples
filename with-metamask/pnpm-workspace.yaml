@@ -16,6 +16,15 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
+  # Wagmi Core 3.6.x imports a bare `accounts` specifier that webpack cannot
+  # resolve. Keep the Wagmi 3 family on its last buildable compatible set.
+  '@wagmi/core@>=3.0.0 <4.0.0': 3.4.2
+  '@wagmi/connectors@>=8.0.0 <9.0.0': 8.0.1
+  'wagmi@>=3.0.0 <4.0.0': 3.6.1
   # 1.54.0 imports @x402/{core,evm,svm} subpaths that aren't installable
   # here, breaking the webpack build. Hold at the last version that built.
   '@coinbase/cdp-sdk': '1.49.2'
@@ -25,7 +34,7 @@ overrides:
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
   form-data@<4.0.6: ^4.0.6
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.0: ^0.35.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
@@ -43,3 +52,4 @@ allowBuilds:
   esbuild: true
   core-js: true
   core-js-pure: true
+  protobufjs: true

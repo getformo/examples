@@ -45,6 +45,10 @@ minimumReleaseAgeExclude:
 
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # 1.54.0 imports @x402/{core,evm,svm} subpaths that aren't installable
   # here, breaking the webpack build. Hold at the last version that built.
   '@coinbase/cdp-sdk': '1.49.2'
@@ -56,7 +60,8 @@ overrides:
   undici: '^7.28.0'
   next: '^15.5.15'
   elliptic: '^6.6.1'
-  viem: '^2.49.2'
+  # Keep direct and transitive viem consumers on the reviewed release.
+  viem: '2.55.10'
   '@babel/traverse@<7.23.2': 7.23.2
   'uuid@>=8.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
@@ -64,7 +69,7 @@ overrides:
   form-data@<4.0.6: ^4.0.6
   '@tootallnate/once@<2.0.1': ^2.0.1
   ajv@>=7.0.0-alpha.0 <8.18.0: ^8.18.0
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   debug@>=4.0.0 <4.3.1: ^4.3.1
   path-to-regexp@>=4.0.0 <6.3.0: ^6.3.0
   postcss@<8.5.18: ^8.5.18
