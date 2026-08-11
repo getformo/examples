@@ -29,7 +29,8 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sonner": "^1.7.4",
-    "tailwind-merge": "^2.6.1"
+    "tailwind-merge": "^2.6.1",
+    "viem": "~2.55.10"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",

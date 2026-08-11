@@ -11,6 +11,8 @@ allowBuilds:
   # The package only runs `npx only-allow pnpm` during preinstall; its
   # published runtime is already built, so deny the unnecessary executable.
   '@openfort/openfort-node': false
+  # tsx uses esbuild to transpile TypeScript during local development.
+  esbuild: true
 
 overrides:
   nanoid@<3.3.17: 3.3.17

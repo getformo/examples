@@ -42,6 +42,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
+      '@wagmi/core':
+        specifier: 3.4.2
+        version: 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(ox@0.14.33(typescript@5.9.3)(zod@4.4.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3)(zod@4.4.3))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
