@@ -106,7 +106,7 @@ jobs:
             {"name":"with-web3-onboard","dir":"with-web3-onboard","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-react-native","dir":"with-react-native","pm":"pnpm","build":"typecheck","node":"22","audit":"critical"},
             {"name":"with-solana","dir":"with-solana","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-angular","dir":"with-angular","pm":"pnpm","build":"build","node":"24"},
+            {"name":"with-angular","dir":"with-angular","pm":"pnpm","build":"build","node":"24.18.0"},
             {"name":"with-crossmint","dir":"with-crossmint","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-openfort","dir":"with-openfort/frontend","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-turnkey","dir":"with-turnkey","pm":"pnpm","build":"build","node":"22"}
