@@ -19,7 +19,7 @@
     "@solana/client": "^1.7.0",
     "@solana/react-hooks": "^1.4.1",
     "@solana/web3-compat": "^0.0.21",
-    "bs58": "^5.0.0",
+    "bs58": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
