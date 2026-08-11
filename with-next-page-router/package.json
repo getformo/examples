@@ -39,7 +39,7 @@
     "h3": "^1.15.9"
   },
   "devDependencies": {
-    "@types/node": "^20.19.43",
+    "@types/node": "^26.1.2",
     "@types/react": "^18.3.31",
     "autoprefixer": "^10.5.4",
     "globals": "^15.15.0",
