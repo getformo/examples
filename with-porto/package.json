@@ -15,7 +15,7 @@
     "autoprefixer": "^10.5.4",
     "next": "latest",
     "porto": "^0.2.37",
-    "postcss": "^8.5.23",
+    "postcss": "^8.5.25",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "^4.3.3",
