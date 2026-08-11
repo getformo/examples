@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@formo/analytics": "^1.35.0",
@@ -19,7 +19,7 @@
     "react-dom": "^19.2.8",
     "react-toastify": "^11.1.0",
     "viem": "^2.55.10",
-    "wagmi": "^3.7.6"
+    "wagmi": "3.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",

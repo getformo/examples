@@ -7,7 +7,13 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!node_modules", "!dist", "!build", "!*.log"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/*.log"
+    ]
   },
   "formatter": {
     "enabled": true,

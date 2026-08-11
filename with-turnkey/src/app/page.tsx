@@ -1,9 +1,8 @@
 "use client";
 
-// @ts-ignore — @turnkey/sdk-react is built for React 18; safe to use with React 19
 import { useTurnkey } from "@turnkey/sdk-react";
 import { createEIP1193Provider } from "@turnkey/eip-1193-provider";
-import { formatUnits, toHex } from "viem";
+import { formatUnits, toHex, type EIP1193Provider } from "viem";
 import { sepolia } from "viem/chains";
 import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useCallback } from "react";
@@ -11,6 +10,17 @@ import { useState, useEffect, useCallback } from "react";
 import { useWallet } from "./providers";
 
 type UUID = `${string}-${string}-${string}-${string}-${string}`;
+
+const CHAIN = sepolia;
+const CHAIN_PARAM = {
+  chainId: `0x${CHAIN.id.toString(16)}`,
+  chainName: CHAIN.name,
+  nativeCurrency: CHAIN.nativeCurrency,
+  rpcUrls: [...CHAIN.rpcUrls.default.http],
+  blockExplorerUrls: CHAIN.blockExplorers?.default?.url
+    ? [CHAIN.blockExplorers.default.url]
+    : undefined,
+};
 
 function formatDisplayBalance(value: bigint, decimals: number): string {
   const formatted = formatUnits(value, decimals);
@@ -38,18 +48,6 @@ export default function Home() {
   const address = walletState.address;
   const chainId = walletState.chainId;
 
-  // Build the chain config for the EIP-1193 provider
-  const chain = sepolia;
-  const chainParam = {
-    chainId: `0x${chain.id.toString(16)}`,
-    chainName: chain.name,
-    nativeCurrency: chain.nativeCurrency,
-    rpcUrls: [...chain.rpcUrls.default.http],
-    blockExplorerUrls: chain.blockExplorers?.default?.url
-      ? [chain.blockExplorers.default.url]
-      : undefined,
-  };
-
   // Get a fresh Turnkey client (avoids stale closure after login)
   const getFreshClient = useCallback(async () => {
     if (turnkeyClient) return turnkeyClient;
@@ -68,7 +66,7 @@ export default function Home() {
         walletId: walletId as UUID,
         organizationId: organizationId as UUID,
         turnkeyClient: client,
-        chains: [chainParam],
+        chains: [CHAIN_PARAM],
       });
 
       // Request accounts to initialize the provider
@@ -86,7 +84,7 @@ export default function Home() {
 
       const parsedChainId = parseInt(chainIdHex, 16);
 
-      setProvider(eip1193 as any);
+      setProvider(eip1193 as unknown as EIP1193Provider);
       setWalletState({
         address: accounts[0],
         chainId: parsedChainId,

@@ -1,8 +1,10 @@
 "use client";
 
-// @ts-ignore — @turnkey/sdk-react is built for React 18; safe to use with React 19
 import { TurnkeyProvider } from "@turnkey/sdk-react";
-import { FormoAnalyticsProvider } from "@formo/analytics";
+import {
+  FormoAnalyticsProvider,
+  type FormoAnalyticsProviderProps,
+} from "@formo/analytics";
 import { ReactNode, createContext, useContext, useState, useMemo } from "react";
 
 import type { EIP1193Provider } from "viem";
@@ -21,6 +23,10 @@ type WalletState = {
   organizationId: string | null;
   userId: string | null;
 };
+
+type FormoProvider = NonNullable<
+  FormoAnalyticsProviderProps["options"]
+>["provider"];
 
 const WalletContext = createContext<WalletContextType>({
   provider: null,
@@ -55,6 +61,23 @@ export function Providers({ children }: { children: ReactNode }) {
     [provider, walletState]
   );
 
+  // Memoize analytics options to prevent re-initialization on every render.
+  // When provider changes from null -> value, Formo reinitializes to attach autocapture.
+  const formoOptions = useMemo(
+    () => ({
+      ...(provider
+        ? { provider: provider as unknown as FormoProvider }
+        : {}),
+      autocapture: true,
+      tracking: true,
+      logger: {
+        enabled: true,
+        levels: ["info", "warn", "error"] as ("info" | "warn" | "error")[],
+      },
+    }),
+    [provider]
+  );
+
   if (!turnkeyConfig.defaultOrganizationId) {
     console.error("Missing NEXT_PUBLIC_TURNKEY_ORGANIZATION_ID environment variable");
     return (
@@ -76,21 +99,6 @@ export function Providers({ children }: { children: ReactNode }) {
     console.warn("Missing NEXT_PUBLIC_FORMO_WRITE_KEY. Formo analytics will be disabled.");
   }
 
-  // Memoize analytics options to prevent re-initialization on every render.
-  // When provider changes from null -> value, Formo reinitializes to attach autocapture.
-  const formoOptions = useMemo(
-    () => ({
-      ...(provider ? { provider: provider as any } : {}),
-      autocapture: true,
-      tracking: true,
-      logger: {
-        enabled: true,
-        levels: ["info", "warn", "error"] as ("info" | "warn" | "error")[],
-      },
-    }),
-    [provider]
-  );
-
   const innerContent = formoWriteKey ? (
     <FormoAnalyticsProvider writeKey={formoWriteKey} options={formoOptions}>
       {children}
@@ -100,7 +108,6 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 
   return (
-    // @ts-ignore — @turnkey/sdk-react is built for React 18
     <TurnkeyProvider config={turnkeyConfig}>
       <WalletContext.Provider value={walletContextValue}>
         {innerContent}

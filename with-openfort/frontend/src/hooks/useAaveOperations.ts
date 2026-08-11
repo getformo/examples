@@ -77,8 +77,16 @@ export function useAaveOperations(
         return;
       }
 
-      if (publicClient) {
-        await publicClient.waitForTransactionReceipt({ hash: result.value.txHash });
+      if (!publicClient) {
+        setSupplyError("Unable to confirm the supply transaction");
+        return;
+      }
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: result.value.txHash,
+      });
+      if (receipt.status !== "success") {
+        setSupplyError("Supply transaction reverted on-chain");
+        return;
       }
       formo?.track("aave_supply", {
         asset: "USDC",
@@ -117,8 +125,16 @@ export function useAaveOperations(
         return;
       }
 
-      if (publicClient) {
-        await publicClient.waitForTransactionReceipt({ hash: result.value.txHash });
+      if (!publicClient) {
+        setWithdrawError("Unable to confirm the withdrawal transaction");
+        return;
+      }
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: result.value.txHash,
+      });
+      if (receipt.status !== "success") {
+        setWithdrawError("Withdraw transaction reverted on-chain");
+        return;
       }
       formo?.track("aave_withdraw", {
         asset: "USDC",
