@@ -3,7 +3,7 @@
 // Global polyfills
 declare global {
   interface Window {
-    Buffer: typeof import('buffer').Buffer;
+    Buffer: typeof import("buffer").Buffer;
   }
-  var Buffer: typeof import('buffer').Buffer;
+  var Buffer: typeof import("buffer").Buffer;
 }

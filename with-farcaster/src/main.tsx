@@ -1,16 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { WagmiProvider } from "wagmi";
-import { Buffer } from "buffer";
 
 // Polyfill Buffer for browser compatibility
 (window as unknown as { Buffer: typeof Buffer }).Buffer = Buffer;
 
+import { FormoAnalyticsProvider } from "@formo/analytics";
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
-
-import { FormoAnalyticsProvider } from "@formo/analytics";
 
 import "./index.css";
 
@@ -42,5 +41,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         </FormoAnalyticsProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

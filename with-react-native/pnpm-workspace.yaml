@@ -9,6 +9,20 @@ minimumReleaseAgeExclude:
   # 7-day gate, so the package is exempted by name rather than by version.
   - brace-expansion
   - "@formo/analytics-react-native"
+  # Expo SDK 57 compatibility patches are newer than the quarantine window.
+  - expo
+  - "expo-*"
+  - babel-preset-expo
+  - "@expo/*"
+  - expo-application
+  - expo-constants
+  - expo-crypto
+  - expo-linking
+  - expo-router
+  - expo-status-bar
+  - jest-expo
+  - "@react-native-async-storage/async-storage"
+  - "@expo/local-build-cache-provider"
   - '@metamask/sdk-communication-layer@0.33.1'
   - '@metamask/sdk@0.33.1'
   - elliptic@6.6.2
@@ -16,7 +30,7 @@ minimumReleaseAgeExclude:
   - postcss@8.5.10
   - uuid@11.1.1
   - axios@1.18.0
-  - shell-quote@1.8.5
+  - js-yaml
   - fast-uri@3.1.4
   - postcss@8.5.12
   - postcss@8.5.18
@@ -33,6 +47,10 @@ minimumReleaseAgeExclude:
 # in package.json by that change; undici stayed on 6.25.0 and @xmldom/xmldom
 # kept resolving 0.7.13 alongside 0.8.13 for as long as they sat there.
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # @wagmi/connectors 6.x depends on porto, whose 'porto/internal' subpath
   # Metro cannot resolve — it breaks the native bundle outright, which the
   # typecheck-only CI check does not catch. 5.7.7 is what main shipped.
@@ -44,7 +62,9 @@ overrides:
   'uuid@>=8.0.0 <11.1.1': 11.1.1
   'ws@>=8.0.0 <8.21.0': 8.21.0
   'ws@>=7.0.0 <7.5.11': 7.5.11
-  'shell-quote@>=1.1.0 <=1.8.3': 1.8.4
+  'shell-quote@>=1.1.0 <=1.8.4': 1.10.0
+  'js-yaml@>=3.0.0 <3.15.1': 3.15.1
+  'js-yaml@>=4.0.0 <4.3.1': 4.3.1
   h3@<1.15.9: ^1.15.9
   undici: '^7.24.1'
   node-forge@<1.4.0: ^1.4.0
@@ -56,8 +76,9 @@ overrides:
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
   axios@<1.18.0: ^1.18.0
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   brace-expansion@>=2.0.0 <2.1.3: ^2.1.3
+  brace-expansion@>=4.0.0 <5.0.9: ^5.0.9
   fast-uri@>=3.0.0 <3.1.3: ^3.1.3
   fast-uri@>=3.0.0 <=3.1.3: ^3.1.4
   postcss@<8.5.18: ^8.5.18

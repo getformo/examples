@@ -8,8 +8,15 @@ minimumReleaseAgeExclude:
 # scripts don't work without it.
 allowBuilds:
   '@biomejs/biome': true
+  # The package only runs `npx only-allow pnpm` during preinstall; its
+  # published runtime is already built, so deny the unnecessary executable.
+  '@openfort/openfort-node': false
 
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # Migrated from the package.json "pnpm" field. This project was the only one
   # still declaring pnpm 9, which reads overrides from package.json; it now
   # declares pnpm 11 like its siblings, so they belong here instead.

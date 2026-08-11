@@ -21,6 +21,10 @@ minimumReleaseAgeExclude:
   - postcss@8.5.12
   - postcss@8.5.18
 overrides:
+  nanoid@<3.3.17: 3.3.17
+  shell-quote@<=1.8.4: 1.10.0
+  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'elliptic@<=6.6.0': 6.6.1
   axios@<1.16.1: ^1.16.1
   'fastify@<5.8.5': 5.8.5
@@ -30,7 +34,7 @@ overrides:
   'ws@>=7.0.0 <7.5.11': 7.5.11
   bn.js@<4.12.3: ^4.12.3
   bn.js@>=5.0.0 <5.2.3: ^5.2.3
-  brace-expansion@<1.1.17: ^1.1.17
+  brace-expansion@<1.1.18: ^1.1.18
   cookie@<0.7.0: ^0.7.0
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.0: ^0.35.0

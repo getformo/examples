@@ -30,7 +30,7 @@
   "devDependencies": {
     "ansi-regex": "^6.2.2",
     "husky": "~8.0.3",
-    "lint-staged": "~13.2.3"
+    "lint-staged": "~17.3.0"
   },
   "packageManager": "pnpm@11.1.2",
   "engines": {

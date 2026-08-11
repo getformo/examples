@@ -30,9 +30,6 @@ const isSdkLinked = (() => {
 // Note: sdk-react-native/.watchmanconfig excludes node_modules and lib
 config.watchFolders = [sdkPath];
 
-// Enable symlinks
-config.resolver.unstable_enableSymlinks = true;
-
 // Only use the example app's node_modules for resolution
 config.resolver.nodeModulesPaths = [projectNodeModules];
 
