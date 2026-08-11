@@ -70,9 +70,9 @@ function App() {
     if (usdcSupply) {
       return {
         rawBalance: String(usdcSupply.balance.amount.value),
-        apy: (Number(usdcSupply.reserve.summary.supplyApy.value) * 100).toFixed(
-          2,
-        ),
+        apy: Number(
+          usdcSupply.reserve.summary.supplyApy.normalized,
+        ).toFixed(2),
       };
     }
     return { rawBalance: "0", apy: "0.00" };
