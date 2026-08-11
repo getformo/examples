@@ -11,25 +11,25 @@
   "dependencies": {
     "@formo/analytics": "^1.35.0",
     "@heroicons/react": "^2.2.0",
-    "@privy-io/react-auth": "^3.11.0",
+    "@privy-io/react-auth": "^3.36.1",
     "@privy-io/wagmi": "^3.0.0",
     "@tanstack/react-query": "^5.101.4",
     "next": "^15.5.22",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-toastify": "^11.1.0",
-    "viem": "^2.55.8",
-    "wagmi": "^3.3.4"
+    "viem": "^2.55.10",
+    "wagmi": "^3.7.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.20.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.22",
-    "postcss": "^8.5.23",
+    "postcss": "^8.5.25",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
   },
