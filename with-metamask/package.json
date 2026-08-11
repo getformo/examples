@@ -24,7 +24,7 @@
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
     "viem": "~2.55.8",
-    "wagmi": "^2.19.5"
+    "wagmi": "^3.7.6"
   },
   "overrides": {
     "axios": "^1.16.1"
