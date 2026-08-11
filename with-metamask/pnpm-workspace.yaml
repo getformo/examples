@@ -52,3 +52,4 @@ allowBuilds:
   esbuild: true
   core-js: true
   core-js-pure: true
+  protobufjs: true

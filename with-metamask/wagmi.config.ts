@@ -1,5 +1,5 @@
 import { createConfig, http, cookieStorage, createStorage } from "wagmi";
-import { injected } from "@wagmi/core";
+import { metaMask } from "@wagmi/connectors";
 import { defineChain } from "viem";
 
 // Define only the chains this example uses. Importing the aggregate
@@ -39,10 +39,7 @@ const mainnet = defineChain({
 export function getConfig() {
   return createConfig({
     chains: [lineaSepolia, linea, mainnet],
-    // Target the injected MetaMask provider directly. Importing the Wagmi
-    // connector barrel pulls every optional wallet SDK into webpack, causing
-    // unresolved-module warnings for connectors this example never uses.
-    connectors: [injected({ target: "metaMask" })],
+    connectors: [metaMask()],
     ssr: true,
     storage: createStorage({
       storage: cookieStorage,
