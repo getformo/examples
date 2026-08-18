@@ -29,10 +29,10 @@ importers:
     dependencies:
       '@formo/analytics':
         specifier: ^1.35.0
-        version: 1.35.0(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3)))
+        version: 1.35.0(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3)))
       '@metamask/connect-evm':
         specifier: ~0.9.0
-        version: 0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3)
+        version: 0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.24
         version: 2.1.24(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -47,10 +47,10 @@ importers:
         version: 5.101.4(react@19.2.8)
       '@wagmi/connectors':
         specifier: 8.0.1
-        version: 8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3)))(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))
+        version: 8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3)))(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))
       '@wagmi/core':
         specifier: 3.4.2
-        version: 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3))
+        version: 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -77,10 +77,10 @@ importers:
         version: 1.0.7(tailwindcss@3.4.19)
       viem:
         specifier: ~2.55.10
-        version: 2.55.10(typescript@5.9.3)
+        version: 2.55.10(typescript@6.0.3)
       wagmi:
         specifier: 3.6.1
-        version: 3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))
+        version: 3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.6
@@ -99,7 +99,7 @@ importers:
         version: 9.39.5(jiti@1.21.7)
       eslint-config-next:
         specifier: ^15.5.22
-        version: 15.5.22(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+        version: 15.5.22(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       postcss:
         specifier: ^8.5.25
         version: 8.5.25
@@ -107,8 +107,8 @@ importers:
         specifier: ^3.4.19
         version: 3.4.19
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ^6.0.3
+        version: 6.0.3
 
 packages:
 
@@ -2807,8 +2807,8 @@ packages:
     resolution: {integrity: sha512-phPGCwqr2+Qo0fwniCE8e4pKnGu/yFb5nD5Y8bf0EEeiI5GklnACYA9GFy/DrAeRrKHXvHn+1SUsOWgJp6RO+g==}
     engines: {node: '>= 0.4'}
 
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -3203,16 +3203,16 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.35.0(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3)))':
+  '@formo/analytics@1.35.0(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3)))':
     dependencies:
       ethereum-cryptography: 3.2.0
-      mipd: 0.0.7(typescript@5.9.3)
+      mipd: 0.0.7(typescript@6.0.3)
     optionalDependencies:
       '@tanstack/react-query': 5.101.4(react@19.2.8)
       '@types/react': 19.2.18
       react: 19.2.8
-      viem: 2.55.10(typescript@5.9.3)
-      wagmi: 3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))
+      viem: 2.55.10(typescript@6.0.3)
+      wagmi: 3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))
     transitivePeerDependencies:
       - typescript
 
@@ -3359,10 +3359,10 @@ snapshots:
 
   '@metamask/api-specs@0.15.0': {}
 
-  '@metamask/approval-controller@9.0.2(typescript@5.9.3)':
+  '@metamask/approval-controller@9.0.2(typescript@6.0.3)':
     dependencies:
-      '@metamask/base-controller': 9.1.0(typescript@5.9.3)
-      '@metamask/messenger': 1.2.0(typescript@5.9.3)
+      '@metamask/base-controller': 9.1.0(typescript@6.0.3)
+      '@metamask/messenger': 1.2.0(typescript@6.0.3)
       '@metamask/rpc-errors': 7.0.3
       '@metamask/utils': 11.11.0
       nanoid: 3.3.17
@@ -3370,20 +3370,20 @@ snapshots:
       - supports-color
       - typescript
 
-  '@metamask/base-controller@9.1.0(typescript@5.9.3)':
+  '@metamask/base-controller@9.1.0(typescript@6.0.3)':
     dependencies:
-      '@metamask/messenger': 1.2.0(typescript@5.9.3)
+      '@metamask/messenger': 1.2.0(typescript@6.0.3)
       '@metamask/utils': 11.11.0
       immer: 9.0.21
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@metamask/chain-agnostic-permission@1.7.0(@babel/runtime@7.29.7)(typescript@5.9.3)':
+  '@metamask/chain-agnostic-permission@1.7.0(@babel/runtime@7.29.7)(typescript@6.0.3)':
     dependencies:
       '@metamask/api-specs': 0.15.0
       '@metamask/controller-utils': 12.3.0(@babel/runtime@7.29.7)
-      '@metamask/permission-controller': 13.1.1(@babel/runtime@7.29.7)(typescript@5.9.3)
+      '@metamask/permission-controller': 13.1.1(@babel/runtime@7.29.7)(typescript@6.0.3)
       '@metamask/rpc-errors': 7.0.3
       '@metamask/utils': 11.11.0
       lodash: 4.18.1
@@ -3392,10 +3392,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3)':
+  '@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3)':
     dependencies:
       '@metamask/analytics': 0.4.0
-      '@metamask/chain-agnostic-permission': 1.7.0(@babel/runtime@7.29.7)(typescript@5.9.3)
+      '@metamask/chain-agnostic-permission': 1.7.0(@babel/runtime@7.29.7)(typescript@6.0.3)
       '@metamask/connect-multichain': 0.11.1
       '@metamask/utils': 11.11.0
     transitivePeerDependencies:
@@ -3461,9 +3461,9 @@ snapshots:
       '@metamask/number-to-bn': 1.7.1
       bn.js: 5.2.5
 
-  '@metamask/json-rpc-engine@10.5.0(typescript@5.9.3)':
+  '@metamask/json-rpc-engine@10.5.0(typescript@6.0.3)':
     dependencies:
-      '@metamask/messenger': 1.2.0(typescript@5.9.3)
+      '@metamask/messenger': 1.2.0(typescript@6.0.3)
       '@metamask/rpc-errors': 7.0.3
       '@metamask/safe-event-emitter': 3.1.2
       '@metamask/utils': 11.11.0
@@ -3474,10 +3474,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@metamask/messenger@1.2.0(typescript@5.9.3)':
+  '@metamask/messenger@1.2.0(typescript@6.0.3)':
     dependencies:
       '@metamask/utils': 11.11.0
-      typescript: 5.9.3
+      typescript: 6.0.3
       yargs: 17.7.3
     transitivePeerDependencies:
       - supports-color
@@ -3513,13 +3513,13 @@ snapshots:
     dependencies:
       bowser: 2.14.1
 
-  '@metamask/permission-controller@13.1.1(@babel/runtime@7.29.7)(typescript@5.9.3)':
+  '@metamask/permission-controller@13.1.1(@babel/runtime@7.29.7)(typescript@6.0.3)':
     dependencies:
-      '@metamask/approval-controller': 9.0.2(typescript@5.9.3)
-      '@metamask/base-controller': 9.1.0(typescript@5.9.3)
+      '@metamask/approval-controller': 9.0.2(typescript@6.0.3)
+      '@metamask/base-controller': 9.1.0(typescript@6.0.3)
       '@metamask/controller-utils': 12.3.0(@babel/runtime@7.29.7)
-      '@metamask/json-rpc-engine': 10.5.0(typescript@5.9.3)
-      '@metamask/messenger': 1.2.0(typescript@5.9.3)
+      '@metamask/json-rpc-engine': 10.5.0(typescript@6.0.3)
+      '@metamask/messenger': 1.2.0(typescript@6.0.3)
       '@metamask/rpc-errors': 7.0.3
       '@metamask/utils': 11.11.0
       '@types/deep-freeze-strict': 1.1.2
@@ -4002,40 +4002,40 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
-  '@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       '@typescript-eslint/scope-manager': 8.66.0
-      '@typescript-eslint/type-utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.66.0
       eslint: 9.39.5(jiti@1.21.7)
       ignore: 7.0.6
       natural-compare: 1.4.0
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.66.0
       '@typescript-eslint/types': 8.66.0
-      '@typescript-eslint/typescript-estree': 8.66.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.66.0(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.66.0
       debug: 4.4.3
       eslint: 9.39.5(jiti@1.21.7)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.66.0(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.66.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@5.9.3)
+      '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@6.0.3)
       '@typescript-eslint/types': 8.66.0
       debug: 4.4.3
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -4044,47 +4044,47 @@ snapshots:
       '@typescript-eslint/types': 8.66.0
       '@typescript-eslint/visitor-keys': 8.66.0
 
-  '@typescript-eslint/tsconfig-utils@8.66.0(typescript@5.9.3)':
+  '@typescript-eslint/tsconfig-utils@8.66.0(typescript@6.0.3)':
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
-  '@typescript-eslint/type-utils@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.66.0
-      '@typescript-eslint/typescript-estree': 8.66.0(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.66.0(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       debug: 4.4.3
       eslint: 9.39.5(jiti@1.21.7)
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
   '@typescript-eslint/types@8.66.0': {}
 
-  '@typescript-eslint/typescript-estree@8.66.0(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.66.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.66.0(typescript@5.9.3)
-      '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.66.0(typescript@6.0.3)
+      '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@6.0.3)
       '@typescript-eslint/types': 8.66.0
       '@typescript-eslint/visitor-keys': 8.66.0
       debug: 4.4.3
       minimatch: 10.2.5
       semver: 7.8.5
       tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(jiti@1.21.7))
       '@typescript-eslint/scope-manager': 8.66.0
       '@typescript-eslint/types': 8.66.0
-      '@typescript-eslint/typescript-estree': 8.66.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.66.0(typescript@6.0.3)
       eslint: 9.39.5(jiti@1.21.7)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -4163,37 +4163,37 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@wagmi/connectors@8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3)))(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))':
+  '@wagmi/connectors@8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3)))(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))':
     dependencies:
-      '@wagmi/core': 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3))
-      viem: 2.55.10(typescript@5.9.3)
+      '@wagmi/core': 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3))
+      viem: 2.55.10(typescript@6.0.3)
     optionalDependencies:
-      '@metamask/connect-evm': 0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3)
-      typescript: 5.9.3
+      '@metamask/connect-evm': 0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3)
+      typescript: 6.0.3
 
-  '@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3))':
+  '@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3))':
     dependencies:
       eventemitter3: 5.0.1
-      mipd: 0.0.7(typescript@5.9.3)
-      viem: 2.55.10(typescript@5.9.3)
+      mipd: 0.0.7(typescript@6.0.3)
+      viem: 2.55.10(typescript@6.0.3)
       zustand: 5.0.0(@types/react@19.2.18)(immer@9.0.21)(react@19.2.8)(use-sync-external-store@1.4.0(react@19.2.8))
     optionalDependencies:
       '@tanstack/query-core': 5.101.4
-      ox: 0.14.33(typescript@5.9.3)
-      typescript: 5.9.3
+      ox: 0.14.33(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - '@types/react'
       - immer
       - react
       - use-sync-external-store
 
-  abitype@1.2.3(typescript@5.9.3):
+  abitype@1.2.3(typescript@6.0.3):
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
-  abitype@1.3.0(typescript@5.9.3):
+  abitype@1.3.0(typescript@6.0.3):
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   acorn-jsx@5.3.2(acorn@8.17.0):
     dependencies:
@@ -4642,21 +4642,21 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-config-next@15.5.22(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3):
+  eslint-config-next@15.5.22(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3):
     dependencies:
       '@next/eslint-plugin-next': 15.5.22
       '@rushstack/eslint-patch': 1.16.1
-      '@typescript-eslint/eslint-plugin': 8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
-      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       eslint: 9.39.5(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@1.21.7))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.5(jiti@1.21.7))
       eslint-plugin-react: 7.37.5(eslint@9.39.5(jiti@1.21.7))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.5(jiti@1.21.7))
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - eslint-plugin-import-x
@@ -4681,22 +4681,22 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.12.2
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7)):
+  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
       eslint: 9.39.5(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@1.21.7))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -4707,7 +4707,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.5(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
+      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@1.21.7))
       hasown: 2.0.4
       is-core-module: 2.16.2
       is-glob: 4.0.3
@@ -4719,7 +4719,7 @@ snapshots:
       string.prototype.trimend: 1.0.10
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.66.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -5286,9 +5286,9 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  mipd@0.0.7(typescript@5.9.3):
+  mipd@0.0.7(typescript@6.0.3):
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   ms@2.1.3: {}
 
@@ -5407,7 +5407,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.14.33(typescript@5.9.3):
+  ox@0.14.33(typescript@6.0.3):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
@@ -5415,10 +5415,10 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.3.0(typescript@5.9.3)
+      abitype: 1.3.0(typescript@6.0.3)
       eventemitter3: 5.0.1
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - zod
 
@@ -5892,9 +5892,9 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  ts-api-utils@2.5.0(typescript@5.9.3):
+  ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   ts-interface-checker@0.1.13: {}
 
@@ -5944,7 +5944,7 @@ snapshots:
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
 
-  typescript@5.9.3: {}
+  typescript@6.0.3: {}
 
   unbox-primitive@1.1.0:
     dependencies:
@@ -6011,33 +6011,33 @@ snapshots:
 
   valid-url@1.0.9: {}
 
-  viem@2.55.10(typescript@5.9.3):
+  viem@2.55.10(typescript@6.0.3):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.9.3)
+      abitype: 1.2.3(typescript@6.0.3)
       isows: 1.0.7(ws@8.21.0)
-      ox: 0.14.33(typescript@5.9.3)
+      ox: 0.14.33(typescript@6.0.3)
       ws: 8.21.0
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
       - zod
 
-  wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3)):
+  wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3)):
     dependencies:
       '@tanstack/react-query': 5.101.4(react@19.2.8)
-      '@wagmi/connectors': 8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3)))(typescript@5.9.3)(viem@2.55.10(typescript@5.9.3))
-      '@wagmi/core': 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@5.9.3))
+      '@wagmi/connectors': 8.0.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@6.0.3))(@wagmi/core@3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3)))(typescript@6.0.3)(viem@2.55.10(typescript@6.0.3))
+      '@wagmi/core': 3.4.2(@tanstack/query-core@5.101.4)(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.33(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.8))(viem@2.55.10(typescript@6.0.3))
       react: 19.2.8
       use-sync-external-store: 1.4.0(react@19.2.8)
-      viem: 2.55.10(typescript@5.9.3)
+      viem: 2.55.10(typescript@6.0.3)
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - '@base-org/account'
       - '@coinbase/wallet-sdk'
