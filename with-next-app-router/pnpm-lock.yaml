@@ -58,8 +58,8 @@ importers:
         specifier: ~16.3.2
         version: 16.3.2
       envfile:
-        specifier: ~6.18.0
-        version: 6.18.0
+        specifier: ~7.1.0
+        version: 7.1.0
       ethers:
         specifier: ~5.7.2
         version: 5.7.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
@@ -2528,9 +2528,9 @@ packages:
     resolution: {integrity: sha512-HqD3yTBfnBxIrbnM1DoD6Pcq8NECnh8d4As1Qgh0z5Gg3jRRIqijury0CL3ghu/edArpUYiYqQiDUQBIs4np3Q==}
     engines: {node: '>=10.0.0'}
 
-  envfile@6.18.0:
-    resolution: {integrity: sha512-IsYv64dtlNXTm4huvCBpbXsdZQurYUju9WoYCkSj+SDYpO3v4/dq346QsCnNZ3JcnWw0G3E6+saVkVtmPw98Gg==}
-    engines: {node: '>=10'}
+  envfile@7.1.0:
+    resolution: {integrity: sha512-dyH4QnnZsArCLhPASr29eqBWDvKpq0GggQFTmysTT/S9TTmt1JrEKNvTBc09Cd7ujVZQful2HBGRMe2agu7Krg==}
+    engines: {node: '>=8'}
     hasBin: true
 
   environment@1.1.0:
@@ -4112,8 +4112,8 @@ packages:
   preact@10.24.2:
     resolution: {integrity: sha512-1cSoF0aCC8uaARATfrlz4VCBqE8LwZwRfLgkxJOQwAlQt6ayTmi0D9OF7nXid1POI5SZidFuG9CnlXbDfLqY/Q==}
 
-  preact@10.29.7:
-    resolution: {integrity: sha512-DCHYrK/B10yUD3ZjLfhZ3WIE/9Vf9VFUODcRE2dRomTYDpJk6z6L9wecSfhfE6M9ZTHUdyQkoC46arIDhEV84Q==}
+  preact@10.29.8:
+    resolution: {integrity: sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==}
     peerDependencies:
       preact-render-to-string: '>=5'
     peerDependenciesMeta:
@@ -4536,6 +4536,7 @@ packages:
 
   stream-to-promise@2.2.0:
     resolution: {integrity: sha512-HAGUASw8NT0k8JvIVutB2Y/9iBk7gpgEyAudXwNJmZERdMITGdajOa4VJfD/kNiA3TppQpTP4J+CtcHwdzKBAw==}
+    deprecated: Deprecated. Use node:stream/promises and node:stream/consumers instead.
 
   strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -5392,7 +5393,7 @@ snapshots:
       eth-json-rpc-filters: 6.0.1
       eventemitter3: 5.0.4
       keccak: 3.0.4
-      preact: 10.29.7
+      preact: 10.29.8
       sha.js: 2.4.12
     transitivePeerDependencies:
       - preact-render-to-string
@@ -9576,7 +9577,7 @@ snapshots:
 
   engine.io-parser@5.2.3: {}
 
-  envfile@6.18.0: {}
+  envfile@7.1.0: {}
 
   environment@1.1.0: {}
 
@@ -11350,7 +11351,7 @@ snapshots:
 
   preact@10.24.2: {}
 
-  preact@10.29.7: {}
+  preact@10.29.8: {}
 
   prelude-ls@1.2.1: {}
 
