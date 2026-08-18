@@ -23,7 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "ethers": "^5.8.0",
-    "lucide-react": "^1.28.0",
+    "lucide-react": "^1.31.0",
     "next": "^15.5.22",
     "next-auth": "^4.24.15",
     "next-themes": "^0.4.6",
@@ -32,18 +32,18 @@
     "siwe": "^2.3.2",
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "2.55.10",
+    "viem": "2.55.13",
     "wagmi": "2.19.5"
   },
   "overrides": {
     "h3": "^1.15.9"
   },
   "devDependencies": {
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "@types/react": "^18.3.31",
     "autoprefixer": "^10.5.4",
     "globals": "^17.9.0",
-    "postcss": "^8.5.25",
+    "postcss": "^8.5.26",
     "tailwindcss": "^3.4.19",
     "typescript": "5.5.2"
   }
