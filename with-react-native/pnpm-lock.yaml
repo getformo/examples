@@ -45,8 +45,8 @@ importers:
         specifier: ^57.0.9
         version: 57.0.9(@expo/log-box@57.0.2)(expo@57.0.12)(react-dom@19.2.3(react@19.2.3))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/jest-preset@0.86.2(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       '@formo/analytics-react-native':
-        specifier: ^1.1.0
-        version: 1.1.0(6d158a167244c355c99b2aeb49920543)
+        specifier: ^1.1.1
+        version: 1.1.1(6d158a167244c355c99b2aeb49920543)
       '@react-native-async-storage/async-storage':
         specifier: ^2.2.0
         version: 2.2.0(react-native@0.86.2(@babel/core@7.29.7)(@react-native/jest-preset@0.86.2(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
@@ -871,8 +871,8 @@ packages:
     resolution: {integrity: sha512-4aQzz9vgxcNXFfo/iyNgDDYfsU5XGKKxWxZopw0cVotHiW+U8IJbIxMaxsINs6bHhtkG3StKNPcOrn3eBuxKPw==}
     hasBin: true
 
-  '@formo/analytics-react-native@1.1.0':
-    resolution: {integrity: sha512-ZO5rSQCj6hFjYijiod+T267TCmA7ORlbr+UYiELd7X6gDBD1/yJb1+S4bkSZ2QxY3Te5Yx4p6+/GBNxyXwrReA==}
+  '@formo/analytics-react-native@1.1.1':
+    resolution: {integrity: sha512-R+qPYeU/b3/UZY/zr1qo2OxwHxXzfI4Zm4uw0rU6s4akzJs8LxejuxslxVvgAN3DBFVEN7I3uenGy0r+cuOx0Q==}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.17.0'
       '@tanstack/react-query': '>=5.0.0'
@@ -6934,7 +6934,7 @@ snapshots:
       chalk: 4.1.2
       js-yaml: 4.3.1
 
-  '@formo/analytics-react-native@1.1.0(6d158a167244c355c99b2aeb49920543)':
+  '@formo/analytics-react-native@1.1.1(6d158a167244c355c99b2aeb49920543)':
     dependencies:
       '@react-native-async-storage/async-storage': 2.2.0(react-native@0.86.2(@babel/core@7.29.7)(@react-native/jest-preset@0.86.2(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       '@react-native-community/netinfo': 12.0.1(react-native@0.86.2(@babel/core@7.29.7)(@react-native/jest-preset@0.86.2(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
