@@ -37,7 +37,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.2",
-    "react-native-get-random-values": "^1.11.0",
+    "react-native-get-random-values": "^2.0.0",
     "react-native-modal": "14.0.0-rc.1",
     "react-native-play-install-referrer": "^1.1.9",
     "react-native-safe-area-context": "^5.7.0",
