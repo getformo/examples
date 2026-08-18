@@ -36,17 +36,17 @@
     "react-dom": "18.2.0",
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^2.55.10",
+    "viem": "^2.55.13",
     "wagmi": "^2.5.19"
   },
   "devDependencies": {
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "autoprefixer": "^10.5.4",
     "eslint": "^9.8.0",
     "eslint-config-next": "^16.3.0",
-    "postcss": "^8.5.25",
+    "postcss": "^8.5.26",
     "prettier": "^3.9.6",
     "tailwindcss": "^3.4.19",
     "typescript": "^6.0.3"
