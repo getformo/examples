@@ -18,7 +18,7 @@
     "@openfort/react": "^1.6.3",
     "@solana/kit": "^5.5.1",
     "@tanstack/react-query": "^5.101.4",
-    "@wagmi/connectors": "^5.11.2",
+    "@wagmi/connectors": "^8.1.0",
     "lucide-react": "^1.28.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
