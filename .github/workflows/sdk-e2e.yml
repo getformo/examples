@@ -60,9 +60,13 @@ jobs:
         working-directory: e2e
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Sweep
+      - name: Compatibility sweep (one flow, every example)
         working-directory: e2e
         run: node sweep.mjs /tmp/sdk/node_modules/@formo/analytics
+
+      - name: Behaviour scenarios (every flow and configuration)
+        working-directory: e2e
+        run: node behaviours.mjs /tmp/sdk/node_modules/@formo/analytics
 
   browser:
     name: Browser over EIP-6963 (anvil)

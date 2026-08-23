@@ -55,7 +55,7 @@ globalThis.fetch = async (url, init) => {
     if (process.env.E2E_RAW) console.error("RAW " + JSON.stringify(body).slice(0, 900));
     for (const e of Array.isArray(body) ? body : [body]) {
       const pr = e.properties ?? {};
-      sent.push({ type: e.type ?? e.event ?? e.action, address: e.address, chainId: pr.chain_id ?? e.chain_id, status: pr.status });
+      sent.push({ type: e.type ?? e.event ?? e.action, event: e.type === "track" ? e.event : undefined, userId: e.user_id ?? e.userId, address: e.address, chainId: pr.chain_id ?? e.chain_id, status: pr.status, path: e.type === "page" ? pr.path ?? e.context?.page?.path : undefined });
     }
   } catch { /* non-JSON */ }
   return { ok: true, status: 200, json: async () => ({}), text: async () => "" };
@@ -69,7 +69,7 @@ const ADDR_B = "0x88C0224CEABF6D559d7B622F2918b308285280DE";
 
 const log = [];
 const rec = (label) => {
-  log.push({ step: label, events: sent.splice(0).map(e => `${e.type}${e.status ? ":" + e.status : ""}@${e.chainId ?? "-"}${process.env.E2E_ADDR ? "/" + (e.address ?? "-").slice(0, 6) : ""}`) });
+  log.push({ step: label, events: sent.splice(0).map(e => `${e.type}${e.status ? ":" + e.status : ""}${e.event ? "(" + e.event + ")" : ""}@${e.chainId ?? "-"}${process.env.E2E_ADDR ? "/" + (e.address ?? "-").slice(0, 6) : ""}${e.userId ? "#" + e.userId : ""}`) });
 };
 const settle = (ms = 60) => new Promise(r => setTimeout(r, ms));
 
@@ -308,7 +308,73 @@ async function runTwoWallets(opts) {
   return { log, rpcCalls: other.rpcCalls };
 }
 
-const out = MODE === "twowallets" ? await runTwoWallets(opts)
+
+// The public API and consent, on an EIP-1193 provider. Covers what the
+// wallet-event modes cannot: identify, track, reset, opt-out/opt-in, and the
+// active-wallet cookie surviving a reload.
+async function runApi(opts) {
+  const provider = makeProvider(opts.provider ?? {});
+  globalThis.window.ethereum = provider;
+  announce6963(provider);
+  const formo = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
+  await settle(); rec("init");
+
+  provider.emit("connect", { chainId: "0x1" });
+  provider.emit("accountsChanged", [ADDR_A]);
+  await settle(); rec("connect");
+
+  await formo.identify({ address: ADDR_A, userId: "user-1" });
+  await settle(); rec("identify");
+
+  // A second identify for the same wallet is deduped within the session.
+  await formo.identify({ address: ADDR_A, userId: "user-1" });
+  await settle(); rec("identifyAgain");
+
+  // Let the location-change page hit (300ms debounce) drain first, so the
+  // explicit page() below is asserted on its own.
+  await settle(400); sent.length = 0;
+  await formo.track("checkout_started", { plan: "pro", seats: 3 });
+  await settle(); rec("track");
+
+  // page() is deliberately delayed 300ms inside the SDK to coalesce rapid
+  // SPA navigations, so it needs a longer settle than the other calls.
+  await formo.page("docs", "getting-started");
+  await settle(450); rec("page");
+
+  // Consent: nothing must go out while opted out, and tracking resumes after.
+  formo.optOutTracking();
+  await formo.track("while_opted_out");
+  await provider.request({ method: "personal_sign", params: ["0x6869", ADDR_A] });
+  await settle(); rec("optedOut");
+  formo.optInTracking();
+  await formo.track("after_opt_in");
+  await settle(); rec("optedIn");
+
+  // reset() clears identity: the next track carries no user or address.
+  formo.reset();
+  await formo.track("after_reset");
+  await settle();
+  const last = log.length;
+  rec("afterReset");
+  log[last].state = { address: formo.currentAddress ?? null, userId: formo.currentUserId ?? null };
+
+  // A new instance on the same "page" must restore the wallet from the cookie
+  // before any wallet event, so the first page hit carries the address.
+  provider.emit("accountsChanged", [ADDR_A]);
+  await settle();
+  formo.cleanup?.();
+  sent.length = 0;
+  const again = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
+  await settle();
+  const restored = { address: again.currentAddress ?? null, chainId: again.currentChainId ?? null };
+  rec("reloadRestore");
+  log[log.length - 1].state = restored;
+  again.cleanup?.();
+  return { log, rpcCalls: provider.rpcCalls };
+}
+
+const out = MODE === "api" ? await runApi(opts)
+  : MODE === "twowallets" ? await runTwoWallets(opts)
   : MODE === "unknownchain" ? await runUnknownChain(opts)
   : MODE === "wagmi" ? await runWagmi(opts)
   : MODE === "cold" ? await runCold(opts)
