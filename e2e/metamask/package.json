@@ -1,0 +1,14 @@
+{
+  "name": "formo-e2e-metamask",
+  "private": true,
+  "type": "module",
+  "description": "Drives a REAL MetaMask extension against the published @formo/analytics. Lives here, not in the SDK repo, so its dependency tree can never influence a release.",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.48.2",
+    "@synthetixio/synpress": "4.1.2",
+    "typescript": "^5.9.3"
+  }
+}
