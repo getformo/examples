@@ -39,13 +39,23 @@ const chrome = [process.env.CHROME_PATH, "/Applications/Google Chrome.app/Conten
 if (!chrome) { console.error("no chrome found"); process.exit(2); }
 const profile = mkdtempSync(join(tmpdir(), "formo-e2e-"));
 let proc, ws;
-const teardown = () => {
+let tornDown = false;
+const teardown = async () => {
+  if (tornDown) return; tornDown = true;
   try { ws?.close(); } catch {}
-  try { proc?.kill(); } catch {}
   try { server.close(); } catch {}
+  if (proc && proc.exitCode === null) {
+    // Chrome forks renderers; wait for the tree to exit before removing its
+    // profile, or the directory is left locked and accumulates across runs.
+    const exited = new Promise((r) => proc.once("exit", r));
+    proc.kill("SIGTERM");
+    await Promise.race([exited, new Promise((r) => setTimeout(r, 3000))]);
+    if (proc.exitCode === null) proc.kill("SIGKILL");
+  }
   try { rmSync(profile, { recursive: true, force: true }); } catch {}
 };
-process.on("exit", teardown);
+process.on("exit", () => { try { proc?.kill("SIGKILL"); rmSync(profile, { recursive: true, force: true }); } catch {} });
+process.on("unhandledRejection", async (e) => { console.error(e); await teardown(); process.exit(1); });
 // A hung page must not hang CI: every await below is bounded by this.
 const deadline = setTimeout(() => { console.error("test:browser timed out after 90s"); process.exit(3); }, 90_000);
 deadline.unref();
@@ -85,7 +95,8 @@ results.push(["discovered", await evaluate("window.__ready.then(f => f.providers
 results.push(await step("connect A",        "await window.__walletA.request({ method: 'eth_requestAccounts' })"));
 results.push(await step("sign (A)",         "await window.__walletA.request({ method: 'personal_sign', params: ['0x68656c6c6f', '" + A + "'] })"));
 results.push(await step("reject sign (A)",  "window.__rejectNext = true; await window.__walletA.request({ method: 'personal_sign', params: ['0x68', '" + A + "'] }).catch(() => {})"));
-results.push(await step("switch chain",     "await window.__walletA.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x7a69' }] })"));
+// Wallets start on 0x7a69, so switch AWAY and back: a switch to the current chain is a no-op in a real wallet and proves nothing.
+results.push(await step("switch chain",     "await window.__walletA.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] }); await window.__walletA.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x7a69' }] })"));
 results.push(await step("send tx (A)",      "await window.__walletA.request({ method: 'eth_sendTransaction', params: [{ from: '" + A + "', to: '" + B + "', value: '0x1' }] })", 4500));
 results.push(await step("batch 2 calls (A)","await window.__walletA.request({ method: 'wallet_sendCalls', params: [{ version: '2.0.0', from: '" + A + "', chainId: '0x7a69', calls: [{ to: '" + B + "', value: '0x1' }, { to: '" + B + "', value: '0x2' }] }] })", 4500));
 results.push(await step("switch to B",      "window.__walletB.__setAccounts(['" + B + "'])"));
@@ -102,7 +113,7 @@ const expect = {
   "connect A":         ["connect@31337/0x5137", "page@-/0x5137"],
   "sign (A)":          ["signature:requested@31337/0x5137", "signature:confirmed@31337/0x5137"],
   "reject sign (A)":   ["signature:requested@31337/0x5137", "signature:rejected@31337/0x5137"],
-  "switch chain":      ["chain@31337/0x5137"],
+  "switch chain":      ["chain@1/0x5137", "chain@31337/0x5137"],
   "send tx (A)":       ["transaction:started@31337/0x5137", "transaction:broadcasted@31337/0x5137", "transaction:confirmed@31337/0x5137"],
   "batch 2 calls (A)": ["transaction:started@31337/0x5137", "transaction:started@31337/0x5137", "transaction:broadcasted@31337/0x5137", "transaction:broadcasted@31337/0x5137", "transaction:confirmed@31337/0x5137", "transaction:confirmed@31337/0x5137"],
   "switch to B":       ["disconnect@31337/0x5137", "connect@31337/0x88C0"],
@@ -123,4 +134,5 @@ const rpc = results.find(([k]) => k === "sdk-issued rpc")[1];
 const disallowed = rpc.filter((m) => !/:(eth_accounts|eth_getTransactionReceipt|wallet_getCallsStatus)$/.test(m));
 if (disallowed.length) { failed++; console.log(`  FAIL sdk issued disallowed rpc: ${JSON.stringify(disallowed)}`); }
 console.log(failed ? `\n${failed} check(s) failed` : "\nall checks passed");
+await teardown();
 process.exit(failed ? 1 : 0);

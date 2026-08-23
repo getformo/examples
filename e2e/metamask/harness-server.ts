@@ -5,8 +5,13 @@ import { join } from "node:path";
 // Serves the harness page and the PUBLISHED SDK bundle on a fixed local port
 // for the whole run. Started by Playwright's globalSetup; stopped by the
 // returned teardown.
-const SDK_DIR = process.env.SDK_DIR || join(process.cwd(), "..", "..", "node_modules", "@formo", "analytics");
-const PORT = 8766;
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+// Resolved from this file, not the working directory, so the default holds
+// from wherever the test is launched.
+const here = dirname(fileURLToPath(import.meta.url));
+const SDK_DIR = process.env.SDK_DIR || join(here, "..", "..", "node_modules", "@formo", "analytics");
+const PORT = Number(process.env.HARNESS_PORT || 8766);
 
 const PAGE = `<!doctype html><html><head><meta charset="utf-8"><title>Formo real-MetaMask e2e</title></head><body>
 <script>
@@ -33,6 +38,12 @@ export default async function globalSetup() {
     if (req.url?.startsWith("/sdk.js")) { res.setHeader("content-type", "text/javascript"); res.end(sdk); return; }
     res.setHeader("content-type", "text/html"); res.end(PAGE);
   });
-  await new Promise<void>((r) => server.listen(PORT, "127.0.0.1", r));
+  await new Promise<void>((resolve, reject) => {
+    server.once("error", (e: NodeJS.ErrnoException) => {
+      if (e.code === "EADDRINUSE") reject(new Error(`harness port ${PORT} is in use: stop the stale process or set HARNESS_PORT`));
+      else reject(e);
+    });
+    server.listen(PORT, "127.0.0.1", resolve);
+  });
   return () => server.close();
 }

@@ -11,7 +11,10 @@ export default defineConfig({
   use: {
     // Synpress's page fixture navigates to "/" before a test body runs, so the
     // harness must already be served here. globalSetup starts it.
-    baseURL: "http://127.0.0.1:8766",
+    baseURL: `http://127.0.0.1:${process.env.HARNESS_PORT || 8766}`,
+    // Synpress reads HEADLESS for the extension context; mirror it here so the
+    // dapp page and the wallet agree.
+    headless: !!process.env.HEADLESS,
     trace: "retain-on-failure",
     ...devices["Desktop Chrome"],
   },

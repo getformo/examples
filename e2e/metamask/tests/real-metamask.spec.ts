@@ -25,32 +25,14 @@ test("the SDK sees a real MetaMask connect, sign, chain switch and transaction",
   const discovered = await page.evaluate(() => (window as any).formo.providers.map((d: any) => d.info.rdns));
   expect(discovered).toEqual(["io.metamask"]);
 
-  // Diagnostic: what does the extension answer directly, before any prompt?
-  const probe = await page.evaluate(async () => {
-    const p = (window as any).formo.providers[0].provider;
-    const out: any = { isMetaMask: p.isMetaMask, wrapped: typeof p.request === "function" };
-    try { out.accounts = await p.request({ method: "eth_accounts" }); } catch (e: any) { out.accountsErr = e?.message; }
-    try { out.chain = await p.request({ method: "eth_chainId" }); } catch (e: any) { out.chainErr = e?.message; }
-    try { out.connected = p.isConnected?.(); } catch {}
-    return out;
-  });
-  test.info().annotations.push({ type: "probe", description: JSON.stringify(probe) });
-  console.log("PROBE", JSON.stringify(probe));
 
   // Connect. Fire the request WITHOUT awaiting: it blocks until the extension
   // prompt is answered, and Synpress answers it on the next line.
-  // Ask the RAW extension provider (captured straight off the 6963 announce,
-  // before the SDK wrapped it) to see whether the wrapper is what suppresses
-  // the prompt.
-  await page.evaluate(() => new Promise<void>((r) => {
-    window.addEventListener("eip6963:announceProvider", (e: any) => { (window as any).__raw = e.detail.provider; r(); }, { once: true });
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
-  }));
-  const sameObject = await page.evaluate(() => (window as any).__raw === (window as any).formo.providers[0].provider);
-  console.log("RAW is same object as SDK's:", sameObject);
+  // Connect through the provider the SDK wrapped: that is the path every
+  // customer takes, so it is the one this test must exercise.
   await page.waitForTimeout(1500);
   const connectP = page.evaluate(() =>
-    (window as any).__raw.request({ method: "eth_requestAccounts" })
+    (window as any).formo.providers[0].provider.request({ method: "eth_requestAccounts" })
       .then((a: string[]) => ({ ok: a }), (e: any) => ({ err: { code: e?.code, message: e?.message } }))
   );
   await metamask.connectToDapp();

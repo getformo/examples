@@ -40,15 +40,20 @@ jobs:
           node-version: 22
 
       - name: Install the published SDK like a consumer would
+        env:
+          # Passed through env, never interpolated into the script: a
+          # workflow_dispatch input is attacker-controllable text.
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
+          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
-          npm install --no-audit --no-fund "@formo/analytics@${{ inputs.sdk_version || 'latest' }}" react react-dom @tanstack/react-query viem wagmi
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION" react react-dom @tanstack/react-query viem wagmi
           node -p "'testing @formo/analytics ' + require('/tmp/sdk/node_modules/@formo/analytics/package.json').version"
 
       - name: Install every example (frozen lockfiles)
         run: |
           for d in with-dynamic with-farcaster with-metamask with-next-page-router with-porto with-privy with-reown with-tempo with-web3-onboard with-react-native with-react with-next-app-router; do
-            echo "::group::$d"; (cd "$d" && pnpm install --frozen-lockfile --ignore-scripts) || echo "::warning::$d failed to install"; echo "::endgroup::"
+            echo "::group::$d"; (cd "$d" && pnpm install --frozen-lockfile --ignore-scripts) || { echo "::error::$d failed to install"; exit 1; }; echo "::endgroup::"
           done
 
       - name: Install the harness
@@ -74,9 +79,12 @@ jobs:
         id: chrome
 
       - name: Install the published SDK
+        env:
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
+          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
-          npm install --no-audit --no-fund "@formo/analytics@${{ inputs.sdk_version || 'latest' }}"
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
 
       - name: Start anvil
         run: anvil --port 8545 --chain-id 31337 > /tmp/anvil.log 2>&1 &
@@ -104,9 +112,12 @@ jobs:
       - uses: foundry-rs/foundry-toolchain@de808b1eea699e761c404bda44ba8f21aba30b2c # v1.3.1
 
       - name: Install the published SDK
+        env:
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
+          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
-          npm install --no-audit --no-fund "@formo/analytics@${{ inputs.sdk_version || 'latest' }}"
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
 
       - name: Install Synpress (scripts disabled except esbuild)
         working-directory: e2e/metamask

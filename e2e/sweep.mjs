@@ -26,10 +26,15 @@ const EXPECT = {
 const examples = [...WAGMI.map((n) => [n, "wagmi"]), ...EIP1193.map((n) => [n, "eip1193"])]
   .filter(([n]) => only.length === 0 || only.includes(n));
 
-let failed = 0;
+let failed = 0, ran = 0;
 for (const [name, mode] of examples) {
   const dir = join(root, name);
-  if (!existsSync(join(dir, "node_modules"))) { console.log(`  skip ${name.padEnd(24)} (not installed)`); continue; }
+  if (!existsSync(join(dir, "node_modules"))) {
+    // Not installed is a failure, not a skip. Counting it as green is how a
+    // broken example tree hides for weeks.
+    failed++; console.log(`  FAIL ${name.padEnd(24)} not installed (node_modules missing)`); continue;
+  }
+  ran++;
   const r = spawnSync("node", [join(here, "harness.mjs"), sdkDir, dir, mode], { encoding: "utf8" });
   let got;
   try {
@@ -43,5 +48,5 @@ for (const [name, mode] of examples) {
   if (!ok) failed++;
   console.log(`  ${ok ? "ok  " : "FAIL"} ${name.padEnd(24)} ${JSON.stringify(got)}${ok ? "" : "\n       want " + JSON.stringify(want)}`);
 }
-console.log(failed ? `\n${failed} example(s) failed` : `\nall ${examples.length} examples passed`);
+console.log(failed ? `\n${failed} of ${examples.length} example(s) failed` : `\nall ${ran} examples passed`);
 process.exit(failed ? 1 : 0);

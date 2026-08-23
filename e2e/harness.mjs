@@ -251,8 +251,13 @@ const opts = JSON.parse(process.env.E2E_OPTS || "{}");
 // A provider that announces nothing: no connect, no chainChanged, no
 // synchronous chainId. The dapp just signs. This is where the chain is
 // genuinely unresolvable.
-async function runCold(opts) {
-  const provider = makeProvider({ exposeChainId: false, ...(opts.provider ?? {}) });
+/**
+ * A wallet whose chain is never announced. "cold" exposes no synchronous
+ * chainId; "unknownchain" additionally fails eth_chainId, so the SDK must
+ * report 0 rather than guess. Same flow, one knob.
+ */
+async function runNoChain(opts, providerOpts) {
+  const provider = makeProvider({ exposeChainId: false, ...providerOpts, ...(opts.provider ?? {}) });
   globalThis.window.ethereum = provider;
   const formo = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
   await settle(); rec("init");
@@ -270,21 +275,8 @@ async function runCold(opts) {
   formo.cleanup?.();
   return { log, rpcCalls: provider.rpcCalls };
 }
-
-async function runUnknownChain(opts) {
-  const provider = makeProvider({ exposeChainId: false, chainIdFails: true, ...(opts.provider ?? {}) });
-  globalThis.window.ethereum = provider;
-  const formo = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
-  await settle(); rec("init");
-  provider.emit("accountsChanged", [ADDR_A]);
-  await settle(); rec("accountsChanged");
-  await provider.request({ method: "personal_sign", params: ["0x6869", ADDR_A] });
-  await settle(); rec("signature");
-  await provider.request({ method: "eth_sendTransaction", params: [{ from: ADDR_A, to: ADDR_B, value: "0x0", data: "0x" }] });
-  await settle(120); rec("transaction");
-  formo.cleanup?.();
-  return { log, rpcCalls: provider.rpcCalls };
-}
+const runCold = (opts) => runNoChain(opts, {});
+const runUnknownChain = (opts) => runNoChain(opts, { chainIdFails: true });
 
 // Two installed wallets. The visitor signs through the one that is NOT the
 // active provider - the case where main issues an in-request `eth_chainId`
