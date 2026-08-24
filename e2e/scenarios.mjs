@@ -93,15 +93,13 @@ export const SCENARIOS = [
         `transaction:confirmed@137/${A}[0/1+id=b2:0xh0]`,
       ] } },
   { name: "eip5792: an atomic batch confirms every call from its single receipt", mode: "batch", expect: {
-      // KNOWN GAP in published 1.36.0: the shared on-chain hash reaches
-      // only call 0; call 1 confirms without it. The fix (every call shares
-      // the atomic receipt) is merged as getformo/sdk#362 - update this row
-      // to expect the shared hash on both calls when the release after
-      // 1.36.0 ships.
+      // An atomic batch lands as ONE on-chain transaction, so its single
+      // receipt reaches EVERY call, shared hash included (sdk#362; the
+      // 1.36.0 gap where only call 0 carried it is closed).
       atomic: [
         `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
         `transaction:broadcasted@137/${A}[0/2+id=b3]`, `transaction:broadcasted@137/${A}[1/2+id=b3]`,
-        `transaction:confirmed@137/${A}[0/2+id=b3:0xatomic]`, `transaction:confirmed@137/${A}[1/2+id=b3]`,
+        `transaction:confirmed@137/${A}[0/2+id=b3:0xatomic]`, `transaction:confirmed@137/${A}[1/2+id=b3:0xatomic]`,
       ] } },
   { name: "eip5792: a partially reverted non-atomic batch settles each call by its own receipt", mode: "batch", expect: {
       partialRevert: [
@@ -116,4 +114,22 @@ export const SCENARIOS = [
       ] } },
   { name: "eip5792: autocapture.transaction:false captures no batch events", mode: "batch", opts: { sdk: { autocapture: { transaction: false } } },
     expect: { twoCalls: [], singleCall: [], atomic: [], partialRevert: [], rejected: [] } },
+  // Wagmi mode captures batches through the Mutation/Query caches (sdk#362,
+  // shipped in 1.37.0): the request wrapper that handles wallet_sendCalls on
+  // the 1193 path is never installed in wagmi mode. The mock batch id 0xb01
+  // renders as +id=b1, same normalization as the 1193 rows.
+  { name: "eip5792 wagmi: one event per call from the sendCalls mutation, id from broadcast", mode: "wagmi", opts: { wagmiBatch: true }, expect: {
+      wagmiBatchBroadcast: [
+        `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b1]`, `transaction:broadcasted@137/${A}[1/2+id=b1]`,
+      ] } },
+  { name: "eip5792 wagmi: the callsStatus query settles an atomic batch with one shared hash", mode: "wagmi", opts: { wagmiBatch: true }, expect: {
+      wagmiBatchSettled: [
+        `transaction:confirmed@137/${A}[0/2+id=b1:0xwatomic]`, `transaction:confirmed@137/${A}[1/2+id=b1:0xwatomic]`,
+      ] } },
+  { name: "eip5792 wagmi: a user rejection (4001 under viem's cause) rejects every call", mode: "wagmi", opts: { wagmiBatch: true }, expect: {
+      wagmiBatchRejected: [
+        `transaction:started@137/${A}[0/1]`,
+        `transaction:rejected@137/${A}[0/1]`,
+      ] } },
 ];

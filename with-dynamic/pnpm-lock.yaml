@@ -31,8 +31,8 @@ importers:
         specifier: ^4.94.0
         version: 4.94.0(22733c586793396b3118f48b3ae9157d)
       '@formo/analytics':
-        specifier: ^1.36.0
-        version: 1.36.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))
+        specifier: ^1.37.0
+        version: 1.37.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@18.3.1)
@@ -620,8 +620,8 @@ packages:
   '@evervault/wasm-attestation-bindings@0.3.1':
     resolution: {integrity: sha512-pJsbax/pEPdRXSnFKahzGZeq2CNTZ0skAPWpnEZK/8vdcvlan7LE7wMSOVr+Z+MqTBnVEnS7O80TKpXKU5Rsbw==}
 
-  '@formo/analytics@1.36.0':
-    resolution: {integrity: sha512-w4DkORzYiP6M802mMlliGpEjcXngLaA1qrxConuKOWDDZbEI4Aqn+6AyamvdoHr0IIAf45Mpr2DvrLhHVWT/Ug==}
+  '@formo/analytics@1.37.0':
+    resolution: {integrity: sha512-9VwOHkYMW/59fn26uLSjR5CBecH3MAR/Agfb5Ew6ANIOZ9eYSx6bAgS9RpTWyZVQF27uP28gtY0gBagpBgxoZQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -5588,7 +5588,7 @@ snapshots:
 
   '@evervault/wasm-attestation-bindings@0.3.1': {}
 
-  '@formo/analytics@1.36.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))':
+  '@formo/analytics@1.37.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.9.3)(utf-8-validate@6.0.6)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))(zod@3.25.76))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
@@ -5886,7 +5886,7 @@ snapshots:
     dependencies:
       async-mutex: 0.5.0
       centrifuge: 5.7.0
-      eventemitter3: 5.0.4
+      eventemitter3: 5.0.1
       uuid: 11.1.1
 
   '@metamask/mobile-wallet-protocol-dapp-client@0.3.0':
@@ -10555,7 +10555,7 @@ snapshots:
       '@types/uuid': 10.0.0
       '@types/ws': 8.18.1
       buffer: 6.0.3
-      eventemitter3: 5.0.4
+      eventemitter3: 5.0.1
       uuid: 14.0.1
       ws: 8.21.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     optionalDependencies:

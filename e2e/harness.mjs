@@ -263,6 +263,35 @@ async function runWagmi(opts) {
     await settle(); rec("signExplicitAccount");
   }
 
+  if (opts.wagmiBatch) {
+    // The batch mutation exactly as useSendCalls creates it: real
+    // MutationCache, mutation key ['sendCalls'], result { id }.
+    const batchMutation = mc.build(queryClient, {
+      mutationKey: ["sendCalls"],
+      mutationFn: async () => ({ id: "0xb01" }),
+    });
+    await batchMutation.execute({ calls: [ { to: ADDR_B, value: 0n }, { to: ADDR_B, value: 1n } ] });
+    await settle(); rec("wagmiBatchBroadcast");
+
+    // Settlement exactly as useWaitForCallsStatus reports it: real
+    // QueryCache, query key ['callsStatus', { id }], viem-shaped data. One
+    // atomic receipt covers both calls.
+    await queryClient.fetchQuery({
+      queryKey: ["callsStatus", { id: "0xb01" }],
+      queryFn: async () => ({ status: "success", statusCode: 200, atomic: true,
+        receipts: [{ status: "success", transactionHash: "0xwatomic" }] }),
+    });
+    await settle(); rec("wagmiBatchSettled");
+
+    // A second batch the user rejects; viem nests the 4001 under `cause`.
+    const rejected = mc.build(queryClient, {
+      mutationKey: ["sendCalls"],
+      mutationFn: async () => { const e = new Error("User rejected the request."); e.cause = { code: 4001 }; throw e; },
+    });
+    await rejected.execute({ calls: [ { to: ADDR_B, value: 0n } ] }).catch(() => undefined);
+    await settle(); rec("wagmiBatchRejected");
+  }
+
   await disconnect(config); await settle(); rec("disconnect");
 
   formo.cleanup?.();
