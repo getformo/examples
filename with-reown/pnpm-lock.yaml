@@ -37,8 +37,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.35.0
-        version: 1.35.0(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(react@18.2.0)(typescript@6.0.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@2.16.9(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.2.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(zod@4.4.3))
+        specifier: ^1.36.0
+        version: 1.36.0(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(react@18.2.0)(typescript@6.0.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@2.16.9(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.2.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(zod@4.4.3))
       '@radix-ui/react-accordion':
         specifier: ^1.2.20
         version: 1.2.20(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -325,8 +325,8 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@formo/analytics@1.35.0':
-    resolution: {integrity: sha512-SKer628TK55QnMbfOlinTQcXRIpuHQ1G9QESaHl+latEJ3jLhaMXkT3g5BO1KoSyt4TOAPvXTeDs+vyEnScRIA==}
+  '@formo/analytics@1.36.0':
+    resolution: {integrity: sha512-w4DkORzYiP6M802mMlliGpEjcXngLaA1qrxConuKOWDDZbEI4Aqn+6AyamvdoHr0IIAf45Mpr2DvrLhHVWT/Ug==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -4134,7 +4134,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.35.0(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(react@18.2.0)(typescript@6.0.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@2.16.9(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.2.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(zod@4.4.3))':
+  '@formo/analytics@1.36.0(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(react@18.2.0)(typescript@6.0.3)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@2.16.9(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.2.0))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.2.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@4.4.3))(zod@4.4.3))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@6.0.3)
@@ -4486,7 +4486,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.13
-      debug: 4.4.3
+      debug: 4.3.4
       pony-cause: 2.1.11
       semver: 7.8.5
       uuid: 11.1.1
@@ -5341,7 +5341,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.7
+      '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -7680,10 +7680,10 @@ snapshots:
   ox@0.6.7(typescript@6.0.3)(zod@4.4.3):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
+      '@noble/curves': 1.8.1
+      '@noble/hashes': 1.7.1
+      '@scure/bip32': 1.6.2
+      '@scure/bip39': 1.5.4
       abitype: 1.3.0(typescript@6.0.3)(zod@4.4.3)
       eventemitter3: 5.0.1
     optionalDependencies:
@@ -7709,7 +7709,7 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.7
+      '@noble/curves': 1.9.2
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0

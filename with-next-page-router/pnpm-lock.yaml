@@ -23,8 +23,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.35.0
-        version: 1.35.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.2)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(preact-render-to-string@5.2.6(preact@10.29.7))(react@18.3.1)(typescript@5.5.2)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
+        specifier: ^1.36.0
+        version: 1.36.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.2)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(preact-render-to-string@5.2.6(preact@10.29.7))(react@18.3.1)(typescript@5.5.2)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
       '@radix-ui/react-dialog':
         specifier: ^1.1.23
         version: 1.1.23(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -295,8 +295,8 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@formo/analytics@1.35.0':
-    resolution: {integrity: sha512-SKer628TK55QnMbfOlinTQcXRIpuHQ1G9QESaHl+latEJ3jLhaMXkT3g5BO1KoSyt4TOAPvXTeDs+vyEnScRIA==}
+  '@formo/analytics@1.36.0':
+    resolution: {integrity: sha512-w4DkORzYiP6M802mMlliGpEjcXngLaA1qrxConuKOWDDZbEI4Aqn+6AyamvdoHr0IIAf45Mpr2DvrLhHVWT/Ug==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -2826,6 +2826,14 @@ packages:
       preact-render-to-string:
         optional: true
 
+  preact@10.29.8:
+    resolution: {integrity: sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==}
+    peerDependencies:
+      preact-render-to-string: '>=5'
+    peerDependenciesMeta:
+      preact-render-to-string:
+        optional: true
+
   pretty-format@3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
 
@@ -3531,7 +3539,7 @@ snapshots:
       eth-json-rpc-filters: 6.0.1
       eventemitter3: 5.0.4
       keccak: 3.0.4
-      preact: 10.29.7(preact-render-to-string@5.2.6)
+      preact: 10.29.8(preact-render-to-string@5.2.6(preact@10.29.7))
       sha.js: 2.4.12
     transitivePeerDependencies:
       - preact-render-to-string
@@ -3860,7 +3868,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.35.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.2)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(preact-render-to-string@5.2.6(preact@10.29.7))(react@18.3.1)(typescript@5.5.2)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
+  '@formo/analytics@1.36.0(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.2)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(preact-render-to-string@5.2.6(preact@10.29.7))(react@18.3.1)(typescript@5.5.2)(utf-8-validate@5.0.10)(viem@2.55.10(bufferutil@4.1.0)(typescript@5.5.2)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.5.2)
@@ -4186,7 +4194,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.13
-      debug: 4.4.3
+      debug: 4.3.4
       pony-cause: 2.1.11
       semver: 7.8.5
       uuid: 11.1.1
@@ -4890,7 +4898,7 @@ snapshots:
 
   '@scure/bip32@1.4.0':
     dependencies:
-      '@noble/curves': 1.4.2
+      '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.9
 
@@ -4902,7 +4910,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.7
+      '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -6991,10 +6999,10 @@ snapshots:
   ox@0.6.7(typescript@5.5.2)(zod@3.25.76):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
+      '@noble/curves': 1.8.1
+      '@noble/hashes': 1.7.1
+      '@scure/bip32': 1.6.2
+      '@scure/bip39': 1.5.4
       abitype: 1.0.8(typescript@5.5.2)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
@@ -7157,6 +7165,10 @@ snapshots:
   preact@10.24.2: {}
 
   preact@10.29.7(preact-render-to-string@5.2.6):
+    optionalDependencies:
+      preact-render-to-string: 5.2.6(preact@10.29.7)
+
+  preact@10.29.8(preact-render-to-string@5.2.6(preact@10.29.7)):
     optionalDependencies:
       preact-render-to-string: 5.2.6(preact@10.29.7)
 
@@ -7720,8 +7732,8 @@ snapshots:
 
   webauthn-p256@0.0.5:
     dependencies:
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.8.0
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
 
   webextension-polyfill@0.10.0: {}
 
