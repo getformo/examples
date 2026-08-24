@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  nanoid@<3.3.17: 3.3.17
+  nanoid@<3.3.18: 3.3.18
   shell-quote@<=1.8.4: 1.10.0
   fast-uri@>=3.0.0 <3.1.5: 3.1.5
   fast-uri@>=4.0.0 <4.1.2: 4.1.2
@@ -3675,8 +3675,8 @@ packages:
     resolution: {integrity: sha512-jtpsQDetTnvS2Ts1fiRdci5rx0VYws5jGyC+4IYOTnIQ/wwdf6JdomlHBwqC3bJYOvaKu0C2GSZ1A60anrYpaA==}
     engines: {node: '>=20.17'}
 
-  nanoid@3.3.17:
-    resolution: {integrity: sha512-xQLf0A3HOMlgHq0n247/LRuAOYmB7dXJ/DvAxGvsSBij45XtBSmQycu+F8ODbHwns/XyFZagyL1+J0Offw1E0g==}
+  nanoid@3.3.18:
+    resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -6204,7 +6204,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.13
-      debug: 4.3.4
+      debug: 4.4.3
       pony-cause: 2.1.11
       semver: 7.8.5
       uuid: 11.1.1
@@ -10883,7 +10883,7 @@ snapshots:
 
   nano-spawn@1.0.3: {}
 
-  nanoid@3.3.17: {}
+  nanoid@3.3.18: {}
 
   napi-postinstall@0.3.4: {}
 
@@ -11339,13 +11339,13 @@ snapshots:
 
   postcss@8.5.23:
     dependencies:
-      nanoid: 3.3.17
+      nanoid: 3.3.18
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
   postcss@8.5.25:
     dependencies:
-      nanoid: 3.3.17
+      nanoid: 3.3.18
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
