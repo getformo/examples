@@ -78,30 +78,31 @@ export const SCENARIOS = [
   { name: "eip5792: one event per call, with size/index from creation and batch id from broadcast", mode: "batch", expect: {
       twoCalls: [
         `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
-        `transaction:broadcasted@137/${A}[0/2+id]`, `transaction:broadcasted@137/${A}[1/2+id]`,
-        `transaction:confirmed@137/${A}[0/2+id:0xh0]`, `transaction:confirmed@137/${A}[1/2+id:0xh1]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b1]`, `transaction:broadcasted@137/${A}[1/2+id=b1]`,
+        `transaction:confirmed@137/${A}[0/2+id=b1:0xh0]`, `transaction:confirmed@137/${A}[1/2+id=b1:0xh1]`,
       ] } },
   { name: "eip5792: a single-call batch produces exactly one event per status", mode: "batch", expect: {
       singleCall: [
         `transaction:started@137/${A}[0/1]`,
-        `transaction:broadcasted@137/${A}[0/1+id]`,
-        `transaction:confirmed@137/${A}[0/1+id:0xh0]`,
+        `transaction:broadcasted@137/${A}[0/1+id=b2]`,
+        `transaction:confirmed@137/${A}[0/1+id=b2:0xh0]`,
       ] } },
   { name: "eip5792: an atomic batch confirms every call from its single receipt", mode: "batch", expect: {
-      // KNOWN GAP: the shared on-chain hash currently reaches only call 0;
-      // call 1 confirms without it. The refinement (apply the atomic
-      // receipt's hash to every call) is agreed but not yet shipped - update
-      // this row when it is.
+      // KNOWN GAP in published 1.36.0: the shared on-chain hash reaches
+      // only call 0; call 1 confirms without it. The fix (every call shares
+      // the atomic receipt) is merged as getformo/sdk#362 - update this row
+      // to expect the shared hash on both calls when the release after
+      // 1.36.0 ships.
       atomic: [
         `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
-        `transaction:broadcasted@137/${A}[0/2+id]`, `transaction:broadcasted@137/${A}[1/2+id]`,
-        `transaction:confirmed@137/${A}[0/2+id:0xatomic]`, `transaction:confirmed@137/${A}[1/2+id]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b3]`, `transaction:broadcasted@137/${A}[1/2+id=b3]`,
+        `transaction:confirmed@137/${A}[0/2+id=b3:0xatomic]`, `transaction:confirmed@137/${A}[1/2+id=b3]`,
       ] } },
   { name: "eip5792: a partially reverted non-atomic batch settles each call by its own receipt", mode: "batch", expect: {
       partialRevert: [
         `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
-        `transaction:broadcasted@137/${A}[0/2+id]`, `transaction:broadcasted@137/${A}[1/2+id]`,
-        `transaction:confirmed@137/${A}[0/2+id:0xok]`, `transaction:reverted@137/${A}[1/2+id:0xbad]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b4]`, `transaction:broadcasted@137/${A}[1/2+id=b4]`,
+        `transaction:confirmed@137/${A}[0/2+id=b4:0xok]`, `transaction:reverted@137/${A}[1/2+id=b4:0xbad]`,
       ] } },
   { name: "eip5792: a user rejection reports every call in the prompt rejected", mode: "batch", expect: {
       rejected: [

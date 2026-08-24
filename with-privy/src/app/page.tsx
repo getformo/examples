@@ -35,7 +35,10 @@ export default function Home() {
   // Settlement per EIP-5792: wallet_getCallsStatus by the batch id the
   // wallet returned. This query is also what lets Formo settle the batch in
   // wagmi mode (confirmed or reverted per call, with the receipt hash).
-  const batchId = (batchResult as { id?: string } | undefined)?.id;
+  const batchId =
+    typeof batchResult === "string"
+      ? batchResult
+      : (batchResult as { id?: string } | undefined)?.id;
   const { data: batchStatus } = useWaitForCallsStatus({
     id: batchId as `0x${string}`,
     query: { enabled: !!batchId },
@@ -50,7 +53,7 @@ export default function Home() {
   const atomicCapability =
     (capabilities as Record<number, { atomic?: { status?: string } }> | undefined)?.[chainId]
       ?.atomic?.status ?? "not reported";
-  const { chains, switchChain, isPending: isSwitchPending } = useSwitchChain();
+  const { chains, switchChain, isPending: isSwitchPending, error: switchError } = useSwitchChain();
 
   // Local state for custom event tracking
   const [customEventName, setCustomEventName] = useState("");
@@ -393,13 +396,18 @@ export default function Home() {
                     <button
                       key={c.id}
                       onClick={() => switchChain({ chainId: c.id })}
-                      disabled={isSwitchPending || c.id === chainId}
+                      disabled={!isConnected || isSwitchPending || c.id === chainId}
                       className={`px-2 py-1 text-xs rounded border ${c.id === chainId ? "border-lemon-500 text-lemon-500" : "border-ink-300 text-ink-200"} disabled:opacity-60`}
                     >
                       {c.name}
                     </button>
                   ))}
                 </div>
+                {switchError ? (
+                  <p className="text-red-400 text-xs mt-2">
+                    Switch failed: {switchError.message.split(".")[0]}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
