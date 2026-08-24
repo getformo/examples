@@ -47,7 +47,7 @@ minimumReleaseAgeExclude:
 # in package.json by that change; undici stayed on 6.25.0 and @xmldom/xmldom
 # kept resolving 0.7.13 alongside 0.8.13 for as long as they sat there.
 overrides:
-  nanoid@<3.3.17: 3.3.17
+  nanoid@<3.3.18: 3.3.18
   shell-quote@<=1.8.4: 1.10.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2

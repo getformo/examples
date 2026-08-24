@@ -55,7 +55,7 @@ globalThis.fetch = async (url, init) => {
     if (process.env.E2E_RAW) console.error("RAW " + JSON.stringify(body).slice(0, 900));
     for (const e of Array.isArray(body) ? body : [body]) {
       const pr = e.properties ?? {};
-      sent.push({ type: e.type ?? e.event ?? e.action, event: e.type === "track" ? e.event : undefined, userId: e.user_id ?? e.userId, address: e.address, chainId: pr.chain_id ?? e.chain_id, status: pr.status, path: e.type === "page" ? pr.path ?? e.context?.page?.path : undefined });
+      sent.push({ type: e.type ?? e.event ?? e.action, event: e.type === "track" ? e.event : undefined, userId: e.user_id ?? e.userId, address: e.address, chainId: pr.chain_id ?? e.chain_id, status: pr.status, batchSize: pr.batch_size, batchIndex: pr.batch_index, batchId: pr.batch_id, txHash: pr.transaction_hash, path: e.type === "page" ? pr.path ?? e.context?.page?.path : undefined });
     }
   } catch { /* non-JSON */ }
   return { ok: true, status: 200, json: async () => ({}), text: async () => "" };
@@ -69,7 +69,7 @@ const ADDR_B = "0x88C0224CEABF6D559d7B622F2918b308285280DE";
 
 const log = [];
 const rec = (label) => {
-  log.push({ step: label, events: sent.splice(0).map(e => `${e.type}${e.status ? ":" + e.status : ""}${e.event ? "(" + e.event + ")" : ""}@${e.chainId ?? "-"}${process.env.E2E_ADDR ? "/" + (e.address ?? "-").slice(0, 6) : ""}${e.userId ? "#" + e.userId : ""}`) });
+  log.push({ step: label, events: sent.splice(0).map(e => `${e.type}${e.status ? ":" + e.status : ""}${e.event ? "(" + e.event + ")" : ""}@${e.chainId ?? "-"}${process.env.E2E_ADDR ? "/" + (e.address ?? "-").slice(0, 6) : ""}${e.userId ? "#" + e.userId : ""}${e.batchSize !== undefined ? `[${e.batchIndex}/${e.batchSize}${e.batchId !== undefined ? "+id=" + String(e.batchId).replace(/^0xb0+/, "b") : ""}${e.txHash ? ":" + e.txHash : ""}]` : ""}`) });
 };
 const settle = (ms = 60) => new Promise(r => setTimeout(r, ms));
 
@@ -80,16 +80,38 @@ function makeProvider({ chainId = 1, accounts = [ADDR_A], exposeChainId = true, 
     ...(exposeChainId ? { chainId: "0x" + chainId.toString(16) } : {}),
     on: (ev, fn) => { (handlers[ev] ??= []).push(fn); if (process.env.E2E_DBG) console.error("SDK subscribed:", ev); },
     removeListener: (ev, fn) => { handlers[ev] = (handlers[ev] ?? []).filter(f => f !== fn); },
-    request: async ({ method }) => {
+    request: async ({ method, params }) => {
       if (method === "eth_chainId") { p.rpcCalls.push(method); if (chainIdFails) throw new Error("chain unavailable"); return "0x" + chainId.toString(16); }
       if (method === "eth_accounts" || method === "eth_requestAccounts") { p.rpcCalls.push(method); return accounts; }
       p.rpcCalls.push(method);
       if (method === "personal_sign" || method === "eth_signTypedData_v4") return "0xsigned";
       if (method === "eth_sendTransaction") return "0x" + "ab".repeat(32);
       if (method === "eth_getTransactionReceipt") return { status: "0x1", blockNumber: "0x1" };
+      if (method === "wallet_sendCalls") {
+        if (p.batchBehaviour === "reject") { const e = new Error("User rejected"); e.code = 4001; throw e; }
+        const id = "0xb" + (++p.batchSeq).toString(16).padStart(63, "0");
+        // The behaviour knob is per-submission state, not per-poll state: a
+        // status poll must answer for the batch as it was submitted, however
+        // late the poll arrives and however the knob has moved since.
+        p.batches[id] = { ...params[0], behaviour: p.batchBehaviour };
+        return { id };
+      }
+      if (method === "wallet_getCallsStatus") {
+        const b = p.batches[params[0]]; if (!b) return null;
+        const n = b.calls.length;
+        // atomic: ONE receipt covers the whole batch. fallback: one per call.
+        if (b.behaviour === "partial") {
+          return { status: 600, atomic: false, receipts: b.calls.map((_, i) => (i === 0 ? { status: "0x1", transactionHash: "0xok" } : { status: "0x0", transactionHash: "0xbad" })) };
+        }
+        if (b.behaviour === "atomic") {
+          return { status: 200, atomic: true, receipts: [{ status: "0x1", transactionHash: "0xatomic" }] };
+        }
+        return { status: 200, atomic: false, receipts: b.calls.map((_, i) => ({ status: "0x1", transactionHash: "0xh" + i })) };
+      }
       return null;
     },
     rpcCalls: [],
+    batches: {}, batchSeq: 0, batchBehaviour: "fallback",
     emit: (ev, ...a) => { if (process.env.E2E_DBG) console.error("emit", ev, "->", (handlers[ev]??[]).length, "listener(s)"); return (handlers[ev] ?? []).forEach(f => f(...a)); },
     setChain: (c) => { chainId = c; if (exposeChainId) p.chainId = "0x" + c.toString(16); },
   };
@@ -373,7 +395,53 @@ async function runApi(opts) {
   return { log, rpcCalls: provider.rpcCalls };
 }
 
-const out = MODE === "api" ? await runApi(opts)
+/**
+ * EIP-5792 batched calls through the wrapped provider. Each phase reuses one
+ * provider whose batchBehaviour knob selects fallback / atomic / partial /
+ * reject, mirroring what real wallets do.
+ *
+ * Phase order is load-bearing for the scenario rows: batch ids increment
+ * once per successful wallet_sendCalls, and the eip5792 rows in
+ * scenarios.mjs assert them as +id=b1..b4 in this order (reject issues no
+ * id). Insert or reorder phases here and those rows renumber.
+ */
+async function runBatch(opts) {
+  const provider = makeProvider(opts.provider ?? {});
+  globalThis.window.ethereum = provider;
+  announce6963(provider);
+  const formo = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
+  await settle();
+  announce6963(provider);   // and again, for a listener that mounted late
+  provider.emit("connect", { chainId: "0x1" });
+  provider.emit("accountsChanged", [ADDR_A]);
+  await settle(); sent.length = 0;
+
+  const batch = (calls) => provider.request({ method: "wallet_sendCalls", params: [{ version: "2.0.0", from: ADDR_A, chainId: "0x89", atomicRequired: false, calls }] });
+
+  await batch([{ to: ADDR_B, value: "0x1", data: "0xaa" }, { to: ADDR_B, value: "0x2", data: "0xbb" }]);
+  await settle(150); rec("twoCalls");
+
+  await batch([{ to: ADDR_B, value: "0x1" }]);
+  await settle(150); rec("singleCall");
+
+  provider.batchBehaviour = "atomic";
+  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]);
+  await settle(150); rec("atomic");
+
+  provider.batchBehaviour = "partial";
+  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]);
+  await settle(150); rec("partialRevert");
+
+  provider.batchBehaviour = "reject";
+  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]).catch(() => {});
+  await settle(150); rec("rejected");
+
+  formo.cleanup?.();
+  return { log, rpcCalls: provider.rpcCalls };
+}
+
+const out = MODE === "batch" ? await runBatch(opts)
+  : MODE === "api" ? await runApi(opts)
   : MODE === "twowallets" ? await runTwoWallets(opts)
   : MODE === "unknownchain" ? await runUnknownChain(opts)
   : MODE === "wagmi" ? await runWagmi(opts)

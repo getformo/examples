@@ -10,7 +10,11 @@ import { ReactNode, useState } from "react";
 import { wagmiConfig } from "@/config/wagmi";
 import { PRIVY_LOGIN_METHODS } from "@/config/privy";
 
-const supportedChains = [mainnet, sepolia, polygon, arbitrum, optimism, base];
+// Sepolia FIRST and as Privy's defaultChain: wagmi defaults to the first
+// chain, and with mainnet there the demo's "Send Transaction" prompted on
+// mainnet - where even a 0 ETH self-send costs real gas. A clickable example
+// must default to a testnet.
+const supportedChains = [sepolia, mainnet, polygon, arbitrum, optimism, base];
 
 export function Providers({ children }: { children: ReactNode }) {
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;

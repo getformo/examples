@@ -5,7 +5,7 @@ import { mainnet, sepolia, polygon, arbitrum, optimism, base } from "viem/chains
 import { http } from "wagmi";
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia, polygon, arbitrum, optimism, base],
+  chains: [sepolia, mainnet, polygon, arbitrum, optimism, base],
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),

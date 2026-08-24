@@ -73,4 +73,47 @@ export const SCENARIOS = [
     expect: { afterReset: ["track(after_reset)@-/-"] }, state: { afterReset: { address: null, userId: null } } },
   { name: "api: a new instance restores the active wallet from the cookie before any wallet event", mode: "api",
     state: { reloadRestore: { address: "0x51377e9B985Bb90B7c091B9a7d30C93d4c9c1CEf", chainId: 1 } } },
+
+  // ── EIP-5792 batched calls (smart accounts) ─────────────────────────────
+  // The +id=bN tokens are the mock wallet's batch ids, which increment once
+  // per SUCCESSFUL wallet_sendCalls in runBatch's phase order: twoCalls=b1,
+  // singleCall=b2, atomic=b3, partialRevert=b4 (the reject phase throws
+  // before an id is issued). Reordering or inserting phases in runBatch
+  // renumbers every row below - harness.mjs carries the matching note.
+  { name: "eip5792: one event per call, with size/index from creation and batch id from broadcast", mode: "batch", expect: {
+      twoCalls: [
+        `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b1]`, `transaction:broadcasted@137/${A}[1/2+id=b1]`,
+        `transaction:confirmed@137/${A}[0/2+id=b1:0xh0]`, `transaction:confirmed@137/${A}[1/2+id=b1:0xh1]`,
+      ] } },
+  { name: "eip5792: a single-call batch produces exactly one event per status", mode: "batch", expect: {
+      singleCall: [
+        `transaction:started@137/${A}[0/1]`,
+        `transaction:broadcasted@137/${A}[0/1+id=b2]`,
+        `transaction:confirmed@137/${A}[0/1+id=b2:0xh0]`,
+      ] } },
+  { name: "eip5792: an atomic batch confirms every call from its single receipt", mode: "batch", expect: {
+      // KNOWN GAP in published 1.36.0: the shared on-chain hash reaches
+      // only call 0; call 1 confirms without it. The fix (every call shares
+      // the atomic receipt) is merged as getformo/sdk#362 - update this row
+      // to expect the shared hash on both calls when the release after
+      // 1.36.0 ships.
+      atomic: [
+        `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b3]`, `transaction:broadcasted@137/${A}[1/2+id=b3]`,
+        `transaction:confirmed@137/${A}[0/2+id=b3:0xatomic]`, `transaction:confirmed@137/${A}[1/2+id=b3]`,
+      ] } },
+  { name: "eip5792: a partially reverted non-atomic batch settles each call by its own receipt", mode: "batch", expect: {
+      partialRevert: [
+        `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
+        `transaction:broadcasted@137/${A}[0/2+id=b4]`, `transaction:broadcasted@137/${A}[1/2+id=b4]`,
+        `transaction:confirmed@137/${A}[0/2+id=b4:0xok]`, `transaction:reverted@137/${A}[1/2+id=b4:0xbad]`,
+      ] } },
+  { name: "eip5792: a user rejection reports every call in the prompt rejected", mode: "batch", expect: {
+      rejected: [
+        `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,
+        `transaction:rejected@137/${A}[0/2]`, `transaction:rejected@137/${A}[1/2]`,
+      ] } },
+  { name: "eip5792: autocapture.transaction:false captures no batch events", mode: "batch", opts: { sdk: { autocapture: { transaction: false } } },
+    expect: { twoCalls: [], singleCall: [], atomic: [], partialRevert: [], rejected: [] } },
 ];
