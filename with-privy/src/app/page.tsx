@@ -3,7 +3,7 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { UserPill } from "@privy-io/react-auth/ui";
 import { useSetActiveWallet } from "@privy-io/wagmi";
-import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction } from "wagmi";
+import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction, useSendCalls, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useRef } from "react";
@@ -27,6 +27,12 @@ export default function Home() {
 
   // Send transaction hook - Formo auto-tracks via wagmi
   const { sendTransaction, isPending: isTxPending } = useSendTransaction();
+  // EIP-5792: a batch of calls through wallet_sendCalls, the method smart
+  // accounts use instead of eth_sendTransaction. The SDK reports one
+  // transaction event per call. A wallet without batch support rejects the
+  // request, which is itself worth demonstrating.
+  const { sendCalls, isPending: isBatchPending, data: batchResult, error: batchError } = useSendCalls();
+  const { chains, switchChain, isPending: isSwitchPending } = useSwitchChain();
 
   // Local state for custom event tracking
   const [customEventName, setCustomEventName] = useState("");
@@ -126,6 +132,18 @@ export default function Home() {
     sendTransaction({
       to: address,
       value: 0n,
+    });
+  };
+
+  const handleSendBatch = () => {
+    if (!address) return;
+    // Two 0 ETH self-sends in one batch: the SDK should report two
+    // transaction events sharing a batch_id, not one event for the batch.
+    sendCalls({
+      calls: [
+        { to: address, value: 0n },
+        { to: address, value: 0n },
+      ],
     });
   };
 
@@ -327,6 +345,36 @@ export default function Home() {
               <p className="text-ink-200 text-xs mt-2">
                 Note: Transaction sends 0 ETH to yourself for demo purposes.
               </p>
+
+              <button
+                onClick={handleSendBatch}
+                disabled={!authenticated || !isConnected || isBatchPending}
+                className="w-full mt-3 px-4 py-2 bg-lemon-500 text-ink-500 rounded-lg font-medium disabled:opacity-50"
+              >
+                {isBatchPending ? "Sending batch..." : "Send Batch (2 calls, 0 ETH) - EIP-5792"}
+              </button>
+              {batchResult ? (
+                <p className="text-ink-200 text-xs mt-2 break-all">Batch accepted: {String((batchResult as { id?: string }).id ?? batchResult)}</p>
+              ) : null}
+              {batchError ? (
+                <p className="text-red-400 text-xs mt-2">Batch rejected: {batchError.message.split(".")[0]} (a wallet without EIP-5792 support rejects this - expected for a plain EOA)</p>
+              ) : null}
+
+              <div className="mt-4">
+                <p className="text-ink-200 text-xs mb-1">Network</p>
+                <div className="flex flex-wrap gap-2">
+                  {chains.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => switchChain({ chainId: c.id })}
+                      disabled={isSwitchPending || c.id === chainId}
+                      className={`px-2 py-1 text-xs rounded border ${c.id === chainId ? "border-lemon-500 text-lemon-500" : "border-ink-300 text-ink-200"} disabled:opacity-60`}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 

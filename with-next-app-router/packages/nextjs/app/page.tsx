@@ -6,6 +6,7 @@ import { useFormo } from "@formo/analytics";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SendBatch } from "~~/components/SendBatch";
 import { SendTransaction } from "~~/components/SendTransaction";
 import { SignMessage } from "~~/components/SignMessage";
 import { SignTypedData } from "~~/components/SignTypedData";
@@ -156,6 +157,7 @@ const Home: NextPage = (): JSX.Element => {
 
         <div className="w-7/12 mt-12">
           <SendTransaction />
+          <SendBatch />
         </div>
 
         <div className="w-7/12 mt-12">
