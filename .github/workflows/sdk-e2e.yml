@@ -45,7 +45,7 @@ jobs:
           # workflow_dispatch input is attacker-controllable text.
           SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
-          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
           npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION" react react-dom @tanstack/react-query viem wagmi
           node -p "'testing @formo/analytics ' + require('/tmp/sdk/node_modules/@formo/analytics/package.json').version"
@@ -86,7 +86,7 @@ jobs:
         env:
           SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
-          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
           npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
 
@@ -119,7 +119,7 @@ jobs:
         env:
           SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
         run: |
-          case "$SDK_VERSION" in *[!A-Za-z0-9.^~<>=*-]*) echo "::error::invalid sdk_version"; exit 1;; esac
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
           npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
 
