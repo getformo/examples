@@ -313,7 +313,7 @@ export default function Home() {
 
           {/* Formo Analytics Actions Card */}
           <div className="bg-ink-400/25 backdrop-blur rounded-xl p-6 border border-ink-400/60">
-            <h2 className="text-xl font-semibold text-white mb-4">Manual Analytics</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Custom Events</h2>
             <p className="text-ink-100 text-sm mb-4">
               Manually trigger Formo events. Wallet events are auto-tracked.
             </p>
