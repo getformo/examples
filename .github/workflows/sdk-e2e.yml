@@ -1,0 +1,144 @@
+name: SDK E2E
+
+# Proves the PUBLISHED @formo/analytics works against every example's own
+# wagmi/viem, in Node and in a real browser. Runs on every PR and nightly, so a
+# bad npm release is caught within a day even if nothing in this repo changed.
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      sdk_version:
+        description: "@formo/analytics version to test (default: latest)"
+        default: latest
+
+concurrency:
+  group: sdk-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node-sweep:
+    name: Node sweep (12 examples)
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Install the published SDK like a consumer would
+        env:
+          # Passed through env, never interpolated into the script: a
+          # workflow_dispatch input is attacker-controllable text.
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
+        run: |
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
+          mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION" react react-dom @tanstack/react-query viem wagmi
+          node -p "'testing @formo/analytics ' + require('/tmp/sdk/node_modules/@formo/analytics/package.json').version"
+
+      - name: Install every example (frozen lockfiles)
+        run: |
+          for d in with-dynamic with-farcaster with-metamask with-next-page-router with-porto with-privy with-reown with-tempo with-web3-onboard with-react-native with-react with-next-app-router; do
+            echo "::group::$d"; (cd "$d" && pnpm install --frozen-lockfile --ignore-scripts) || { echo "::error::$d failed to install"; exit 1; }; echo "::endgroup::"
+          done
+
+      - name: Install the harness
+        working-directory: e2e
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Compatibility sweep (one flow, every example)
+        working-directory: e2e
+        run: node sweep.mjs /tmp/sdk/node_modules/@formo/analytics
+
+      - name: Behaviour scenarios (every flow and configuration)
+        working-directory: e2e
+        run: node behaviours.mjs /tmp/sdk/node_modules/@formo/analytics
+
+  browser:
+    name: Browser over EIP-6963 (anvil)
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - uses: foundry-rs/foundry-toolchain@de808b1eea699e761c404bda44ba8f21aba30b2c # v1.3.1
+      - uses: browser-actions/setup-chrome@c785b87e244131f27c9f19c1a33e2ead956ab7ce # v1.7.3
+        id: chrome
+
+      - name: Install the published SDK
+        env:
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
+        run: |
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
+          mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
+
+      - name: Start anvil
+        run: anvil --port 8545 --chain-id 31337 > /tmp/anvil.log 2>&1 &
+
+      - name: Run
+        working-directory: e2e
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: node browser/run.mjs /tmp/sdk/node_modules/@formo/analytics
+
+  real-metamask:
+    name: Real MetaMask (informational until unblocked)
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - uses: foundry-rs/foundry-toolchain@de808b1eea699e761c404bda44ba8f21aba30b2c # v1.3.1
+
+      - name: Install the published SDK
+        env:
+          SDK_VERSION: ${{ inputs.sdk_version || 'latest' }}
+        run: |
+          if ! printf '%s' "$SDK_VERSION" | grep -qE '^[A-Za-z0-9.^~<>=*-]+$'; then echo "::error::invalid sdk_version"; exit 1; fi
+          mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
+          npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
+
+      - name: Install Synpress (scripts disabled except esbuild)
+        working-directory: e2e/metamask
+        run: |
+          pnpm install --frozen-lockfile
+          npx playwright install --with-deps chromium
+
+      - name: Start anvil
+        run: anvil --port 8545 --chain-id 31337 > /tmp/anvil.log 2>&1 &
+
+      - name: Build the wallet cache
+        working-directory: e2e/metamask
+        run: xvfb-run --auto-servernum npx synpress wallet-setup
+
+      - name: Run
+        working-directory: e2e/metamask
+        env:
+          SDK_DIR: /tmp/sdk/node_modules/@formo/analytics
+          HEADLESS: "1"
+        run: xvfb-run --auto-servernum npx playwright test

@@ -1,0 +1,5 @@
+# Supply-chain guard: every dependency installs with lifecycle scripts
+# DISABLED except the ones named here. esbuild's postinstall only fetches its
+# platform binary. Keep this list minimal; adding to it is a review decision.
+allowBuilds:
+  esbuild: true

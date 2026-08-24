@@ -1,0 +1,13 @@
+{
+  "name": "formo-examples-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Drives the published @formo/analytics against each example's own wagmi/viem and asserts the exact event stream.",
+  "scripts": {
+    "sweep": "node sweep.mjs",
+    "behaviours": "node behaviours.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^21.1.2"
+  }
+}
