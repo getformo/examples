@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useAccount } from "wagmi";
-import { useSendCalls, useWaitForCallsStatus } from "wagmi/experimental";
+import { useCapabilities, useSendCalls, useWaitForCallsStatus } from "wagmi/experimental";
 
 /**
  * EIP-5792: send two 0 ETH self-calls as ONE batch through
@@ -19,6 +19,14 @@ export function SendBatch() {
   const { data, error, isPending, sendCalls } = useSendCalls();
   const batchId = typeof data === "string" ? data : data?.id;
   const { data: status } = useWaitForCallsStatus({ id: batchId, query: { enabled: !!batchId } });
+  // EIP-5792 discovery: wallet_getCapabilities, keyed by chain. A plain EOA
+  // typically answers "unsupported" or rejects the method; both are honest.
+  const { data: capabilities } = useCapabilities({ account: address, query: { enabled: !!address } });
+  const atomicByChain = capabilities
+    ? Object.entries(capabilities as Record<string, { atomic?: { status?: string }; atomicBatch?: { supported?: boolean } }>)
+        .map(([chain, c]) => `${chain}: ${c.atomic?.status ?? (c.atomicBatch?.supported ? "supported" : "unsupported")}`)
+        .join(", ")
+    : undefined;
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -37,9 +45,15 @@ export function SendBatch() {
       >
         {isPending ? "Sending batch..." : "Send Batch (2 calls) - EIP-5792"}
       </button>
+      {atomicByChain && (
+        <p className="text-xs m-0 opacity-70">Atomic capability {atomicByChain}</p>
+      )}
       {batchId && (
         <p className="text-xs break-all m-0">
-          Batch {batchId.slice(0, 18)}… {status ? `status: ${status.status}` : "pending"}
+          Batch {batchId.slice(0, 18)}…{" "}
+          {status
+            ? `status: ${status.status} (${(status as { statusCode?: number }).statusCode ?? "-"}), atomic: ${String((status as { atomic?: boolean }).atomic)}, receipts: ${status.receipts?.length ?? 0}`
+            : "waiting for wallet_getCallsStatus"}
         </p>
       )}
       {error && (

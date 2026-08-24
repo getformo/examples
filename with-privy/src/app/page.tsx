@@ -3,7 +3,7 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { UserPill } from "@privy-io/react-auth/ui";
 import { useSetActiveWallet } from "@privy-io/wagmi";
-import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction, useSendCalls, useSwitchChain } from "wagmi";
+import { useAccount, useBalance, useChainId, useSignMessage, useSendTransaction, useSendCalls, useSwitchChain, useWaitForCallsStatus, useCapabilities } from "wagmi";
 import { formatUnits } from "viem";
 import { useFormo } from "@formo/analytics";
 import { useState, useEffect, useRef } from "react";
@@ -32,6 +32,24 @@ export default function Home() {
   // transaction event per call. A wallet without batch support rejects the
   // request, which is itself worth demonstrating.
   const { sendCalls, isPending: isBatchPending, data: batchResult, error: batchError } = useSendCalls();
+  // Settlement per EIP-5792: wallet_getCallsStatus by the batch id the
+  // wallet returned. This query is also what lets Formo settle the batch in
+  // wagmi mode (confirmed or reverted per call, with the receipt hash).
+  const batchId = (batchResult as { id?: string } | undefined)?.id;
+  const { data: batchStatus } = useWaitForCallsStatus({
+    id: batchId as `0x${string}`,
+    query: { enabled: !!batchId },
+  });
+  // EIP-5792 discovery: wallet_getCapabilities says whether this wallet can
+  // execute a batch atomically on the current chain. Many EOAs answer
+  // "unsupported" or reject the method entirely; both are honest answers.
+  const { data: capabilities } = useCapabilities({
+    account: address,
+    query: { enabled: !!address },
+  });
+  const atomicCapability =
+    (capabilities as Record<number, { atomic?: { status?: string } }> | undefined)?.[chainId]
+      ?.atomic?.status ?? "not reported";
   const { chains, switchChain, isPending: isSwitchPending } = useSwitchChain();
 
   // Local state for custom event tracking
@@ -353,8 +371,16 @@ export default function Home() {
               >
                 {isBatchPending ? "Sending batch..." : "Send Batch (2 calls, 0 ETH) - EIP-5792"}
               </button>
-              {batchResult ? (
-                <p className="text-ink-200 text-xs mt-2 break-all">Batch accepted: {String((batchResult as { id?: string }).id ?? batchResult)}</p>
+              <p className="text-ink-200 text-xs mt-1">
+                Atomic capability on this chain: {atomicCapability}
+              </p>
+              {batchId ? (
+                <p className="text-ink-200 text-xs mt-2 break-all">
+                  Batch accepted: {batchId}
+                  {batchStatus
+                    ? ` - status ${batchStatus.statusCode} (${batchStatus.status}), atomic: ${String(batchStatus.atomic)}, receipts: ${batchStatus.receipts?.length ?? 0}`
+                    : " - waiting for wallet_getCallsStatus"}
+                </p>
               ) : null}
               {batchError ? (
                 <p className="text-red-400 text-xs mt-2">Batch rejected: {batchError.message.split(".")[0]} (a wallet without EIP-5792 support rejects this - expected for a plain EOA)</p>
