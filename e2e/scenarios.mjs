@@ -75,6 +75,11 @@ export const SCENARIOS = [
     state: { reloadRestore: { address: "0x51377e9B985Bb90B7c091B9a7d30C93d4c9c1CEf", chainId: 1 } } },
 
   // ── EIP-5792 batched calls (smart accounts) ─────────────────────────────
+  // The +id=bN tokens are the mock wallet's batch ids, which increment once
+  // per SUCCESSFUL wallet_sendCalls in runBatch's phase order: twoCalls=b1,
+  // singleCall=b2, atomic=b3, partialRevert=b4 (the reject phase throws
+  // before an id is issued). Reordering or inserting phases in runBatch
+  // renumbers every row below - harness.mjs carries the matching note.
   { name: "eip5792: one event per call, with size/index from creation and batch id from broadcast", mode: "batch", expect: {
       twoCalls: [
         `transaction:started@137/${A}[0/2]`, `transaction:started@137/${A}[1/2]`,

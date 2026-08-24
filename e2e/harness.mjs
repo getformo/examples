@@ -399,6 +399,11 @@ async function runApi(opts) {
  * EIP-5792 batched calls through the wrapped provider. Each phase reuses one
  * provider whose batchBehaviour knob selects fallback / atomic / partial /
  * reject, mirroring what real wallets do.
+ *
+ * Phase order is load-bearing for the scenario rows: batch ids increment
+ * once per successful wallet_sendCalls, and the eip5792 rows in
+ * scenarios.mjs assert them as +id=b1..b4 in this order (reject issues no
+ * id). Insert or reorder phases here and those rows renumber.
  */
 async function runBatch(opts) {
   const provider = makeProvider(opts.provider ?? {});
