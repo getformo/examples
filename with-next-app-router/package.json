@@ -34,7 +34,7 @@
   },
   "packageManager": "pnpm@11.1.2",
   "engines": {
-    "node": ">=20.17.0"
+    "node": ">=20.19.0 <21 || >=22"
   },
   "dependencies": {
     "@formo/analytics": "^1.37.0"

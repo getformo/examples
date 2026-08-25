@@ -75,9 +75,10 @@ overrides:
   path-to-regexp@>=4.0.0 <6.3.0: ^6.3.0
   postcss@<8.5.18: ^8.5.18
   semver@>=7.0.0 <7.5.2: ^7.5.2
-  # The patched sharp line requires Node >=20.9.0, so package.json's
-  # engines.node was raised from >=18.18.0 to match. No 0.35.x supports
-  # Node 18, and Node 18 reached EOL in April 2025.
+  # The patched sharp line requires Node >=20.9.0. The current locked stack
+  # also requires Node >=20.19.0 and excludes Node 21, so package.json's
+  # engines.node documents that narrower supported range. Node 18 reached EOL
+  # in April 2025.
   sharp@<0.35.0: ^0.35.0
   tar@<7.5.21: ^7.5.21
   uuid@<11.1.1: ^11.1.1

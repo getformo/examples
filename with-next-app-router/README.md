@@ -7,7 +7,7 @@ A [Scaffold-ETH 2](https://scaffoldeth.io) app wired up with `@formo/analytics` 
 
 ## Prerequisites
 
-- Node.js >= 20.17.0
+- Node.js >= 20.19.0 on Node 20, or Node.js >= 22 (Node 21 is not supported by the locked dependency stack)
 - pnpm 11 (the repo pins `pnpm@11.1.2` via `packageManager`; `corepack enable` will pick it up)
 - For local SDK testing only: the [`@formo/analytics` SDK repo](https://github.com/getformo/sdk) cloned as a sibling of the `examples` repo so it resolves at `../../sdk` (see [SDK Linking](#sdk-linking-local-development))
 
