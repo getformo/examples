@@ -12,7 +12,7 @@
     "@formo/analytics": "^1.37.0",
     "@heroicons/react": "^2.2.0",
     "@turnkey/eip-1193-provider": "^3.4.26",
-    "@turnkey/sdk-browser": "^5.15.2",
+    "@turnkey/sdk-browser": "^8.2.1",
     "@turnkey/sdk-react": "^6.0.3",
     "@turnkey/sdk-server": "^5.1.1",
     "next": "^15.5.22",
