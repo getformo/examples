@@ -142,5 +142,7 @@ jobs:
         env:
           CHROME_PATH: ${{ steps.metamask-chrome.outputs.chrome-path }}
           SDK_DIR: /tmp/sdk/node_modules/@formo/analytics
-          HEADLESS: "1"
+          # Chrome 130 injects MV2 extensions in headless mode but does not
+          # reliably create their notification windows. xvfb-run provides an
+          # isolated display for a headed browser without exposing any UI.
         run: xvfb-run --auto-servernum pnpm exec playwright test

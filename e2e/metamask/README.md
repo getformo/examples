@@ -37,6 +37,10 @@ pnpm install
 node prepare-metamask.mjs
 CHROME_PATH=/path/to/chrome-130 \
   SDK_DIR=/path/to/node_modules/@formo/analytics \
-  HEADLESS=1 \
   pnpm test
 ```
+
+The extension must run in headed mode because Chrome 130 does not reliably
+create extension notification windows in headless mode. CI supplies an
+isolated virtual display with `xvfb-run`; a local run uses the normal desktop
+display.
