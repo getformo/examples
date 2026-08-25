@@ -30,7 +30,6 @@ export const test = base.extend<MetaMaskFixtures>({
       `--load-extension=${extensionPath}`,
       "--disable-background-networking",
     ];
-    if (process.env.HEADLESS) args.push("--headless=new");
     const context = await chromium.launchPersistentContext(profilePath, {
       args,
       baseURL: String(testInfo.project.use.baseURL),

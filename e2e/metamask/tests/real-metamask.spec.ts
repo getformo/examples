@@ -84,9 +84,11 @@ test("the SDK sees a real MetaMask connect, sign, chain switch and transaction",
   }));
   const addNotification = await notificationPage(context, extensionId);
   await metamask.approveNewNetwork();
+  const switchNotification = await notificationPage(context, extensionId);
   await metamask.approveSwitchNetwork();
   await addP;
   await expectNotificationClosed(addNotification);
+  await expectNotificationClosed(switchNotification);
   await expect.poll(() => events(page), { timeout: 20_000 }).toContain("chain@31337");
 
   // A real transaction on anvil. The account is funded by the test.
