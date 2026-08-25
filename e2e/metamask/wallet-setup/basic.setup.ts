@@ -1,5 +1,5 @@
-import { defineWalletSetup } from "@synthetixio/synpress";
-import { MetaMask } from "@synthetixio/synpress/playwright";
+import { defineWalletSetup } from "@synthetixio/synpress-cache";
+import { MetaMask } from "@synthetixio/synpress-metamask/playwright";
 
 // A THROWAWAY seed phrase. It is the well-known Hardhat/anvil test mnemonic:
 // every key derived from it is public, funded only on local dev chains, and

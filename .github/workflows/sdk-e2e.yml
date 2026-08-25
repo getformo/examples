@@ -100,9 +100,8 @@ jobs:
         run: node browser/run.mjs /tmp/sdk/node_modules/@formo/analytics
 
   real-metamask:
-    name: Real MetaMask (informational until unblocked)
+    name: Real MetaMask (anvil)
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    continue-on-error: true
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -114,6 +113,11 @@ jobs:
         with:
           node-version: 22
       - uses: foundry-rs/foundry-toolchain@908c540300062bd5a7e473851cdb4282204cee09 # v1.9.1
+      - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        id: metamask-chrome
+        with:
+          chrome-version: 130.0.6723.31
+          install-dependencies: true
 
       - name: Install the published SDK
         env:
@@ -123,22 +127,20 @@ jobs:
           mkdir -p /tmp/sdk && cd /tmp/sdk && npm init -y >/dev/null
           npm install --no-audit --no-fund "@formo/analytics@$SDK_VERSION"
 
-      - name: Install Synpress (scripts disabled except esbuild)
+      - name: Install the MetaMask harness
         working-directory: e2e/metamask
         run: |
           pnpm install --frozen-lockfile
-          npx playwright install --with-deps chromium
+          pnpm audit --audit-level=high
+          node prepare-metamask.mjs
 
       - name: Start anvil
         run: anvil --port 8545 --chain-id 31337 > /tmp/anvil.log 2>&1 &
 
-      - name: Build the wallet cache
-        working-directory: e2e/metamask
-        run: xvfb-run --auto-servernum npx synpress wallet-setup
-
       - name: Run
         working-directory: e2e/metamask
         env:
+          CHROME_PATH: ${{ steps.metamask-chrome.outputs.chrome-path }}
           SDK_DIR: /tmp/sdk/node_modules/@formo/analytics
           HEADLESS: "1"
-        run: xvfb-run --auto-servernum npx playwright test
+        run: xvfb-run --auto-servernum pnpm exec playwright test

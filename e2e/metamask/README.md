@@ -1,34 +1,42 @@
-# Real MetaMask (layer 3) — scaffolded, not yet green
+# Real MetaMask (layer 3)
 
-Drives a **real MetaMask extension** against the **published** `@formo/analytics`
-with Synpress. It lives in this repo, not the SDK's, so its dependency tree can
-never influence a release.
+Drives a real MetaMask extension against the published `@formo/analytics`.
+The harness lives in this repository, so none of its browser dependencies can
+enter an SDK release.
 
-## Status
+## Compatibility boundary
 
-Installs, builds the wallet cache, launches the extension, and the SDK discovers
-it over EIP-6963. **But `eth_requestAccounts` never opens the MetaMask prompt**
-under Synpress 4.1.2 with the MetaMask build it bundles — headful or headless,
-through the SDK wrapper or the raw provider. The `addNetwork` helper also broke
-on a stale selector. This is Synpress/MetaMask UI drift, not the SDK.
+Synpress 4.1.2 now resolves MetaMask 13.13.1, but that combination has known
+onboarding and notification-selector regressions. The harness therefore pins
+Synpress's internal packages to 0.0.13 and runs their compatible MetaMask
+11.9.1 build on Chrome 130. Playwright itself remains at security-patched
+1.55.1.
 
-Unblocking it is a version decision (newer Synpress, or a pinned older
-MetaMask) that should be made deliberately rather than guessed at in CI. Until
-then this job is `continue-on-error` and informational.
+Each test creates and destroys a fresh browser profile instead of copying a
+wallet cache. `prepare-metamask.mjs` downloads the exact official release and
+rejects it unless its SHA-256 matches the checked-in digest.
 
-## Supply chain
+## Security
 
-- Every dependency installs with lifecycle scripts **disabled** except
-  `esbuild` (it fetches its platform binary). See `pnpm-workspace.yaml`.
-- The seed phrase is the public Hardhat/anvil test mnemonic. It controls
-  nothing anywhere but a local dev chain. **Never replace it with a real one.**
-- Events are intercepted in-page and never leave the machine.
+- `pnpm audit --audit-level=high` is a required CI step.
+- Lifecycle scripts are disabled except for `esbuild`'s platform-binary
+  installer; see `pnpm-workspace.yaml`.
+- Chrome background networking is disabled. The tested RPC and transaction
+  use only Anvil on `127.0.0.1`.
+- The seed phrase is the public Hardhat/Anvil mnemonic and the browser profile
+  is disposable. Never replace it with a real phrase.
+- Analytics events are intercepted in-page and never leave the harness.
 
-## Run
+## Run locally
 
-```
+Install Chrome 130 and set `CHROME_PATH` to its executable, then run:
+
+```sh
 anvil --port 8545 --chain-id 31337 &
-pnpm install && npx playwright install chromium
-npx synpress wallet-setup
-SDK_DIR=/path/to/node_modules/@formo/analytics HEADLESS=1 npx playwright test
+pnpm install
+node prepare-metamask.mjs
+CHROME_PATH=/path/to/chrome-130 \
+  SDK_DIR=/path/to/node_modules/@formo/analytics \
+  HEADLESS=1 \
+  pnpm test
 ```

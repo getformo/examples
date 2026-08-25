@@ -3,3 +3,13 @@
 # platform binary. Keep this list minimal; adding to it is a review decision.
 allowBuilds:
   esbuild: true
+
+# The compatible Synpress packages depend on vulnerable transitive versions.
+# Resolve those packages to patched releases in this isolated E2E workspace.
+overrides:
+  axios: 1.18.0
+  esbuild: 0.25.0
+  glob: 10.5.0
+  playwright-core: 1.55.1
+  tsup: 8.3.5
+  ws: 8.21.0
