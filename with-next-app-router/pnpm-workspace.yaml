@@ -70,6 +70,7 @@ overrides:
   '@tootallnate/once@<2.0.1': ^2.0.1
   ajv@>=7.0.0-alpha.0 <8.18.0: ^8.18.0
   brace-expansion@<1.1.18: ^1.1.18
+  'brace-expansion@>=4.0.0 <5.0.9': 5.0.9
   debug@>=4.0.0 <4.3.1: ^4.3.1
   path-to-regexp@>=4.0.0 <6.3.0: ^6.3.0
   postcss@<8.5.18: ^8.5.18
