@@ -28,7 +28,7 @@
     "verify": "pnpm --filter @se-2/foundry verify"
   },
   "devDependencies": {
-    "ansi-regex": "^6.2.2",
+    "ansi-regex": "^6.3.0",
     "husky": "~8.0.3",
     "lint-staged": "~16.1.6"
   },
