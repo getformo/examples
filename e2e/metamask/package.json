@@ -4,11 +4,13 @@
   "type": "module",
   "description": "Drives a REAL MetaMask extension against the published @formo/analytics. Lives here, not in the SDK repo, so its dependency tree can never influence a release.",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "1.48.2",
-    "@synthetixio/synpress": "4.1.2",
+    "@playwright/test": "1.55.1",
+    "@synthetixio/synpress-cache": "0.0.13",
+    "@synthetixio/synpress-metamask": "0.0.13",
+    "playwright-core": "1.55.1",
     "typescript": "^5.9.3"
   }
 }

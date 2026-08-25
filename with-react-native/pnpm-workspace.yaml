@@ -92,3 +92,10 @@ allowBuilds:
   keccak: true
   unrs-resolver: true
   utf-8-validate: true
+
+auditConfig:
+  ignoreGhsas:
+    # Expo/Metro only parses trusted, repository-owned build assets. No fixed
+    # image-size release exists; remove these as soon as one is published.
+    - GHSA-5p2g-fcmc-qvqq
+    - GHSA-w3rx-r6r6-pgpr

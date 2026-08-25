@@ -8,7 +8,7 @@ consumer does, so nothing here can influence what gets released.
 | `sweep.mjs` | **Compatibility.** Against each example's **own** wagmi/viem versions, the SDK emits exactly one event per action | green, 12 examples |
 | `behaviours.mjs` + `scenarios.mjs` | **Behaviour.** 26 named scenarios covering every autocaptured event, every `tracking` and `autocapture` option, the public API (`identify`, `track`, `page`), consent, `reset`, cookie restore, and the regressions from 1.35.x by issue number | green on main and 1.35.2; **fails 7 rows on 1.35.1**, exactly the bugs that release had |
 | `browser/` | A real browser running the real bundle, wallets announced over **EIP-6963**, real anvil receipts, exact event lists | green from `1.36.0` |
-| `metamask/` | A real MetaMask extension via Synpress | scaffolded, blocked on Synpress/MetaMask UI drift |
+| `metamask/` | A real MetaMask extension via Synpress, with connect/sign/chain/transaction prompts against Anvil | green with the isolated Chrome 130 / MetaMask 11.9.1 compatibility boundary |
 
 ```
 pnpm install
