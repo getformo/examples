@@ -26,14 +26,29 @@ const startConnectFromUserGesture = async (page: Page) => {
   return page.evaluate(() => (window as any).__connectResult);
 };
 
-const notificationPage = async (context: BrowserContext, extensionId: string): Promise<Page> => {
-  const matches = (candidate: Page) =>
-    !candidate.isClosed() && candidate.url().includes(`chrome-extension://${extensionId}/notification.html`);
+const isNotificationPage = (candidate: Page, extensionId: string) =>
+  !candidate.isClosed() && candidate.url().includes(`chrome-extension://${extensionId}/notification.html`);
 
-  const existing = context.pages().find(matches);
+const notificationPage = async (context: BrowserContext, extensionId: string): Promise<Page> => {
+  const existing = context.pages().find((candidate) => isNotificationPage(candidate, extensionId));
   if (existing) return existing;
-  await expect.poll(() => context.pages().some(matches), { timeout: 15_000 }).toBe(true);
-  return context.pages().find(matches)!;
+  await expect.poll(() => context.pages().some((candidate) => isNotificationPage(candidate, extensionId)), { timeout: 15_000 }).toBe(true);
+  return context.pages().find((candidate) => isNotificationPage(candidate, extensionId))!;
+};
+
+const switchNotificationPage = async (context: BrowserContext, extensionId: string): Promise<Page> => {
+  let switchPage: Page | undefined;
+  await expect.poll(async () => {
+    for (const candidate of context.pages().filter((page) => isNotificationPage(page, extensionId))) {
+      const primaryAction = candidate.locator(".confirmation-footer__actions button.btn-primary");
+      if (await primaryAction.count() && /switch/i.test(await primaryAction.first().innerText())) {
+        switchPage = candidate;
+        return true;
+      }
+    }
+    return false;
+  }, { timeout: 15_000 }).toBe(true);
+  return switchPage!;
 };
 
 const expectNotificationClosed = async (notification: Page) => {
@@ -84,7 +99,7 @@ test("the SDK sees a real MetaMask connect, sign, chain switch and transaction",
   }));
   const addNotification = await notificationPage(context, extensionId);
   await metamask.approveNewNetwork();
-  const switchNotification = await notificationPage(context, extensionId);
+  const switchNotification = await switchNotificationPage(context, extensionId);
   await metamask.approveSwitchNetwork();
   await addP;
   await expectNotificationClosed(addNotification);
