@@ -15,7 +15,7 @@
     "accounts": "latest",
     "autoprefixer": "^10.5.4",
     "next": "latest",
-    "postcss": "^8.5.25",
+    "postcss": "^8.5.26",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "^4.3.3",
@@ -23,7 +23,7 @@
     "wagmi": "latest"
   },
   "devDependencies": {
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@wagmi/cli": "latest",
