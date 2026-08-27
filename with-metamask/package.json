@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@formo/analytics": "^1.37.0",
+    "@formo/analytics": "^1.38.0",
     "@metamask/connect-evm": "~0.9.0",
     "@wagmi/core": "^3.4.2",
     "@wagmi/connectors": "8.0.1",
