@@ -39,6 +39,7 @@ export default function App() {
   const [peer, setPeer] = useState<string | null>(null);
   const [lastAction, setLastAction] = useState<string>("");
   const syncRef = useRef<() => void>(() => undefined);
+  const disposeRef = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,12 +80,17 @@ export default function App() {
       const syncSession = () => {
         // provider.accounts has been observed EMPTY on a live session
         // (MetaMask Mobile). The session namespaces are the ground truth:
-        // "eip155:11155111:0xabc..." entries.
+        // "eip155:11155111:0xabc..." entries. A session can authorize
+        // different accounts per chain, so prefer entries for the ACTIVE
+        // chain before falling back to any eip155 entry.
         const direct = provider.accounts ?? [];
-        const ns = (provider.session?.namespaces?.eip155?.accounts ?? [])
-          .map((a: string) => a.split(":")[2])
-          .filter(Boolean);
-        setAccounts([...(direct.length ? direct : ns)]);
+        const entries = provider.session?.namespaces?.eip155?.accounts ?? [];
+        const activePrefix = `eip155:${provider.chainId}:`;
+        const forChain = entries
+          .filter((a: string) => a.startsWith(activePrefix))
+          .map((a: string) => a.split(":")[2]);
+        const any = entries.map((a: string) => a.split(":")[2]).filter(Boolean);
+        setAccounts([...(direct.length ? direct : forChain.length ? forChain : any)]);
         setChainId(provider.chainId ?? null);
         setPeer(provider.session?.peer?.metadata?.name ?? null);
       };
@@ -93,18 +99,21 @@ export default function App() {
       // QR approval, so the UI also re-syncs after every action and on a
       // slow poll. The SDK does not have this problem - it adopts from
       // state and wraps requests - this is purely demo display state.
-      provider.on("connect", syncSession);
-      provider.on("accountsChanged", syncSession);
-      provider.on("chainChanged", syncSession);
-      provider.on("disconnect", syncSession);
-      provider.on("session_update", syncSession);
+      const events = ["connect", "accountsChanged", "chainChanged", "disconnect", "session_update"] as const;
+      for (const ev of events) provider.on(ev as never, syncSession as never);
       const pollId = window.setInterval(syncSession, 1500);
-      (window as unknown as { __wcPoll?: number }).__wcPoll = pollId;
+      disposeRef.current = () => {
+        window.clearInterval(pollId);
+        for (const ev of events) provider.removeListener(ev as never, syncSession as never);
+      };
       syncSession();
       setStatus("ready");
     })().catch((e) => setStatus(`init failed: ${String(e).slice(0, 120)}`));
     return () => {
       cancelled = true;
+      // Unmount/HMR must not leak the poll or the five listeners; each
+      // remount would otherwise stack another live set.
+      disposeRef.current();
       formoRef.current?.cleanup?.();
     };
   }, []);
