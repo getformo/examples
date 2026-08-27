@@ -38,6 +38,7 @@ export default function App() {
   const [chainId, setChainId] = useState<number | null>(null);
   const [peer, setPeer] = useState<string | null>(null);
   const [lastAction, setLastAction] = useState<string>("");
+  const syncRef = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,14 +77,29 @@ export default function App() {
       setRegistered(ok);
 
       const syncSession = () => {
-        setAccounts(provider.accounts ?? []);
+        // provider.accounts has been observed EMPTY on a live session
+        // (MetaMask Mobile). The session namespaces are the ground truth:
+        // "eip155:11155111:0xabc..." entries.
+        const direct = provider.accounts ?? [];
+        const ns = (provider.session?.namespaces?.eip155?.accounts ?? [])
+          .map((a: string) => a.split(":")[2])
+          .filter(Boolean);
+        setAccounts([...(direct.length ? direct : ns)]);
         setChainId(provider.chainId ?? null);
         setPeer(provider.session?.peer?.metadata?.name ?? null);
       };
+      syncRef.current = syncSession;
+      // Belt and braces: the provider does not reliably emit `connect` on a
+      // QR approval, so the UI also re-syncs after every action and on a
+      // slow poll. The SDK does not have this problem - it adopts from
+      // state and wraps requests - this is purely demo display state.
       provider.on("connect", syncSession);
       provider.on("accountsChanged", syncSession);
       provider.on("chainChanged", syncSession);
       provider.on("disconnect", syncSession);
+      provider.on("session_update", syncSession);
+      const pollId = window.setInterval(syncSession, 1500);
+      (window as unknown as { __wcPoll?: number }).__wcPoll = pollId;
       syncSession();
       setStatus("ready");
     })().catch((e) => setStatus(`init failed: ${String(e).slice(0, 120)}`));
@@ -97,9 +113,11 @@ export default function App() {
     try {
       setLastAction(`${label}...`);
       const result = await fn();
-      setLastAction(`${label}: ${result === undefined ? "ok" : String(result).slice(0, 66)}`);
+      setLastAction(`${label}: ${result === undefined ? "ok" : String(result).slice(0, 240)}`);
     } catch (e) {
       setLastAction(`${label} failed: ${String((e as Error)?.message ?? e).slice(0, 90)}`);
+    } finally {
+      syncRef.current();
     }
   }, []);
 
@@ -128,7 +146,17 @@ export default function App() {
       </dl>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button disabled={!provider || !!address} onClick={() => act("connect", () => provider!.connect())}>
+        <button
+          disabled={!provider || !!address}
+          onClick={() =>
+            act("connect", async () => {
+              await provider!.connect();
+              const p = provider!;
+              const ns = p.session?.namespaces?.eip155?.accounts ?? [];
+              return `accounts=[${(p.accounts ?? []).join(", ") || "EMPTY"}] ns=[${ns.join(", ") || "EMPTY"}] chain=${p.chainId} peer=${p.session?.peer?.metadata?.name ?? "?"}`;
+            })
+          }
+        >
           Connect (QR)
         </button>
         <button
