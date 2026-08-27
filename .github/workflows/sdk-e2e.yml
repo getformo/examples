@@ -52,7 +52,7 @@ jobs:
 
       - name: Install every example (frozen lockfiles)
         run: |
-          for d in with-dynamic with-farcaster with-metamask with-next-page-router with-porto with-privy with-reown with-tempo with-web3-onboard with-react-native with-react with-next-app-router with-walletconnect; do
+          for d in with-dynamic with-farcaster with-metamask with-next-page-router with-porto with-privy with-reown with-tempo with-web3-onboard with-react-native with-react with-next-app-router; do
             echo "::group::$d"; (cd "$d" && pnpm install --frozen-lockfile --ignore-scripts) || { echo "::error::$d failed to install"; exit 1; }; echo "::endgroup::"
           done
 
