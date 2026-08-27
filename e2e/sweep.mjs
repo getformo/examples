@@ -15,7 +15,7 @@ if (!sdkDir) { console.error("usage: node sweep.mjs <sdkPackageDir> [example ...
 // Which examples run which mode. Wagmi-mode examples subscribe to a store; the
 // others are driven through an injected EIP-1193 provider.
 const WAGMI = ["with-dynamic", "with-farcaster", "with-metamask", "with-next-page-router", "with-porto", "with-privy", "with-reown", "with-tempo", "with-web3-onboard", "with-react-native"];
-const EIP1193 = ["with-react", "with-next-app-router"];
+const EIP1193 = ["with-react", "with-next-app-router", "with-walletconnect"];
 
 // The one stream every example must produce, whatever its wagmi/viem version.
 const EXPECT = {

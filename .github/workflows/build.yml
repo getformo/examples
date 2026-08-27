@@ -27,6 +27,9 @@ jobs:
             with-react:
               - 'with-react/**'
               - '.github/workflows/build.yml'
+            with-walletconnect:
+              - 'with-walletconnect/**'
+              - '.github/workflows/build.yml'
             with-next-app-router:
               - 'with-next-app-router/**'
               - '.github/workflows/build.yml'
@@ -109,7 +112,8 @@ jobs:
             {"name":"with-angular","dir":"with-angular","pm":"pnpm","build":"build","node":"24.18.0"},
             {"name":"with-crossmint","dir":"with-crossmint","pm":"pnpm","build":"build","node":"22","audit":"critical"},
             {"name":"with-openfort","dir":"with-openfort/frontend","pm":"pnpm","build":"build","node":"22"},
-            {"name":"with-turnkey","dir":"with-turnkey","pm":"pnpm","build":"build","node":"22"}
+            {"name":"with-turnkey","dir":"with-turnkey","pm":"pnpm","build":"build","node":"22"},
+            {"name":"with-walletconnect","dir":"with-walletconnect","pm":"pnpm","build":"build","node":"22","audit":"critical"}
           ]'
           MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" \
             '{include: [ $full[] | select(.name as $n | ($changed | index($n)) != null) ]}')
