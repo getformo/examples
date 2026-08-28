@@ -24,8 +24,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.38.0
-        version: 1.38.0(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.18(typescript@5.9.3))
+        specifier: ^1.38.2
+        version: 1.38.2(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.18(typescript@5.9.3))
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.8)
@@ -249,8 +249,8 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@formo/analytics@1.38.0':
-    resolution: {integrity: sha512-dQvMkh+QhR3y8suKQA+ESL5JdjYyZGp2+nlQPRTI2+O1d4lQ3or/LxjWAIcUB2Fd0ZVqKLP6VZH2WhtN+6vxdw==}
+  '@formo/analytics@1.38.2':
+    resolution: {integrity: sha512-IoQONgowMDbLNPw3E3MEUrUTRHaJbphbsgAnF6eSYuOuDjtO4W1Kg/S0lulofiZJBpq2Pp4ndJZBTA33IJA63A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -1702,6 +1702,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -3156,7 +3157,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@formo/analytics@1.38.0(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.18(typescript@5.9.3))':
+  '@formo/analytics@1.38.2(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.18(typescript@5.9.3))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)

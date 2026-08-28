@@ -30,8 +30,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.38.0
-        version: 1.38.0(@types/react@18.3.28)(react@18.3.1)(viem@2.55.18)
+        specifier: ^1.38.2
+        version: 1.38.2(@types/react@18.3.28)(react@18.3.1)(viem@2.55.18)
       '@testing-library/jest-dom':
         specifier: ^5.17.0
         version: 5.17.0
@@ -902,8 +902,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@formo/analytics@1.38.0':
-    resolution: {integrity: sha512-dQvMkh+QhR3y8suKQA+ESL5JdjYyZGp2+nlQPRTI2+O1d4lQ3or/LxjWAIcUB2Fd0ZVqKLP6VZH2WhtN+6vxdw==}
+  '@formo/analytics@1.38.2':
+    resolution: {integrity: sha512-IoQONgowMDbLNPw3E3MEUrUTRHaJbphbsgAnF6eSYuOuDjtO4W1Kg/S0lulofiZJBpq2Pp4ndJZBTA33IJA63A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -6720,7 +6720,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@formo/analytics@1.38.0(@types/react@18.3.28)(react@18.3.1)(viem@2.55.18)':
+  '@formo/analytics@1.38.2(@types/react@18.3.28)(react@18.3.1)(viem@2.55.18)':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7
