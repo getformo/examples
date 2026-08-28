@@ -18,7 +18,7 @@
     "@angular/forms": "^21.2.19",
     "@angular/platform-browser": "^21.2.19",
     "@angular/router": "^21.2.19",
-    "@formo/analytics": "^1.38.0",
+    "@formo/analytics": "^1.38.2",
     "buffer": "^6.0.3",
     "rxjs": "~7.8.2",
     "tslib": "^2.8.1",
