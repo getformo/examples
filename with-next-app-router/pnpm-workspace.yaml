@@ -5,6 +5,17 @@ packages:
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
+  # Remove after 2026-09-01, once 15.5.24 is seven days old (fixes GHSA-2xp9-vwfh-vxw4).
+  - 'next@15.5.24'
+  - '@next/env@15.5.24'
+  - '@next/swc-darwin-arm64@15.5.24'
+  - '@next/swc-darwin-x64@15.5.24'
+  - '@next/swc-linux-arm64-gnu@15.5.24'
+  - '@next/swc-linux-arm64-musl@15.5.24'
+  - '@next/swc-linux-x64-gnu@15.5.24'
+  - '@next/swc-linux-x64-musl@15.5.24'
+  - '@next/swc-win32-arm64-msvc@15.5.24'
+  - '@next/swc-win32-x64-msvc@15.5.24'
   # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
   # 7-day gate, so the package is exempted by name rather than by version.
   - brace-expansion
@@ -58,7 +69,7 @@ overrides:
   h3: '^1.15.9'
   hono: '^4.12.27'
   undici: '^7.28.0'
-  next: '^15.5.15'
+  next: '^15.5.24'
   elliptic: '^6.6.1'
   # Keep direct and transitive viem consumers on the reviewed release.
   viem: '2.55.18'

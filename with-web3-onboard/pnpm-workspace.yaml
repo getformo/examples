@@ -4,6 +4,17 @@
 minimumReleaseAge: 10080
 # Formo publishes its own SDK; don't hold it back behind the release-age gate.
 minimumReleaseAgeExclude:
+  # Remove after 2026-09-01, once 16.3.3 is seven days old (fixes GHSA-2xp9-vwfh-vxw4).
+  - 'next@16.3.3'
+  - '@next/env@16.3.3'
+  - '@next/swc-darwin-arm64@16.3.3'
+  - '@next/swc-darwin-x64@16.3.3'
+  - '@next/swc-linux-arm64-gnu@16.3.3'
+  - '@next/swc-linux-arm64-musl@16.3.3'
+  - '@next/swc-linux-x64-gnu@16.3.3'
+  - '@next/swc-linux-x64-musl@16.3.3'
+  - '@next/swc-win32-arm64-msvc@16.3.3'
+  - '@next/swc-win32-x64-msvc@16.3.3'
   # GHSA high-severity ReDoS; every 1.x/2.x/5.x patch is newer than the
   # 7-day gate, so the package is exempted by name rather than by version.
   - brace-expansion
