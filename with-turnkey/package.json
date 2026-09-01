@@ -11,7 +11,7 @@
   "dependencies": {
     "@formo/analytics": "^1.38.2",
     "@heroicons/react": "^2.2.0",
-    "@turnkey/eip-1193-provider": "^3.4.36",
+    "@turnkey/eip-1193-provider": "^3.4.37",
     "@turnkey/sdk-browser": "^5.15.2",
     "@turnkey/sdk-react": "^6.0.7",
     "@turnkey/sdk-server": "^8.2.1",
@@ -19,14 +19,14 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-toastify": "^11.1.0",
-    "viem": "^2.55.18"
+    "viem": "^2.55.19"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.3.0",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@types/react-dom": "^19.2.5",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.22",
     "postcss": "^8.5.26",
