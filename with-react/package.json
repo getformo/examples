@@ -7,12 +7,12 @@
     "@formo/analytics": "^1.38.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.6.5",
+    "@testing-library/user-event": "^14.6.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "viem": "^2.55.18",
-    "web-vitals": "^6.1.1"
+    "viem": "^2.55.19",
+    "web-vitals": "^6.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
