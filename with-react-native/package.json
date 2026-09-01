@@ -39,7 +39,7 @@
     "react-native": "0.86.2",
     "react-native-get-random-values": "^1.11.0",
     "react-native-modal": "14.0.0-rc.1",
-    "react-native-play-install-referrer": "^1.1.9",
+    "react-native-play-install-referrer": "^2.0.1",
     "react-native-safe-area-context": "^5.9.0",
     "react-native-screens": "~4.27.0",
     "react-native-svg": "^15.15.5",
