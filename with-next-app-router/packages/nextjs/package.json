@@ -46,7 +46,7 @@
     "autoprefixer": "~10.5.4",
     "eslint": "~8.24.0",
     "eslint-config-next": "~15.5.22",
-    "eslint-config-prettier": "~8.5.0",
+    "eslint-config-prettier": "~10.1.8",
     "eslint-plugin-prettier": "~4.2.5",
     "postcss": "~8.5.26",
     "prettier": "~2.8.8",
