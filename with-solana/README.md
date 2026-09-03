@@ -1,66 +1,57 @@
-# Formo Solana dApp Scaffold
+# Formo + Solana (framework-kit)
 
-A modern Solana dApp scaffold demonstrating the [Formo Analytics SDK](https://github.com/getformo/sdk) integration with Solana wallet adapter. Based on [builderz-solana-dapp-scaffold](https://github.com/builderz-labs/builderz-solana-dapp-scaffold) with comprehensive transaction examples from [solana-labs/dapp-scaffold](https://github.com/solana-labs/dapp-scaffold).
+A Next.js app demonstrating the [Formo Analytics SDK](https://github.com/getformo/sdk) on Solana with [framework-kit](https://github.com/solana-foundation/framework-kit) (`@solana/client` + `@solana/react-hooks`).
 
-This app tests the Solana support added in [PR #157](https://github.com/getformo/sdk/pull/157).
+> **Which Solana library does this cover?**
+>
+> This example uses **framework-kit**, not `@solana/wallet-adapter`. The SDK passes framework-kit's `client.store` in `options.solana.store`, so wallet and cluster changes are read from that store. The React transaction hooks used by the demos keep their state outside the store, so the demos report transaction events explicitly with `formo.transaction()`.
+>
+> Wallet `detect`, `connect`, and `disconnect` events do not need any of that. Since `@formo/analytics` 1.39.0 the SDK discovers Solana wallets through the [Wallet Standard](https://github.com/wallet-standard/wallet-standard), so they are autocaptured for `@solana/wallet-adapter`, Privy, Dynamic, Reown, and custom integrations too, with only `<FormoAnalyticsProvider writeKey=... />`. See the [Solana integration docs](https://docs.formo.so/sdks/web#solana-integration).
 
 ## Features
 
-- **Modern UI**: Built with Next.js 14, Tailwind CSS, and shadcn/ui components
-- **Multi-Wallet Support**: Phantom, Solflare, Torus, Ledger, Coinbase
-- **Network Switching**: Easy switching between Devnet and Mainnet
-- **Theme Support**: Dark/light mode with system detection
-- **Comprehensive Demos**:
-  - Request Airdrop (devnet)
-  - Send Legacy Transaction
-  - Send Versioned Transaction (V0)
-  - Sign Message
-  - Sign Transaction (without broadcast)
-  - Sign All Transactions (batch)
+- **Modern UI**: Next.js 15 App Router, Tailwind CSS, and shadcn/ui components
+- **Wallet discovery**: every Wallet Standard wallet on the page (Phantom, Solflare, Backpack, ...) via framework-kit's `autoDiscover()`
+- **Network switching**: devnet and mainnet
+- **Theme support**: dark/light mode with system detection
+- **Demos**: send a legacy transaction, send a versioned (V0) transaction, fire custom events
 
-## Formo SDK Events Tracked
+## Formo SDK events
 
-The Formo SDK automatically tracks these Solana events:
+| Event | Source | Trigger |
+|-------|--------|---------|
+| `detect` | Wallet Standard discovery | A wallet registers with the page |
+| `connect` | framework-kit store | Wallet connects, or a session is restored on load |
+| `disconnect` | framework-kit store | Wallet disconnects |
+| `chain` | framework-kit store | Cluster switches (detected from the RPC endpoint) |
+| `transaction` started / confirmed / rejected | explicit | The demos call `formo.transaction()` around framework-kit's React transaction hooks |
+| `track` | explicit | Custom events from the demos |
 
-| Event Type | Trigger |
-|------------|---------|
-| `wallet_connect` | Wallet successfully connected |
-| `wallet_disconnect` | Wallet disconnected |
-| `signature_requested` | Message/transaction signing initiated |
-| `signature_confirmed` | User approved signature |
-| `signature_rejected` | User rejected signature |
-| `transaction_started` | Transaction creation initiated |
-| `transaction_broadcasted` | Transaction submitted to network |
-| `transaction_confirmed` | Transaction confirmed on-chain |
-| `transaction_reverted` | Transaction failed on-chain |
+Signatures (`signMessage`, `signTransaction`) are not autocaptured on any Solana path; call `formo.signature()` yourself.
 
-## Quick Start
+## Quick start
 
 ### Prerequisites
 
 - Node.js 18+
 - A Solana wallet browser extension (Phantom recommended)
-- Formo write key from [app.formo.so](https://app.formo.so)
+- A Formo write key from [app.formo.so](https://app.formo.so)
 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/getformo/examples.git
 cd examples/with-solana
 
-# Install dependencies
-npm install
+pnpm install
 
-# Set up environment variables
 cp .env.example .env
 # Edit .env and add your Formo write key
 
-# Run the development server
-npm run dev
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
 ## Configuration
 
@@ -70,123 +61,101 @@ Create a `.env` file with the following variables:
 # Required: Your Formo Analytics write key
 NEXT_PUBLIC_FORMO_WRITE_KEY=your_write_key_here
 
-# Optional: Custom Solana RPC endpoint (defaults to public devnet)
+# Optional: Custom Solana RPC endpoint (defaults to the public endpoint for the cluster)
 # NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
 
 # Optional: Solana cluster (devnet, mainnet-beta)
 NEXT_PUBLIC_SOLANA_CLUSTER=devnet
 ```
 
-## Testing with Local SDK
+## How the SDK is wired
 
-To test with a local development version of the Formo SDK:
+`src/app/providers.tsx` passes framework-kit's store to the SDK:
 
-```bash
-# In the SDK directory
-cd /path/to/formo-sdk
-npm run build
-npm link
-
-# In this example app directory
-cd /path/to/examples/with-solana
-npm link @formo/analytics
-
-# Run the app
-npm run dev
+```tsx
+<SolanaProvider client={client}>
+  <FormoAnalyticsProvider
+    writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
+    options={{
+      evm: false, // Solana-only app: skip EIP-1193 / EIP-6963 discovery
+      solana: { store: client.store },
+    }}
+  >
+    {children}
+  </FormoAnalyticsProvider>
+</SolanaProvider>
 ```
 
-## Testing Checklist
+The SDK subscribes to the store as a read-only observer. It never wraps wallet methods. Transactions recorded in the store can be autocaptured, but the React hooks used in this example manage transaction state locally, so `SendTransaction.tsx` and `SendVersionedTransaction.tsx` emit their lifecycle explicitly.
 
-Use this checklist to verify Formo SDK Solana integration:
+## Testing with a local SDK build
 
-### Wallet Events
-- [ ] Connect wallet → verify `wallet_connect` event fires
-- [ ] Disconnect wallet → verify `wallet_disconnect` event fires
-- [ ] Switch wallets → verify connect/disconnect events fire correctly
-- [ ] Auto-connect on page reload → verify event tracking
+```bash
+# In the SDK repository
+pnpm build
+pnpm link --global
 
-### Signature Events
-- [ ] Sign a message → verify `signature_requested` → `signature_confirmed`
-- [ ] Reject message signing → verify `signature_requested` → `signature_rejected`
-- [ ] Sign transaction (no send) → verify signature events
-- [ ] Sign all transactions (batch) → verify events for each
+# In this directory
+pnpm link --global @formo/analytics
+pnpm dev
+```
 
-### Transaction Events
-- [ ] Send legacy transaction → verify full lifecycle
-- [ ] Send versioned (V0) transaction → verify full lifecycle
-- [ ] Cancel transaction → verify proper event handling
-- [ ] Transaction fails → verify `transaction_reverted` event
+## Testing checklist
 
-### Edge Cases
-- [ ] Rapid connect/disconnect cycles
-- [ ] Multiple signatures in sequence
-- [ ] Network switching mid-session
-- [ ] Batch transaction signing
+### Wallet events
+- [ ] Load the page with a wallet installed → `detect`
+- [ ] Connect → `connect`
+- [ ] Disconnect → `disconnect`
+- [ ] Switch wallets → `disconnect` then `connect`
+- [ ] Reload with auto-connect → `connect`
+- [ ] Switch network → `chain`
 
-## Project Structure
+### Transaction events
+- [ ] Send a legacy transaction → started, broadcasted, confirmed
+- [ ] Send a versioned (V0) transaction → started, broadcasted, confirmed
+- [ ] Reject in the wallet → rejected
+- [ ] Transaction fails on-chain → reverted
+
+## Project structure
 
 ```
 src/
 ├── app/
 │   ├── layout.tsx          # Root layout with providers
-│   ├── page.tsx            # Main demo page with tabs
-│   ├── providers.tsx       # Provider hierarchy
-│   └── globals.css         # Global styles + shadcn theme
+│   ├── page.tsx            # Demo page with tabs
+│   ├── providers.tsx       # SolanaProvider + FormoAnalyticsProvider
+│   └── globals.css
 ├── components/
 │   ├── ui/                 # shadcn/ui components
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── switch.tsx
-│   │   └── tabs.tsx
-│   ├── layout/             # Layout components
-│   │   ├── Header.tsx
-│   │   ├── Footer.tsx
-│   │   └── ThemeToggle.tsx
-│   ├── wallet/             # Wallet components
-│   │   ├── WalletButton.tsx
-│   │   ├── NetworkSwitcher.tsx
-│   │   └── AutoConnect.tsx
-│   ├── demos/              # Demo components
-│   │   ├── RequestAirdrop.tsx
-│   │   ├── SendTransaction.tsx
-│   │   ├── SendVersionedTransaction.tsx
-│   │   ├── SignMessage.tsx
-│   │   ├── SignTransaction.tsx
-│   │   └── SignAllTransactions.tsx
-│   ├── FormoStatus.tsx     # SDK connection indicator
-│   └── WalletInfo.tsx      # Wallet info display
-├── contexts/
-│   ├── NetworkConfigurationProvider.tsx
-│   ├── AutoConnectProvider.tsx
-│   ├── WalletContextProvider.tsx
-│   └── FormoProvider.tsx
-├── stores/
-│   ├── useNotificationStore.ts
-│   └── useUserSOLBalanceStore.ts
+│   ├── layout/             # Header, Footer, ThemeToggle
+│   ├── wallet/             # WalletButton, NetworkSwitcher
+│   ├── demos/              # SendTransaction, SendVersionedTransaction, CustomEvents
+│   ├── FormoStatus.tsx     # SDK status indicator
+│   └── WalletInfo.tsx      # Connected wallet details
+├── hooks/
+│   └── useCurrentCluster.ts # Cluster and Formo chain id from the live endpoint
 └── lib/
-    └── utils.ts            # Utility functions
+    ├── solana.ts           # framework-kit client, cluster helpers
+    └── utils.ts
 ```
 
-## Tech Stack
+## Tech stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + shadcn/ui
-- **State Management**: Zustand
-- **Blockchain**: Solana Web3.js 1.98
-- **Wallet Adapter**: @solana/wallet-adapter-react
-- **Analytics**: @formo/analytics (Solana branch)
+- **Solana**: `@solana/kit`, `@solana/client`, `@solana/react-hooks`, `@solana-program/system`
+- **Analytics**: `@formo/analytics`
 - **Theme**: next-themes
 - **Notifications**: Sonner
 
-## Related Links
+## Related links
 
-- [Formo SDK Repository](https://github.com/getformo/sdk)
-- [Solana Support PR #157](https://github.com/getformo/sdk/pull/157)
-- [builderz-solana-dapp-scaffold](https://github.com/builderz-labs/builderz-solana-dapp-scaffold)
-- [solana-labs/dapp-scaffold](https://github.com/solana-labs/dapp-scaffold)
-- [Solana Wallet Adapter Docs](https://github.com/solana-labs/wallet-adapter)
-- [Solana Web3.js Docs](https://solana-labs.github.io/solana-web3.js/)
+- [Formo SDK repository](https://github.com/getformo/sdk)
+- [Formo Solana integration docs](https://docs.formo.so/sdks/web#solana-integration)
+- [framework-kit](https://github.com/solana-foundation/framework-kit)
+- [Wallet Standard](https://github.com/wallet-standard/wallet-standard)
+- [Solana Kit](https://github.com/anza-xyz/kit)
 
 ## License
 
