@@ -1,6 +1,9 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - "@formo/analytics"
+  - postcss@8.5.18
+overrides:
+  postcss@<8.5.18: ^8.5.18
 blockExoticSubdeps: true
 allowBuilds:
   sharp: true
