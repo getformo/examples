@@ -1,15 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useWalletConnection } from "@solana/react-hooks";
+import {
+  useConnect,
+  useConnectedWallet,
+  useDisconnect,
+  useWallets,
+  useWalletStatus,
+} from "@solana/kit-plugin-wallet/react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wallet, LogOut, ChevronDown } from "lucide-react";
+import { useSolanaApp } from "@/context/SolanaAppProvider";
+import { ChevronDown, Loader2, LogOut, Wallet } from "lucide-react";
 
 export function WalletButton() {
-  const { connectors, connect, disconnect, wallet, status } = useWalletConnection();
+  const { client } = useSolanaApp();
+  const wallets = useWallets(client);
+  const connected = useConnectedWallet(client);
+  const status = useWalletStatus(client);
+  const connect = useConnect(client);
+  const disconnect = useDisconnect(client);
   const [showDropdown, setShowDropdown] = useState(false);
+  const actionError = connect.error ?? disconnect.error;
 
-  if (status === "connecting") {
+  if (status === "connecting" || status === "reconnecting") {
     return (
       <Button variant="gradient" disabled>
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -18,30 +31,29 @@ export function WalletButton() {
     );
   }
 
-  if (status === "connected" && wallet) {
-    const addr = wallet.account.address.toString();
+  if (connected) {
+    const address = connected.account.address.toString();
     return (
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="font-mono text-xs"
-          onClick={() => disconnect()}
-          title="Disconnect wallet"
-        >
-          {addr.slice(0, 4)}...{addr.slice(-4)}
-          <LogOut className="ml-2 h-3 w-3" />
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        className="font-mono text-xs"
+        onClick={() => disconnect.dispatch()}
+        disabled={disconnect.isRunning}
+        title="Disconnect wallet"
+      >
+        {address.slice(0, 4)}...{address.slice(-4)}
+        <LogOut className="ml-2 h-3 w-3" />
+      </Button>
     );
   }
 
-  // Disconnected — show wallet selector
   return (
     <div className="relative">
       <Button
         variant="gradient"
         onClick={() => setShowDropdown(!showDropdown)}
+        disabled={status === "pending"}
       >
         <Wallet className="mr-2 h-4 w-4" />
         Select Wallet
@@ -55,26 +67,36 @@ export function WalletButton() {
             onClick={() => setShowDropdown(false)}
           />
           <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border bg-card p-2 shadow-lg">
-            {connectors.length === 0 && (
+            {wallets.length === 0 && (
               <p className="px-3 py-2 text-sm text-muted-foreground">
-                No wallets found. Install a Solana wallet extension.
+                No wallets found. Install a Wallet Standard extension.
               </p>
             )}
-            {connectors.map((c) => (
+            {wallets.map((wallet) => (
               <button
-                key={c.id}
+                key={wallet.name}
                 onClick={() => {
-                  connect(c.id);
+                  connect.dispatch(wallet);
                   setShowDropdown(false);
                 }}
-                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"
+                disabled={connect.isRunning}
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50"
               >
-                {c.icon && (
-                  <img src={c.icon} alt={c.name} className="h-5 w-5 rounded" />
+                {wallet.icon && (
+                  <img
+                    src={wallet.icon}
+                    alt={wallet.name}
+                    className="h-5 w-5 rounded"
+                  />
                 )}
-                <span>{c.name}</span>
+                <span>{wallet.name}</span>
               </button>
             ))}
+            {actionError != null && (
+              <p className="px-3 py-2 text-xs text-destructive">
+                {String(actionError)}
+              </p>
+            )}
           </div>
         </>
       )}

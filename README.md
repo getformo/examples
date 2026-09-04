@@ -23,7 +23,8 @@ Check out the [SDK docs](https://docs.formo.so/sdks/web) for full installation i
 
 ## Blockchain Platforms
 
-- [with-solana](./with-solana) - Next.js with Solana framework-kit (`@solana/client` + `@solana/react-hooks`)
+- [with-solana](./with-solana) - Next.js with Solana Kit and Wallet Standard autocapture
+- [with-solana-framework-kit](./with-solana-framework-kit) - Next.js with the optional framework-kit store integration
 - [with-farcaster](./with-farcaster) - Vite with Farcaster Mini App
 
 ## Mobile

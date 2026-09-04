@@ -1,9 +1,32 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { SolanaProvider } from "@solana/react-hooks";
 import { FormoAnalyticsProvider } from "@formo/analytics";
-import { client } from "@/lib/solana";
+import { SolanaAppProvider, useSolanaApp } from "@/context/SolanaAppProvider";
+
+function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+  const { cluster } = useSolanaApp();
+  const options = {
+    tracking: true,
+    evm: false,
+    solana: { cluster },
+    logger: {
+      enabled: true,
+      levels: ["debug", "info", "warn", "error"] as Array<
+        "debug" | "info" | "warn" | "error"
+      >,
+    },
+  };
+
+  return (
+    <FormoAnalyticsProvider
+      writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
+      options={options}
+    >
+      {children}
+    </FormoAnalyticsProvider>
+  );
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -13,24 +36,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <SolanaProvider client={client}>
-        <FormoAnalyticsProvider
-          writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
-          options={{
-            tracking: true,
-            evm: false,
-            solana: {
-              store: client.store as any,
-            },
-            logger: {
-              enabled: true,
-              levels: ["debug", "info", "warn", "error"],
-            },
-          }}
-        >
-          {children}
-        </FormoAnalyticsProvider>
-      </SolanaProvider>
+      <SolanaAppProvider>
+        <AnalyticsProvider>{children}</AnalyticsProvider>
+      </SolanaAppProvider>
     </ThemeProvider>
   );
 }

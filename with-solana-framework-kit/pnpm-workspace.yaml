@@ -1,0 +1,7 @@
+minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  - "@formo/analytics"
+blockExoticSubdeps: true
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

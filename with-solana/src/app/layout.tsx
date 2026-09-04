@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Formo Solana dApp Scaffold",
-  description: "Test Formo Analytics SDK with Solana via framework-kit",
+  description: "Test Formo Analytics SDK with the Solana Kit wallet stack",
 };
 
 export default function RootLayout({
