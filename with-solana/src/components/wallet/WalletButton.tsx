@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useConnect,
   useConnectedWallet,
@@ -21,7 +21,10 @@ export function WalletButton() {
   const connect = useConnect(client);
   const disconnect = useDisconnect(client);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const actionError = connect.error ?? disconnect.error;
+
+  useEffect(() => setMounted(true), []);
 
   const onDisconnect = async () => {
     try {
@@ -42,7 +45,12 @@ export function WalletButton() {
     }
   };
 
-  if (status === "connecting" || status === "reconnecting") {
+  if (
+    !mounted ||
+    status === "pending" ||
+    status === "connecting" ||
+    status === "reconnecting"
+  ) {
     return (
       <Button variant="gradient" disabled>
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
