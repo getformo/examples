@@ -33,20 +33,27 @@ export function WalletInfo() {
     }
 
     let cancelled = false;
-    setFetching(true);
+    let requestId = 0;
     const loadBalance = () => {
+      const currentRequestId = ++requestId;
       setFetching(true);
       client.rpc
         .getBalance(address(walletAddress))
         .send()
         .then((response) => {
-          if (!cancelled) setBalance(response.value);
+          if (!cancelled && currentRequestId === requestId) {
+            setBalance(response.value);
+          }
         })
         .catch(() => {
-          if (!cancelled) setBalance(undefined);
+          if (!cancelled && currentRequestId === requestId) {
+            setBalance(undefined);
+          }
         })
         .finally(() => {
-          if (!cancelled) setFetching(false);
+          if (!cancelled && currentRequestId === requestId) {
+            setFetching(false);
+          }
         });
     };
 
