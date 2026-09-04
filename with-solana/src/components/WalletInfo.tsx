@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useSolanaApp } from "@/context/SolanaAppProvider";
+import { SOLANA_BALANCE_CHANGED_EVENT } from "@/lib/solana";
 import { Wallet } from "lucide-react";
 
 export function WalletInfo() {
@@ -33,21 +34,28 @@ export function WalletInfo() {
 
     let cancelled = false;
     setFetching(true);
-    client.rpc
-      .getBalance(address(walletAddress))
-      .send()
-      .then((response) => {
-        if (!cancelled) setBalance(response.value);
-      })
-      .catch(() => {
-        if (!cancelled) setBalance(undefined);
-      })
-      .finally(() => {
-        if (!cancelled) setFetching(false);
-      });
+    const loadBalance = () => {
+      setFetching(true);
+      client.rpc
+        .getBalance(address(walletAddress))
+        .send()
+        .then((response) => {
+          if (!cancelled) setBalance(response.value);
+        })
+        .catch(() => {
+          if (!cancelled) setBalance(undefined);
+        })
+        .finally(() => {
+          if (!cancelled) setFetching(false);
+        });
+    };
+
+    loadBalance();
+    window.addEventListener(SOLANA_BALANCE_CHANGED_EVENT, loadBalance);
 
     return () => {
       cancelled = true;
+      window.removeEventListener(SOLANA_BALANCE_CHANGED_EVENT, loadBalance);
     };
   }, [client, walletAddress]);
 

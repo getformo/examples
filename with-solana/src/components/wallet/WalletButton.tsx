@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSolanaApp } from "@/context/SolanaAppProvider";
 import { ChevronDown, Loader2, LogOut, Wallet } from "lucide-react";
+import { toast } from "sonner";
 
 export function WalletButton() {
   const { client } = useSolanaApp();
@@ -21,6 +22,25 @@ export function WalletButton() {
   const disconnect = useDisconnect(client);
   const [showDropdown, setShowDropdown] = useState(false);
   const actionError = connect.error ?? disconnect.error;
+
+  const onDisconnect = async () => {
+    try {
+      await disconnect.dispatchAsync();
+    } catch (error) {
+      toast.error("Could not disconnect wallet", {
+        description: String(error),
+      });
+    }
+  };
+
+  const onConnect = async (wallet: (typeof wallets)[number]) => {
+    try {
+      await connect.dispatchAsync(wallet);
+      setShowDropdown(false);
+    } catch {
+      // The mutation error remains visible in the open wallet menu.
+    }
+  };
 
   if (status === "connecting" || status === "reconnecting") {
     return (
@@ -38,7 +58,7 @@ export function WalletButton() {
         variant="outline"
         size="sm"
         className="font-mono text-xs"
-        onClick={() => disconnect.dispatch()}
+        onClick={() => void onDisconnect()}
         disabled={disconnect.isRunning}
         title="Disconnect wallet"
       >
@@ -75,10 +95,7 @@ export function WalletButton() {
             {wallets.map((wallet) => (
               <button
                 key={wallet.name}
-                onClick={() => {
-                  connect.dispatch(wallet);
-                  setShowDropdown(false);
-                }}
+                onClick={() => void onConnect(wallet)}
                 disabled={connect.isRunning}
                 className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50"
               >

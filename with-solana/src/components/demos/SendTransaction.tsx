@@ -7,6 +7,7 @@ import { getTransferSolInstruction } from "@solana-program/system";
 import { TransactionStatus, useFormo } from "@formo/analytics";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
 import { useSolanaApp } from "@/context/SolanaAppProvider";
+import { SOLANA_BALANCE_CHANGED_EVENT } from "@/lib/solana";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -56,6 +57,7 @@ export function SendTransaction() {
         address: walletAddress,
         transactionHash: signature,
       });
+      window.dispatchEvent(new Event(SOLANA_BALANCE_CHANGED_EVENT));
 
       toast.success("Transaction sent!", {
         description: "Successfully sent 0.001 SOL with Solana Kit",

@@ -38,7 +38,9 @@ export function NetworkSwitcher() {
     <select
       value={cluster}
       onChange={(event) => void onChange(event)}
-      disabled={isSwitching || disconnect.isRunning}
+      disabled={
+        isSwitching || disconnect.isRunning || status === "connecting"
+      }
       aria-busy={isSwitching}
       className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >

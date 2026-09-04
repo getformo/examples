@@ -10,6 +10,9 @@ import type { SolanaCluster } from "@formo/analytics";
 export const configuredCluster: SolanaCluster =
   (process.env.NEXT_PUBLIC_SOLANA_CLUSTER as SolanaCluster) || "devnet";
 
+export const SOLANA_BALANCE_CHANGED_EVENT =
+  "formo-example:solana-balance-changed";
+
 const customEndpoint = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
 
 const RPC_ENDPOINTS: Record<SolanaCluster, string> = {
