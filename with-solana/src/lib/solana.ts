@@ -1,4 +1,9 @@
-import { createClient, autoDiscover } from "@solana/client";
+import {
+  createClient,
+  autoDiscover,
+  type WalletConnector,
+  type WalletSession,
+} from "@solana/client";
 import { SOLANA_CHAIN_IDS, type SolanaCluster } from "@formo/analytics";
 
 /**
@@ -12,11 +17,62 @@ export const configuredCluster: SolanaCluster =
 
 const customEndpoint = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
 
+function toWalletStandardChain(cluster: SolanaCluster): `solana:${string}` {
+  return `solana:${cluster === "mainnet-beta" ? "mainnet" : cluster}`;
+}
+
+let walletStandardChain = toWalletStandardChain(configuredCluster);
+
+/**
+ * Keep newly-created Wallet Standard sessions on the same cluster as the RPC.
+ * The connector reads this value when a wallet connects.
+ */
+export function setWalletStandardCluster(cluster: SolanaCluster): void {
+  walletStandardChain = toWalletStandardChain(cluster);
+}
+
+/**
+ * MetaMask currently uses its existing session scope for `signTransaction`,
+ * which defaults to mainnet even when the Wallet Standard input names devnet.
+ * Its `signAndSendTransaction` path does honor the requested chain, so expose
+ * that path to framework-kit until MetaMask's signing path does the same.
+ */
+function preferChainAwareMetaMaskSession(
+  connector: WalletConnector
+): WalletConnector {
+  if (!connector.name.toLowerCase().includes("metamask")) return connector;
+
+  return {
+    ...connector,
+    async connect(options): Promise<WalletSession> {
+      const session = await connector.connect(options);
+      if (!session.signTransaction || !session.sendTransaction) return session;
+
+      const chainAwareSession = { ...session } as {
+        -readonly [Key in keyof WalletSession]: WalletSession[Key];
+      };
+      delete chainAwareSession.signTransaction;
+      return chainAwareSession;
+    },
+  };
+}
+
+const walletConnectors = autoDiscover({
+  overrides: () => ({
+    get defaultChain() {
+      return walletStandardChain;
+    },
+  }),
+}).map(preferChainAwareMetaMaskSession);
+
 export const client = createClient({
   ...(customEndpoint
     ? { endpoint: customEndpoint }
-    : { cluster: configuredCluster === "mainnet-beta" ? "mainnet" : configuredCluster }),
-  walletConnectors: autoDiscover(),
+    : {
+        cluster:
+          configuredCluster === "mainnet-beta" ? "mainnet" : configuredCluster,
+      }),
+  walletConnectors,
 });
 
 /**

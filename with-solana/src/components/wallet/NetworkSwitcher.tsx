@@ -2,7 +2,9 @@
 
 import { useWalletActions } from "@solana/react-hooks";
 import { resolveCluster } from "@solana/client";
+import type { SolanaCluster } from "@formo/analytics";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
+import { setWalletStandardCluster } from "@/lib/solana";
 
 const NETWORKS = [
   { label: "Devnet", moniker: "devnet" as const },
@@ -17,6 +19,14 @@ export function NetworkSwitcher() {
   const onChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const moniker = e.target.value as (typeof NETWORKS)[number]["moniker"];
     const resolved = resolveCluster({ moniker });
+    const cluster: SolanaCluster =
+      moniker === "mainnet" ? "mainnet-beta" : moniker;
+
+    // A Wallet Standard session captures its transaction chain when it is
+    // created. Disconnect before switching so the next connection uses the
+    // selected cluster instead of the wallet's first advertised chain.
+    await actions.disconnectWallet();
+    setWalletStandardCluster(cluster);
     await actions.setCluster(resolved.endpoint, {
       websocketEndpoint: resolved.websocketEndpoint,
     });
