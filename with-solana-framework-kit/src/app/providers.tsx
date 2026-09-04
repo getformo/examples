@@ -15,6 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <FormoAnalyticsProvider
         writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
         options={{
+          tracking: true,
           evm: false,
           solana: { store: client.store as any },
         }}

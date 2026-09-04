@@ -73,7 +73,6 @@ export function WalletButton() {
       <Button
         variant="gradient"
         onClick={() => setShowDropdown(!showDropdown)}
-        disabled={status === "pending"}
       >
         <Wallet className="mr-2 h-4 w-4" />
         Select Wallet
