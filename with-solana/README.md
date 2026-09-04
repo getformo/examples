@@ -68,6 +68,10 @@ NEXT_PUBLIC_FORMO_WRITE_KEY=your_write_key_here
 NEXT_PUBLIC_SOLANA_CLUSTER=devnet
 ```
 
+Changing the network in the app disconnects the current wallet before updating
+the RPC. Reconnect afterward so the new Wallet Standard session is created for
+the selected cluster; this also keeps MetaMask's signing prompt on that cluster.
+
 ## How the SDK is wired
 
 `src/app/providers.tsx` passes framework-kit's store to the SDK:

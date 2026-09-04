@@ -42,9 +42,10 @@ function preferChainAwareMetaMaskSession(
 ): WalletConnector {
   if (!connector.name.toLowerCase().includes("metamask")) return connector;
 
-  return {
-    ...connector,
-    async connect(options): Promise<WalletSession> {
+  const descriptors = Object.getOwnPropertyDescriptors(connector);
+  descriptors.connect = {
+    ...descriptors.connect,
+    value: async (options): Promise<WalletSession> => {
       const session = await connector.connect(options);
       if (!session.signTransaction || !session.sendTransaction) return session;
 
@@ -55,6 +56,10 @@ function preferChainAwareMetaMaskSession(
       return chainAwareSession;
     },
   };
+
+  // Preserve live getters such as defaultChain instead of snapshotting them
+  // through object spread when wrapping the connector.
+  return Object.create(Object.getPrototypeOf(connector), descriptors);
 }
 
 const walletConnectors = autoDiscover({
