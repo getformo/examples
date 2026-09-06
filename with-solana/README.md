@@ -1,15 +1,15 @@
 # Formo + Solana Kit
 
-A Next.js app demonstrating [Formo Analytics](https://github.com/getformo/sdk) with the modern [Solana Kit](https://github.com/anza-xyz/kit) stack:
+A Next.js app demonstrating [Formo Analytics](https://github.com/getformo/sdk) with the lower-level [Solana Kit](https://github.com/anza-xyz/kit) stack:
 
 - `@solana/kit`
 - `@solana/kit-plugin-wallet`
 - `@solana/kit-plugin-rpc`
 - `@solana/react`
 
-This is the default Solana integration. Formo observes Wallet Standard directly, so the app does not pass a wallet store or add manual connect/disconnect calls.
+This is the store-free Solana integration. Formo observes Wallet Standard directly, so the app does not pass a wallet store or add manual connect/disconnect calls.
 
-For Formo's optional `@solana/client` store integration, see [`with-solana-framework-kit`](../with-solana-framework-kit).
+For the recommended Solana dapp setup with framework-kit and its reactive store, see [`with-solana-framework-kit`](../with-solana-framework-kit).
 
 ## Events
 
