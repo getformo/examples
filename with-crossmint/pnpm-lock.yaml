@@ -35,8 +35,8 @@ importers:
         specifier: 4.5.0
         version: 4.5.0(@babel/core@7.29.7)(@babel/preset-env@7.29.5(@babel/core@7.29.7))(@solana/web3.js@1.98.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6))(@types/node@26.3.0)(@types/react@19.2.18)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.8(react@19.2.8))(react-native@0.74.0(@babel/core@7.29.7)(@babel/preset-env@7.29.5(@babel/core@7.29.7))(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.0.4)(utf-8-validate@6.0.6))(react@19.2.8)(typescript@5.9.3)(utf-8-validate@6.0.6)
       '@formo/analytics':
-        specifier: ^1.38.2
-        version: 1.38.2(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.33.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.22.4))
+        specifier: ^1.40.0
+        version: 1.40.0(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.33.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.22.4))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1155,8 +1155,8 @@ packages:
   '@ethersproject/transactions@5.7.0':
     resolution: {integrity: sha512-kmcNicCp1lp8qanMTC3RIikGgoJ80ztTyvtsFvCYpSCfkjhD0jZ2LOrnbcuxuToLIUYYf+4XwD1rP+B/erDIhQ==}
 
-  '@formo/analytics@1.38.2':
-    resolution: {integrity: sha512-IoQONgowMDbLNPw3E3MEUrUTRHaJbphbsgAnF6eSYuOuDjtO4W1Kg/S0lulofiZJBpq2Pp4ndJZBTA33IJA63A==}
+  '@formo/analytics@1.40.0':
+    resolution: {integrity: sha512-gRxjzZ5UvmDOqRO1GMH3ZIkjSbom1MYhSCPa79ooa9QMo3CT1ge3+KKMl8sbJjOx17HDAzy+0txT8qzggdM4vg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -8024,7 +8024,7 @@ snapshots:
       '@ethersproject/rlp': 5.8.0
       '@ethersproject/signing-key': 5.8.0
 
-  '@formo/analytics@1.38.2(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.33.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.22.4))':
+  '@formo/analytics@1.40.0(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.33.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.22.4))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
