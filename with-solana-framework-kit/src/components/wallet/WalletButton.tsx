@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Wallet, LogOut, ChevronDown } from "lucide-react";
 
 export function WalletButton() {
-  const { connectors, connect, disconnect, wallet, status } = useWalletConnection();
+  const { connectors, connect, disconnect, isReady, wallet, status } =
+    useWalletConnection();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
 
-  if (status === "connecting") {
+  if (!isReady || status === "connecting" || isDisconnecting) {
     return (
       <Button variant="gradient" disabled>
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Connecting...
+        {isDisconnecting ? "Disconnecting..." : "Connecting..."}
       </Button>
     );
   }
@@ -26,7 +28,10 @@ export function WalletButton() {
           variant="outline"
           size="sm"
           className="font-mono text-xs"
-          onClick={() => disconnect()}
+          onClick={() => {
+            setIsDisconnecting(true);
+            void disconnect().finally(() => setIsDisconnecting(false));
+          }}
           title="Disconnect wallet"
         >
           {addr.slice(0, 4)}...{addr.slice(-4)}
@@ -64,7 +69,7 @@ export function WalletButton() {
               <button
                 key={c.id}
                 onClick={() => {
-                  connect(c.id);
+                  void connect(c.id);
                   setShowDropdown(false);
                 }}
                 className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"

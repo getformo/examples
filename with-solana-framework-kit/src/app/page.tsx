@@ -10,8 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWalletConnection } from "@solana/react-hooks";
 
 export default function Home() {
-  const { status } = useWalletConnection();
-  const connected = status === "connected";
+  const { status, wallet } = useWalletConnection();
+  const connected = status === "connected" && wallet != null;
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">

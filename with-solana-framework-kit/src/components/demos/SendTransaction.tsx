@@ -8,7 +8,11 @@ import {
 } from "@solana/react-hooks";
 import { TransactionStatus, useFormo } from "@formo/analytics";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
-import { waitForConfirmation } from "@/lib/transactions";
+import {
+  TransactionConfirmationTimeoutError,
+  TransactionFailedError,
+  waitForConfirmation,
+} from "@/lib/transactions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -22,12 +26,19 @@ export const SendTransaction: FC = () => {
   const client = useSolanaClient();
   const solTransfer = useSolTransfer();
   const formo = useFormo();
-  const { chainId, explorerCluster } = useCurrentCluster();
+  const { chainId, cluster, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingTransactionHash, setPendingTransactionHash] = useState<
+    string | null
+  >(null);
 
   const onClick = useCallback(async () => {
     if (status !== "connected" || !wallet) {
       toast.error("Wallet not connected!");
+      return;
+    }
+    if (cluster !== "devnet") {
+      toast.error("This demo transfer is available on Devnet only");
       return;
     }
 
@@ -47,6 +58,7 @@ export const SendTransaction: FC = () => {
         amount: 1_000_000n, // 0.001 SOL in lamports
       });
       transactionHash = signature.toString();
+      setPendingTransactionHash(transactionHash);
 
       formo?.transaction({
         status: TransactionStatus.BROADCASTED,
@@ -55,6 +67,7 @@ export const SendTransaction: FC = () => {
         transactionHash,
       });
       await waitForConfirmation(client, transactionHash);
+      setPendingTransactionHash(null);
       formo?.transaction({
         status: TransactionStatus.CONFIRMED,
         chainId,
@@ -74,6 +87,25 @@ export const SendTransaction: FC = () => {
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      if (transactionHash && !(error instanceof TransactionFailedError)) {
+        toast.warning("Confirmation pending", {
+          description:
+            error instanceof TransactionConfirmationTimeoutError
+              ? "The transfer was submitted but could not be confirmed in time."
+              : "The transfer was submitted but its status could not be checked.",
+          action: {
+            label: "View",
+            onClick: () =>
+              window.open(
+                `https://explorer.solana.com/tx/${transactionHash}?cluster=${explorerCluster}`,
+                "_blank"
+              ),
+          },
+        });
+        return;
+      }
+
+      setPendingTransactionHash(null);
       formo?.transaction({
         status: transactionHash
           ? TransactionStatus.REVERTED
@@ -86,7 +118,7 @@ export const SendTransaction: FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [chainId, client, explorerCluster, formo, solTransfer, status, wallet]);
+  }, [chainId, client, cluster, explorerCluster, formo, solTransfer, status, wallet]);
 
   return (
     <Card>
@@ -103,7 +135,12 @@ export const SendTransaction: FC = () => {
         <Button
           variant="gradient"
           onClick={onClick}
-          disabled={status !== "connected" || isLoading}
+          disabled={
+            status !== "connected" ||
+            isLoading ||
+            pendingTransactionHash != null ||
+            cluster !== "devnet"
+          }
           className="w-full"
         >
           {isLoading ? (
@@ -111,6 +148,10 @@ export const SendTransaction: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </>
+          ) : pendingTransactionHash ? (
+            "Confirmation pending"
+          ) : cluster !== "devnet" ? (
+            "Devnet only"
           ) : status === "connected" ? (
             "Send 0.001 SOL"
           ) : (

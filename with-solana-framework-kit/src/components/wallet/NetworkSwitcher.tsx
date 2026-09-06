@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useWalletActions } from "@solana/react-hooks";
+import { useWalletActions, useWalletConnection } from "@solana/react-hooks";
 import { resolveCluster } from "@solana/client";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
 
@@ -13,6 +13,7 @@ const NETWORKS = [
 
 export function NetworkSwitcher() {
   const actions = useWalletActions();
+  const { isReady, status } = useWalletConnection();
   const { explorerCluster } = useCurrentCluster();
   const switchingRef = useRef(false);
   const [isSwitching, setIsSwitching] = useState(false);
@@ -38,8 +39,18 @@ export function NetworkSwitcher() {
     <select
       value={explorerCluster}
       onChange={(event) => void onChange(event)}
-      disabled={isSwitching}
+      disabled={
+        !isReady ||
+        isSwitching ||
+        status === "connecting" ||
+        status === "connected"
+      }
       aria-busy={isSwitching}
+      title={
+        status === "connected"
+          ? "Disconnect your wallet before switching networks"
+          : undefined
+      }
       className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
       {NETWORKS.map((n) => (

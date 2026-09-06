@@ -136,10 +136,14 @@ export const CustomEvents: FC = () => {
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
-            <label className="text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="custom-event-name"
+              className="text-xs font-medium text-muted-foreground"
+            >
               Event Name
             </label>
             <input
+              id="custom-event-name"
               type="text"
               value={customName}
               onChange={(e) => setCustomName(e.target.value)}
@@ -148,10 +152,14 @@ export const CustomEvents: FC = () => {
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="custom-event-properties"
+              className="text-xs font-medium text-muted-foreground"
+            >
               Properties (JSON)
             </label>
             <textarea
+              id="custom-event-properties"
               value={customProps}
               onChange={(e) => setCustomProps(e.target.value)}
               rows={3}

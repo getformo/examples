@@ -37,47 +37,71 @@ import { Loader2, Send } from "lucide-react";
 const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
 const CONFIRMATION_TIMEOUT_MS = 30_000;
 
+class TransactionFailedError extends Error {}
+class TransactionConfirmationTimeoutError extends Error {}
+
 async function waitForConfirmation(client: AppClient, transactionHash: string) {
   const deadline = Date.now() + CONFIRMATION_TIMEOUT_MS;
 
   while (Date.now() < deadline) {
-    const { value } = await client.rpc
-      .getSignatureStatuses([signature(transactionHash)])
-      .send();
-    const status = value[0];
+    const remainingMs = deadline - Date.now();
 
-    if (status?.err) {
-      throw new Error(`Transaction failed: ${JSON.stringify(status.err)}`);
-    }
-    if (
-      status?.confirmationStatus === "confirmed" ||
-      status?.confirmationStatus === "finalized"
-    ) {
-      return;
+    try {
+      const { value } = await client.rpc
+        .getSignatureStatuses([signature(transactionHash)])
+        .send({ abortSignal: AbortSignal.timeout(remainingMs) });
+      const status = value[0];
+
+      if (status?.err) {
+        throw new TransactionFailedError(
+          `Transaction failed: ${JSON.stringify(status.err)}`,
+        );
+      }
+      if (
+        status?.confirmationStatus === "confirmed" ||
+        status?.confirmationStatus === "finalized"
+      ) {
+        return;
+      }
+    } catch (error) {
+      if (error instanceof TransactionFailedError) throw error;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1_000));
+    const delayMs = Math.min(1_000, deadline - Date.now());
+    if (delayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
   }
 
-  throw new Error("Timed out waiting for transaction confirmation");
+  throw new TransactionConfirmationTimeoutError(
+    "Transaction confirmation is still pending",
+  );
 }
 
 export function SendTransaction() {
   const { client } = useSolanaApp();
   const connected = useConnectedWallet(client);
   const formo = useFormo();
-  const { chainId, explorerCluster } = useCurrentCluster();
+  const { chainId, cluster, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingTransactionHash, setPendingTransactionHash] = useState<
+    string | null
+  >(null);
 
   const onClick = useCallback(async () => {
     if (!connected?.signer) {
       toast.error("Wallet not connected!");
       return;
     }
+    if (cluster !== "devnet") {
+      toast.error("This demo transfer is available on Devnet only");
+      return;
+    }
 
     setIsLoading(true);
     const signer = connected.signer;
     const walletAddress = connected.account.address.toString();
+    let transactionHash: string | undefined;
     formo?.transaction({
       status: TransactionStatus.STARTED,
       chainId,
@@ -90,8 +114,6 @@ export function SendTransaction() {
         destination: address(DEMO_DESTINATION),
         amount: lamports(1_000_000n),
       });
-      let transactionHash: string;
-
       // This path carries the configured chain into multichain wallet prompts.
       if (isTransactionSendingSigner(signer)) {
         const { value: latestBlockhash } = await client.rpc
@@ -106,12 +128,26 @@ export function SendTransaction() {
         const signatureBytes =
           await signAndSendTransactionMessageWithSigners(message);
         transactionHash = getBase58Decoder().decode(signatureBytes);
+        setPendingTransactionHash(transactionHash);
+        formo?.transaction({
+          status: TransactionStatus.BROADCASTED,
+          chainId,
+          address: walletAddress,
+          transactionHash,
+        });
         await waitForConfirmation(client, transactionHash);
       } else {
         const result = await client.sendTransaction([transfer]);
         transactionHash = result.context.signature.toString();
+        formo?.transaction({
+          status: TransactionStatus.BROADCASTED,
+          chainId,
+          address: walletAddress,
+          transactionHash,
+        });
       }
 
+      setPendingTransactionHash(null);
       formo?.transaction({
         status: TransactionStatus.CONFIRMED,
         chainId,
@@ -132,10 +168,33 @@ export function SendTransaction() {
         },
       });
     } catch (error: unknown) {
+      if (transactionHash && !(error instanceof TransactionFailedError)) {
+        setPendingTransactionHash(transactionHash);
+        toast.warning("Confirmation pending", {
+          description:
+            error instanceof TransactionConfirmationTimeoutError
+              ? "The transfer was submitted but could not be confirmed in time."
+              : "The transfer was submitted but its status could not be checked.",
+          action: {
+            label: "View",
+            onClick: () =>
+              window.open(
+                `https://explorer.solana.com/tx/${transactionHash}?cluster=${explorerCluster}`,
+                "_blank",
+              ),
+          },
+        });
+        return;
+      }
+
+      setPendingTransactionHash(null);
       formo?.transaction({
-        status: TransactionStatus.REJECTED,
+        status: transactionHash
+          ? TransactionStatus.REVERTED
+          : TransactionStatus.REJECTED,
         chainId,
         address: walletAddress,
+        transactionHash,
       });
       toast.error("Transaction failed", {
         description: error instanceof Error ? error.message : "Unknown error",
@@ -143,7 +202,7 @@ export function SendTransaction() {
     } finally {
       setIsLoading(false);
     }
-  }, [chainId, client, connected, explorerCluster, formo]);
+  }, [chainId, client, cluster, connected, explorerCluster, formo]);
 
   return (
     <Card>
@@ -160,7 +219,12 @@ export function SendTransaction() {
         <Button
           variant="gradient"
           onClick={() => void onClick()}
-          disabled={!connected?.signer || isLoading}
+          disabled={
+            !connected?.signer ||
+            isLoading ||
+            pendingTransactionHash != null ||
+            cluster !== "devnet"
+          }
           className="w-full"
         >
           {isLoading ? (
@@ -168,6 +232,10 @@ export function SendTransaction() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </>
+          ) : pendingTransactionHash ? (
+            "Confirmation pending"
+          ) : cluster !== "devnet" ? (
+            "Devnet only"
           ) : connected?.signer ? (
             "Send 0.001 SOL"
           ) : (
