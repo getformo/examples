@@ -47,7 +47,7 @@ export function NetworkSwitcher() {
       }
       aria-busy={!isReady || isSwitching}
       title={
-        !canSwitchNetwork
+        status === "connected"
           ? "Disconnect your wallet before switching networks"
           : undefined
       }

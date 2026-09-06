@@ -3,6 +3,7 @@
 import { ThemeProvider } from "next-themes";
 import { SolanaProvider } from "@solana/react-hooks";
 import { FormoAnalyticsProvider } from "@formo/analytics";
+import { PendingTransactionConfirmationProvider } from "@/hooks/usePendingTransactionConfirmation";
 import { client } from "@/lib/solana";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             },
           }}
         >
-          {children}
+          <PendingTransactionConfirmationProvider>
+            {children}
+          </PendingTransactionConfirmationProvider>
         </FormoAnalyticsProvider>
       </SolanaProvider>
     </ThemeProvider>

@@ -1,6 +1,15 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
 import { useSolanaClient } from "@solana/react-hooks";
 import { TransactionStatus, useFormo } from "@formo/analytics";
 import {
@@ -16,7 +25,22 @@ export type PendingTransaction = {
   hash: string;
 };
 
-export function usePendingTransactionConfirmation() {
+type PendingTransactionConfirmationContextValue = {
+  dismiss: () => void;
+  isChecking: boolean;
+  pendingTransaction: PendingTransaction | null;
+  retryConfirmation: () => Promise<void>;
+  setPendingTransaction: Dispatch<SetStateAction<PendingTransaction | null>>;
+};
+
+const PendingTransactionConfirmationContext =
+  createContext<PendingTransactionConfirmationContextValue | null>(null);
+
+export function PendingTransactionConfirmationProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const client = useSolanaClient();
   const formo = useFormo();
   const [pendingTransaction, setPendingTransaction] =
@@ -67,11 +91,29 @@ export function usePendingTransactionConfirmation() {
     }
   }, [client, formo, pendingTransaction]);
 
-  return {
-    dismiss: () => setPendingTransaction(null),
+  const dismiss = useCallback(() => setPendingTransaction(null), []);
+
+  const value = {
+    dismiss,
     isChecking,
     pendingTransaction,
     retryConfirmation,
     setPendingTransaction,
   };
+
+  return createElement(
+    PendingTransactionConfirmationContext.Provider,
+    { value },
+    children,
+  );
+}
+
+export function usePendingTransactionConfirmation() {
+  const context = useContext(PendingTransactionConfirmationContext);
+  if (!context) {
+    throw new Error(
+      "usePendingTransactionConfirmation must be used within PendingTransactionConfirmationProvider",
+    );
+  }
+  return context;
 }
