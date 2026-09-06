@@ -28,8 +28,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.38.2
-        version: 1.38.2(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.34(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)))
+        specifier: ^1.40.0
+        version: 1.40.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.34(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)))
       '@metamask/connect-evm':
         specifier: ~0.9.0
         version: 0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3)
@@ -264,8 +264,8 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@formo/analytics@1.38.2':
-    resolution: {integrity: sha512-IoQONgowMDbLNPw3E3MEUrUTRHaJbphbsgAnF6eSYuOuDjtO4W1Kg/S0lulofiZJBpq2Pp4ndJZBTA33IJA63A==}
+  '@formo/analytics@1.40.0':
+    resolution: {integrity: sha512-gRxjzZ5UvmDOqRO1GMH3ZIkjSbom1MYhSCPa79ooa9QMo3CT1ge3+KKMl8sbJjOx17HDAzy+0txT8qzggdM4vg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -3196,7 +3196,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.38.2(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.34(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)))':
+  '@formo/analytics@1.40.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))(wagmi@3.6.1(@metamask/connect-evm@0.9.1(@babel/runtime@7.29.7)(typescript@5.9.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(immer@9.0.21)(ox@0.14.34(typescript@5.9.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)

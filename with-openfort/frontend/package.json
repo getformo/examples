@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@aave/react": "^6.4.0",
-    "@formo/analytics": "^1.38.2",
+    "@formo/analytics": "^1.40.0",
     "@metamask/sdk": "^0.34.0",
     "@openfort/react": "^1.6.3",
     "@solana/kit": "^5.5.1",
