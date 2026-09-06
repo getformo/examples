@@ -17,6 +17,7 @@ export function NetworkSwitcher() {
   const { explorerCluster } = useCurrentCluster();
   const switchingRef = useRef(false);
   const [isSwitching, setIsSwitching] = useState(false);
+  const canSwitchNetwork = status === "disconnected" || status === "error";
 
   const onChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const moniker = e.target.value as (typeof NETWORKS)[number]["moniker"];
@@ -42,12 +43,11 @@ export function NetworkSwitcher() {
       disabled={
         !isReady ||
         isSwitching ||
-        status === "connecting" ||
-        status === "connected"
+        !canSwitchNetwork
       }
-      aria-busy={isSwitching}
+      aria-busy={!isReady || isSwitching}
       title={
-        status === "connected"
+        !canSwitchNetwork
           ? "Disconnect your wallet before switching networks"
           : undefined
       }

@@ -10,8 +10,14 @@ export function WalletButton() {
     useWalletConnection();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const isWalletBusy =
+    !isReady ||
+    isDisconnecting ||
+    (status !== "connected" &&
+      status !== "disconnected" &&
+      status !== "error");
 
-  if (!isReady || status === "connecting" || isDisconnecting) {
+  if (isWalletBusy) {
     return (
       <Button variant="gradient" disabled>
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -13,6 +13,8 @@ import {
   TransactionFailedError,
   waitForConfirmation,
 } from "@/lib/transactions";
+import { usePendingTransactionConfirmation } from "@/hooks/usePendingTransactionConfirmation";
+import { PendingConfirmationActions } from "@/components/demos/PendingConfirmationActions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -28,9 +30,13 @@ export const SendTransaction: FC = () => {
   const formo = useFormo();
   const { chainId, cluster, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
-  const [pendingTransactionHash, setPendingTransactionHash] = useState<
-    string | null
-  >(null);
+  const {
+    dismiss,
+    isChecking,
+    pendingTransaction,
+    retryConfirmation,
+    setPendingTransaction,
+  } = usePendingTransactionConfirmation();
 
   const onClick = useCallback(async () => {
     if (status !== "connected" || !wallet) {
@@ -58,7 +64,12 @@ export const SendTransaction: FC = () => {
         amount: 1_000_000n, // 0.001 SOL in lamports
       });
       transactionHash = signature.toString();
-      setPendingTransactionHash(transactionHash);
+      setPendingTransaction({
+        address: walletAddress,
+        chainId,
+        explorerCluster,
+        hash: transactionHash,
+      });
 
       formo?.transaction({
         status: TransactionStatus.BROADCASTED,
@@ -67,7 +78,7 @@ export const SendTransaction: FC = () => {
         transactionHash,
       });
       await waitForConfirmation(client, transactionHash);
-      setPendingTransactionHash(null);
+      setPendingTransaction(null);
       formo?.transaction({
         status: TransactionStatus.CONFIRMED,
         chainId,
@@ -105,7 +116,7 @@ export const SendTransaction: FC = () => {
         return;
       }
 
-      setPendingTransactionHash(null);
+      setPendingTransaction(null);
       formo?.transaction({
         status: transactionHash
           ? TransactionStatus.REVERTED
@@ -131,14 +142,15 @@ export const SendTransaction: FC = () => {
           Send 0.001 SOL using the useSolTransfer hook.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
         <Button
           variant="gradient"
           onClick={onClick}
           disabled={
             status !== "connected" ||
             isLoading ||
-            pendingTransactionHash != null ||
+            isChecking ||
+            pendingTransaction != null ||
             cluster !== "devnet"
           }
           className="w-full"
@@ -148,7 +160,7 @@ export const SendTransaction: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </>
-          ) : pendingTransactionHash ? (
+          ) : pendingTransaction ? (
             "Confirmation pending"
           ) : cluster !== "devnet" ? (
             "Devnet only"
@@ -158,6 +170,14 @@ export const SendTransaction: FC = () => {
             "Connect Wallet First"
           )}
         </Button>
+        {pendingTransaction && (
+          <PendingConfirmationActions
+            canCheck={!isLoading && cluster === "devnet"}
+            isChecking={isChecking || isLoading}
+            onDismiss={dismiss}
+            onRetry={() => void retryConfirmation()}
+          />
+        )}
       </CardContent>
     </Card>
   );
