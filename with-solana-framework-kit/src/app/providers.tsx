@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             tracking: true,
             evm: false,
             solana: {
-              store: client.store as any,
+              store: client.store,
             },
             logger: {
               enabled: true,
