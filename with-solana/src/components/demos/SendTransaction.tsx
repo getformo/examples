@@ -1,63 +1,208 @@
 "use client";
 
-import { FC, useCallback, useState } from "react";
-import { useSolTransfer, useWalletConnection } from "@solana/react-hooks";
-import { useFormo } from "@formo/analytics";
-import { TransactionStatus } from "@formo/analytics";
+import { useCallback, useState } from "react";
+import {
+  address,
+  appendTransactionMessageInstruction,
+  createTransactionMessage,
+  getBase58Decoder,
+  isTransactionSendingSigner,
+  lamports,
+  pipe,
+  setTransactionMessageFeePayerSigner,
+  setTransactionMessageLifetimeUsingBlockhash,
+  signAndSendTransactionMessageWithSigners,
+  signature,
+} from "@solana/kit";
+import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
+import { getTransferSolInstruction } from "@solana-program/system";
+import { TransactionStatus, useFormo } from "@formo/analytics";
 import { useCurrentCluster } from "@/hooks/useCurrentCluster";
+import { useSolanaApp } from "@/context/SolanaAppProvider";
+import {
+  SOLANA_BALANCE_CHANGED_EVENT,
+  type AppClient,
+} from "@/lib/solana";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 
-// Throwaway devnet address for demo transfers
 const DEMO_DESTINATION = "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ";
+const CONFIRMATION_TIMEOUT_MS = 30_000;
 
-export const SendTransaction: FC = () => {
-  const { wallet, status } = useWalletConnection();
-  const solTransfer = useSolTransfer();
+class TransactionFailedError extends Error {}
+class TransactionConfirmationTimeoutError extends Error {}
+
+async function waitForConfirmation(client: AppClient, transactionHash: string) {
+  const deadline = Date.now() + CONFIRMATION_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const remainingMs = deadline - Date.now();
+
+    try {
+      const { value } = await client.rpc
+        .getSignatureStatuses([signature(transactionHash)])
+        .send({ abortSignal: AbortSignal.timeout(remainingMs) });
+      const status = value[0];
+
+      if (status?.err) {
+        throw new TransactionFailedError(
+          `Transaction failed: ${JSON.stringify(status.err)}`,
+        );
+      }
+      if (
+        status?.confirmationStatus === "confirmed" ||
+        status?.confirmationStatus === "finalized"
+      ) {
+        return;
+      }
+    } catch (error) {
+      if (error instanceof TransactionFailedError) throw error;
+    }
+
+    const delayMs = Math.min(1_000, deadline - Date.now());
+    if (delayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw new TransactionConfirmationTimeoutError(
+    "Transaction confirmation is still pending",
+  );
+}
+
+export function SendTransaction() {
+  const { client } = useSolanaApp();
+  const connected = useConnectedWallet(client);
   const formo = useFormo();
-  const { chainId, explorerCluster } = useCurrentCluster();
+  const { chainId, cluster, explorerCluster } = useCurrentCluster();
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingTransactionHash, setPendingTransactionHash] = useState<
+    string | null
+  >(null);
 
   const onClick = useCallback(async () => {
-    if (status !== "connected" || !wallet) {
+    if (!connected?.signer) {
       toast.error("Wallet not connected!");
+      return;
+    }
+    if (cluster !== "devnet") {
+      toast.error("This demo transfer is available on Devnet only");
       return;
     }
 
     setIsLoading(true);
-    const address = wallet.account.address.toString();
-
-    formo?.transaction({ status: TransactionStatus.STARTED, chainId: chainId, address });
+    const signer = connected.signer;
+    const walletAddress = connected.account.address.toString();
+    let transactionHash: string | undefined;
+    formo?.transaction({
+      status: TransactionStatus.STARTED,
+      chainId,
+      address: walletAddress,
+    });
 
     try {
-      const signature = await solTransfer.send({
-        destination: DEMO_DESTINATION,
-        amount: 1_000_000n, // 0.001 SOL in lamports
+      const transfer = getTransferSolInstruction({
+        source: signer,
+        destination: address(DEMO_DESTINATION),
+        amount: lamports(1_000_000n),
       });
+      // This path carries the configured chain into multichain wallet prompts.
+      if (isTransactionSendingSigner(signer)) {
+        const { value: latestBlockhash } = await client.rpc
+          .getLatestBlockhash()
+          .send();
+        const message = pipe(
+          createTransactionMessage({ version: 0 }),
+          (m) => setTransactionMessageFeePayerSigner(signer, m),
+          (m) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, m),
+          (m) => appendTransactionMessageInstruction(transfer, m)
+        );
+        const signatureBytes =
+          await signAndSendTransactionMessageWithSigners(message);
+        transactionHash = getBase58Decoder().decode(signatureBytes);
+        setPendingTransactionHash(transactionHash);
+        formo?.transaction({
+          status: TransactionStatus.BROADCASTED,
+          chainId,
+          address: walletAddress,
+          transactionHash,
+        });
+        await waitForConfirmation(client, transactionHash);
+      } else {
+        const result = await client.sendTransaction([transfer]);
+        transactionHash = result.context.signature.toString();
+        formo?.transaction({
+          status: TransactionStatus.BROADCASTED,
+          chainId,
+          address: walletAddress,
+          transactionHash,
+        });
+      }
 
-      const sigStr = signature?.toString();
-      formo?.transaction({ status: TransactionStatus.CONFIRMED, chainId: chainId, address, transactionHash: sigStr });
+      setPendingTransactionHash(null);
+      formo?.transaction({
+        status: TransactionStatus.CONFIRMED,
+        chainId,
+        address: walletAddress,
+        transactionHash,
+      });
+      window.dispatchEvent(new Event(SOLANA_BALANCE_CHANGED_EVENT));
 
-      toast.success("Transaction Sent!", {
-        description: `Successfully sent 0.001 SOL`,
+      toast.success("Transaction sent!", {
+        description: "Successfully sent 0.001 SOL with Solana Kit",
         action: {
           label: "View",
-          onClick: () => window.open(
-            `https://explorer.solana.com/tx/${signature}?cluster=${explorerCluster}`,
-            "_blank"
-          ),
+          onClick: () =>
+            window.open(
+              `https://explorer.solana.com/tx/${transactionHash}?cluster=${explorerCluster}`,
+              "_blank"
+            ),
         },
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      formo?.transaction({ status: TransactionStatus.REJECTED, chainId: chainId, address });
-      toast.error("Transaction Failed", { description: errorMessage });
+      if (transactionHash && !(error instanceof TransactionFailedError)) {
+        setPendingTransactionHash(transactionHash);
+        toast.warning("Confirmation pending", {
+          description:
+            error instanceof TransactionConfirmationTimeoutError
+              ? "The transfer was submitted but could not be confirmed in time."
+              : "The transfer was submitted but its status could not be checked.",
+          action: {
+            label: "View",
+            onClick: () =>
+              window.open(
+                `https://explorer.solana.com/tx/${transactionHash}?cluster=${explorerCluster}`,
+                "_blank",
+              ),
+          },
+        });
+        return;
+      }
+
+      setPendingTransactionHash(null);
+      formo?.transaction({
+        status: transactionHash
+          ? TransactionStatus.REVERTED
+          : TransactionStatus.REJECTED,
+        chainId,
+        address: walletAddress,
+        transactionHash,
+      });
+      toast.error("Transaction failed", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [wallet, status, solTransfer, formo, chainId, explorerCluster]);
+  }, [chainId, client, cluster, connected, explorerCluster, formo]);
 
   return (
     <Card>
@@ -67,14 +212,19 @@ export const SendTransaction: FC = () => {
           Send SOL Transfer
         </CardTitle>
         <CardDescription>
-          Send 0.001 SOL using the useSolTransfer hook.
+          Build and send 0.001 SOL with the Solana Kit client.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Button
           variant="gradient"
-          onClick={onClick}
-          disabled={status !== "connected" || isLoading}
+          onClick={() => void onClick()}
+          disabled={
+            !connected?.signer ||
+            isLoading ||
+            pendingTransactionHash != null ||
+            cluster !== "devnet"
+          }
           className="w-full"
         >
           {isLoading ? (
@@ -82,7 +232,11 @@ export const SendTransaction: FC = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </>
-          ) : status === "connected" ? (
+          ) : pendingTransactionHash ? (
+            "Confirmation pending"
+          ) : cluster !== "devnet" ? (
+            "Devnet only"
+          ) : connected?.signer ? (
             "Send 0.001 SOL"
           ) : (
             "Connect Wallet First"
@@ -91,4 +245,4 @@ export const SendTransaction: FC = () => {
       </CardContent>
     </Card>
   );
-};
+}

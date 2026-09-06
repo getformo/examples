@@ -31,6 +31,9 @@ overrides:
   '@hey-api/openapi-ts@<0.97.3': ^0.97.3
   brace-expansion@<1.1.18: ^1.1.18
   'js-yaml@>=4.0.0 <4.3.1': 4.3.1
+  # thirdweb pins toml 3.0.0; force the first release containing both
+  # GHSA-82x6-q7mm-w9cf and GHSA-v5mp-jgw5-2x6j fixes.
+  toml@<4.2.0: 4.2.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

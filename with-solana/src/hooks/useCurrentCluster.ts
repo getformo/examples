@@ -1,21 +1,12 @@
-"use client";
-
-import { useMemo } from "react";
-import { useClientStore } from "@solana/react-hooks";
-import { SOLANA_CHAIN_IDS, type SolanaCluster } from "@formo/analytics";
-import { clusterFromEndpoint } from "@/lib/solana";
+import { SOLANA_CHAIN_IDS } from "@formo/analytics";
+import { useSolanaApp } from "@/context/SolanaAppProvider";
 
 /**
- * Returns the current cluster and Formo chain ID derived from
- * the live RPC endpoint, so they stay in sync after a network switch.
+ * Returns the selected cluster and its corresponding Formo chain ID.
  */
 export function useCurrentCluster() {
-  const endpoint = useClientStore((s) => s.cluster.endpoint);
-
-  return useMemo(() => {
-    const cluster: SolanaCluster = clusterFromEndpoint(endpoint);
-    const chainId: number = SOLANA_CHAIN_IDS[cluster];
-    const explorerCluster = cluster === "mainnet-beta" ? "mainnet" : cluster;
-    return { cluster, chainId, explorerCluster };
-  }, [endpoint]);
+  const { cluster, setCluster } = useSolanaApp();
+  const chainId: number = SOLANA_CHAIN_IDS[cluster];
+  const explorerCluster = cluster === "mainnet-beta" ? "mainnet" : cluster;
+  return { cluster, chainId, explorerCluster, setCluster };
 }

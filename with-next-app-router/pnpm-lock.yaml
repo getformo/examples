@@ -71,8 +71,8 @@ importers:
         specifier: ~1.5.4
         version: 1.5.4
       toml:
-        specifier: ~3.0.0
-        version: 3.0.0
+        specifier: 4.2.0
+        version: 4.2.0
     devDependencies:
       shx:
         specifier: ~0.4.0
@@ -4698,8 +4698,9 @@ packages:
     resolution: {integrity: sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==}
     engines: {node: '>=0.6'}
 
-  toml@3.0.0:
-    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+  toml@4.2.0:
+    resolution: {integrity: sha512-TvAJjbHZlYmI323+srtqHQFyJsoWy6mI09ppkuj9+iRsqsVKG9fvTcOP7FHF2UCb0QSYtjEavffrKzdd0XgClg==}
+    engines: {node: '>=20'}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -12015,7 +12016,7 @@ snapshots:
 
   toidentifier@1.0.0: {}
 
-  toml@3.0.0: {}
+  toml@4.2.0: {}
 
   tr46@0.0.3: {}
 

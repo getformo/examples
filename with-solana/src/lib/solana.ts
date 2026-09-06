@@ -1,37 +1,41 @@
-import { createClient, autoDiscover } from "@solana/client";
-import { SOLANA_CHAIN_IDS, type SolanaCluster } from "@formo/analytics";
+import { createClient } from "@solana/kit";
+import { solanaRpc } from "@solana/kit-plugin-rpc";
+import { walletSigner } from "@solana/kit-plugin-wallet";
+import type { SolanaCluster } from "@formo/analytics";
 
 /**
  * The configured cluster for this app.
- * Set via NEXT_PUBLIC_SOLANA_CLUSTER env var, defaults to "devnet".
- * When using a custom RPC (NEXT_PUBLIC_SOLANA_RPC_URL), set this env var
- * to match the cluster the RPC serves.
+ * Set via NEXT_PUBLIC_SOLANA_CLUSTER, and keep it aligned with a custom RPC.
  */
 export const configuredCluster: SolanaCluster =
   (process.env.NEXT_PUBLIC_SOLANA_CLUSTER as SolanaCluster) || "devnet";
 
+export const SOLANA_BALANCE_CHANGED_EVENT =
+  "formo-example:solana-balance-changed";
+
 const customEndpoint = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
 
-export const client = createClient({
-  ...(customEndpoint
-    ? { endpoint: customEndpoint }
-    : { cluster: configuredCluster === "mainnet-beta" ? "mainnet" : configuredCluster }),
-  walletConnectors: autoDiscover(),
-});
+const RPC_ENDPOINTS: Record<SolanaCluster, string> = {
+  "mainnet-beta": "https://api.mainnet-beta.solana.com",
+  devnet: "https://api.devnet.solana.com",
+  testnet: "https://api.testnet.solana.com",
+  localnet: "http://localhost:8899",
+};
 
-/**
- * The Formo chain ID for the configured cluster.
- */
-export const configuredChainId: number = SOLANA_CHAIN_IDS[configuredCluster];
-
-/**
- * Detect the cluster moniker from an RPC endpoint URL.
- * Falls back to `configuredCluster` when the endpoint is unrecognisable.
- */
-export function clusterFromEndpoint(endpoint: string): SolanaCluster {
-  const lower = endpoint.toLowerCase();
-  if (lower.includes("devnet")) return "devnet";
-  if (lower.includes("testnet")) return "testnet";
-  if (lower.includes("mainnet")) return "mainnet-beta";
-  return configuredCluster;
+function toWalletStandardChain(cluster: SolanaCluster): `solana:${string}` {
+  return `solana:${cluster === "mainnet-beta" ? "mainnet" : cluster}`;
 }
+
+/** Build a Kit client whose wallet chain and RPC always use the same cluster. */
+export function createSolanaClient(cluster: SolanaCluster) {
+  const rpcUrl =
+    cluster === configuredCluster && customEndpoint
+      ? customEndpoint
+      : RPC_ENDPOINTS[cluster];
+
+  return createClient()
+    .use(walletSigner({ chain: toWalletStandardChain(cluster) }))
+    .use(solanaRpc({ rpcUrl }));
+}
+
+export type AppClient = ReturnType<typeof createSolanaClient>;

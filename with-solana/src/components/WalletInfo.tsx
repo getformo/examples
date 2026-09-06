@@ -1,15 +1,72 @@
 "use client";
 
-import { useWalletConnection, useBalance } from "@solana/react-hooks";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { address } from "@solana/kit";
+import {
+  useConnectedWallet,
+  useWalletStatus,
+} from "@solana/kit-plugin-wallet/react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useSolanaApp } from "@/context/SolanaAppProvider";
+import { SOLANA_BALANCE_CHANGED_EVENT } from "@/lib/solana";
 import { Wallet } from "lucide-react";
 
 export function WalletInfo() {
-  const { wallet, status } = useWalletConnection();
-  const address = status === "connected" ? wallet?.account.address?.toString() : undefined;
-  const balance = useBalance(address ?? "");
+  const { client } = useSolanaApp();
+  const connected = useConnectedWallet(client);
+  const status = useWalletStatus(client);
+  const [balance, setBalance] = useState<bigint>();
+  const [fetching, setFetching] = useState(false);
 
-  if (status !== "connected" || !wallet) {
+  const walletAddress = connected?.account.address.toString();
+
+  useEffect(() => {
+    if (!walletAddress) {
+      setBalance(undefined);
+      return;
+    }
+
+    let cancelled = false;
+    let requestId = 0;
+    const loadBalance = () => {
+      const currentRequestId = ++requestId;
+      setFetching(true);
+      client.rpc
+        .getBalance(address(walletAddress))
+        .send()
+        .then((response) => {
+          if (!cancelled && currentRequestId === requestId) {
+            setBalance(response.value);
+          }
+        })
+        .catch(() => {
+          if (!cancelled && currentRequestId === requestId) {
+            setBalance(undefined);
+          }
+        })
+        .finally(() => {
+          if (!cancelled && currentRequestId === requestId) {
+            setFetching(false);
+          }
+        });
+    };
+
+    loadBalance();
+    window.addEventListener(SOLANA_BALANCE_CHANGED_EVENT, loadBalance);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener(SOLANA_BALANCE_CHANGED_EVENT, loadBalance);
+    };
+  }, [client, walletAddress]);
+
+  if (status !== "connected" || !connected) {
     return (
       <Card>
         <CardHeader>
@@ -17,9 +74,7 @@ export function WalletInfo() {
             <Wallet className="h-5 w-5" />
             Wallet Status
           </CardTitle>
-          <CardDescription>
-            Connect your wallet to get started
-          </CardDescription>
+          <CardDescription>Connect your wallet to get started</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="rounded-lg border border-dashed p-6 text-center">
@@ -32,10 +87,8 @@ export function WalletInfo() {
     );
   }
 
-  const addr = wallet.account.address.toString();
-  const solBalance = balance.lamports != null
-    ? (Number(balance.lamports) / 1e9).toFixed(4)
-    : "...";
+  const solBalance =
+    balance === undefined ? "..." : (Number(balance) / 1e9).toFixed(4);
 
   return (
     <Card>
@@ -44,21 +97,19 @@ export function WalletInfo() {
           <Wallet className="h-5 w-5" />
           Wallet Connected
         </CardTitle>
-        <CardDescription>
-          Connected via {wallet.connector?.name || "Unknown Wallet"}
-        </CardDescription>
+        <CardDescription>Connected via {connected.wallet.name}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Address</span>
           <code className="rounded bg-muted px-2 py-1 text-xs">
-            {addr.slice(0, 8)}...{addr.slice(-8)}
+            {walletAddress?.slice(0, 8)}...{walletAddress?.slice(-8)}
           </code>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Balance</span>
           <span className="font-mono font-medium">
-            {balance.fetching ? "..." : solBalance} SOL
+            {fetching ? "..." : solBalance} SOL
           </span>
         </div>
       </CardContent>
