@@ -18,7 +18,7 @@ For the recommended Solana dapp setup with framework-kit and its reactive store,
 | `detect` | A compatible wallet registers through Wallet Standard |
 | `connect` | The wallet publishes an authorized Solana account |
 | `disconnect` | The wallet removes its authorized accounts |
-| `transaction` | The demo calls `formo.transaction()` around `client.sendTransaction()` |
+| `transaction` | The demo calls `formo.transaction()` around its chain-aware send flow |
 | `track` | The demo calls `formo.track()` for product events |
 
 Wallet Standard does not expose the app's active cluster, signatures, or transaction lifecycle. The example passes the selected cluster to Formo and tracks its transaction explicitly.
