@@ -1,10 +1,17 @@
 # Formo + Solana framework-kit
 
-A focused Next.js example for Formo's recommended Solana dapp integration with [framework-kit](https://github.com/solana-foundation/framework-kit).
+A Next.js example for Formo's recommended Solana dapp integration with [framework-kit](https://github.com/solana-foundation/framework-kit).
 
-The app passes `@solana/client`'s `client.store` to `options.solana.store`. Formo reads connect, disconnect, cluster, and transaction lifecycle state from that store while Wallet Standard discovery supplies `detect` events.
+It passes `@solana/client`'s `client.store` to `options.solana.store`, allowing Formo to autocapture wallet connections, cluster changes, and transactions recorded by framework-kit. Wallet Standard supplies wallet detection.
 
-For a lower-level Solana Kit stack with Formo's store-free Wallet Standard integration, see [`with-solana`](../with-solana).
+The app includes:
+
+- Wallet selection, connection state, balance, and network switching
+- Direct SOL transfer and transaction-pool demos
+- Preset and editable custom analytics events
+- Devnet, testnet, mainnet, and custom RPC configuration
+
+For a lower-level `@solana/kit` stack without framework-kit, see [`with-solana`](../with-solana).
 
 ## Run
 
@@ -14,4 +21,4 @@ cp .env.example .env
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Set `NEXT_PUBLIC_FORMO_WRITE_KEY` in `.env`, then open [http://localhost:3000](http://localhost:3000). The app defaults to Devnet; use `NEXT_PUBLIC_SOLANA_CLUSTER` and `NEXT_PUBLIC_SOLANA_RPC_URL` to override it.

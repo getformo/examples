@@ -1,62 +1,70 @@
 "use client";
 
+import { WalletInfo } from "@/components/WalletInfo";
+import {
+  SendTransaction,
+  SendVersionedTransaction,
+  CustomEvents,
+} from "@/components/demos";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWalletConnection } from "@solana/react-hooks";
 
 export default function Home() {
-  const { connectors, connect, disconnect, status, wallet } =
-    useWalletConnection();
-  const connected = status === "connected" ? wallet : undefined;
+  const { status } = useWalletConnection();
+  const connected = status === "connected";
 
   return (
-    <main
-      style={{
-        margin: "0 auto",
-        maxWidth: 720,
-        padding: "5rem 1.5rem",
-        display: "grid",
-        gap: "1.5rem",
-      }}
-    >
-      <header>
-        <p style={{ color: "#14f195", margin: 0 }}>Formo Analytics</p>
-        <h1>Solana framework-kit integration</h1>
-        <p style={{ color: "#a1a1aa", lineHeight: 1.6 }}>
-          This example passes framework-kit&apos;s client store to Formo. The
-          store provides wallet, cluster, and recorded transaction lifecycle
-          events while Wallet Standard continues to provide wallet detection.
+    <div className="mx-auto max-w-5xl space-y-8">
+      {/* Hero Section */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          <span className="bg-gradient-to-r from-solana-purple to-solana-green bg-clip-text text-transparent">
+            Formo + Solana
+          </span>
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Test Formo&apos;s recommended Solana integration with framework-kit.
+          Try wallet connections, transactions, and custom events.
         </p>
-      </header>
+      </div>
 
-      <section
-        style={{
-          border: "1px solid #27272a",
-          borderRadius: "0.75rem",
-          padding: "1.5rem",
-          display: "grid",
-          gap: "1rem",
-        }}
-      >
-        <strong>Status: {status}</strong>
-        {connected ? (
-          <>
-            <code>{connected.account.address.toString()}</code>
-            <button onClick={() => disconnect()}>Disconnect</button>
-          </>
-        ) : (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-            {connectors.map((connector) => (
-              <button
-                key={connector.id}
-                onClick={() => connect(connector.id)}
-                disabled={status === "connecting"}
-              >
-                Connect {connector.name}
-              </button>
-            ))}
-            {connectors.length === 0 && <span>No wallets detected.</span>}
-          </div>
-        )}
-      </section>
-    </main>
+      {/* Wallet Info Card */}
+      <WalletInfo />
+
+      {/* Demo Sections */}
+      {connected && (
+        <Tabs defaultValue="transactions" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="events">Custom Events</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="transactions" className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <SendTransaction />
+              <SendVersionedTransaction />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="events" className="space-y-4">
+            <CustomEvents />
+          </TabsContent>
+        </Tabs>
+      )}
+
+      {/* Getting Started Section (when not connected) */}
+      {!connected && (
+        <div className="rounded-lg border bg-card p-8 text-center space-y-4">
+          <h2 className="text-xl font-semibold">Get Started</h2>
+          <ol className="text-sm text-muted-foreground space-y-2 max-w-md mx-auto text-left list-decimal list-inside">
+            <li>Click "Select Wallet" in the header to connect your Solana wallet</li>
+            <li>Make sure you're on Devnet (configure via NEXT_PUBLIC_SOLANA_CLUSTER)</li>
+            <li>Try the transaction demos</li>
+            <li>Check the browser console for Formo SDK events</li>
+          </ol>
+        </div>
+      )}
+
+    </div>
   );
 }

@@ -1,27 +1,36 @@
 "use client";
 
-import { FormoAnalyticsProvider } from "@formo/analytics";
-import { autoDiscover, createClient } from "@solana/client";
+import { ThemeProvider } from "next-themes";
 import { SolanaProvider } from "@solana/react-hooks";
-
-export const client = createClient({
-  cluster: "devnet",
-  walletConnectors: autoDiscover(),
-});
+import { FormoAnalyticsProvider } from "@formo/analytics";
+import { client } from "@/lib/solana";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SolanaProvider client={client}>
-      <FormoAnalyticsProvider
-        writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
-        options={{
-          tracking: true,
-          evm: false,
-          solana: { store: client.store as any },
-        }}
-      >
-        {children}
-      </FormoAnalyticsProvider>
-    </SolanaProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <SolanaProvider client={client}>
+        <FormoAnalyticsProvider
+          writeKey={process.env.NEXT_PUBLIC_FORMO_WRITE_KEY!}
+          options={{
+            tracking: true,
+            evm: false,
+            solana: {
+              store: client.store as any,
+            },
+            logger: {
+              enabled: true,
+              levels: ["debug", "info", "warn", "error"],
+            },
+          }}
+        >
+          {children}
+        </FormoAnalyticsProvider>
+      </SolanaProvider>
+    </ThemeProvider>
   );
 }
