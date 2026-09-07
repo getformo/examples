@@ -29,8 +29,8 @@ importers:
         specifier: ^6.4.0
         version: 6.4.0(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@types/react@19.2.18)(@urql/core@6.0.3(graphql@16.14.2))(@urql/exchange-graphcache@8.1.0(@urql/core@6.0.3(graphql@16.14.2))(graphql@16.14.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(thirdweb@5.120.0(@hey-api/openapi-ts@0.97.2(typescript@5.9.3))(@solana/sysvars@5.5.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.102.3)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(utf-8-validate@5.0.10)(ws@8.21.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))
       '@formo/analytics':
-        specifier: ^1.40.0
-        version: 1.40.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@3.7.6(@coinbase/wallet-sdk@4.3.6(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(@walletconnect/ethereum-provider@2.21.1(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3)))
+        specifier: ^1.41.0
+        version: 1.41.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@3.7.6(@coinbase/wallet-sdk@4.3.6(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(@walletconnect/ethereum-provider@2.21.1(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3)))
       '@metamask/sdk':
         specifier: ^0.34.0
         version: 0.34.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
@@ -679,8 +679,8 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@formo/analytics@1.40.0':
-    resolution: {integrity: sha512-gRxjzZ5UvmDOqRO1GMH3ZIkjSbom1MYhSCPa79ooa9QMo3CT1ge3+KKMl8sbJjOx17HDAzy+0txT8qzggdM4vg==}
+  '@formo/analytics@1.41.0':
+    resolution: {integrity: sha512-wyriW5BS0Uz1mEsF6B/Nh4jN1PszQYtSAHTlIKj+VaiXgHFQPlFG7nkzyNUxyGoji36x5eXLJ/qZglmc2jTqpA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -5760,7 +5760,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@formo/analytics@1.40.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@3.7.6(@coinbase/wallet-sdk@4.3.6(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(@walletconnect/ethereum-provider@2.21.1(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3)))':
+  '@formo/analytics@1.41.0(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(wagmi@3.7.6(@coinbase/wallet-sdk@4.3.6(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.8))(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@19.2.8))(@types/react@19.2.18)(@walletconnect/ethereum-provider@2.21.1(@types/react@19.2.18)(bufferutil@4.1.0)(react@19.2.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3))(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.4.3)))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
