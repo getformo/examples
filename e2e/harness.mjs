@@ -453,16 +453,21 @@ async function runBatch(opts) {
   await batch([{ to: ADDR_B, value: "0x1" }]);
   await settle(150); rec("singleCall");
 
+  // Each batch below carries different values on purpose. The SDK's queue
+  // drops an event whose payload is identical to one accepted within the
+  // last minute (a double-fire guard), and `transaction:started` has no
+  // batch id yet, so three identical batches in one second would lose their
+  // later started rows to that guard rather than to any bug under test.
   provider.batchBehaviour = "atomic";
-  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]);
+  await batch([{ to: ADDR_B, value: "0x3" }, { to: ADDR_B, value: "0x4" }]);
   await settle(150); rec("atomic");
 
   provider.batchBehaviour = "partial";
-  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]);
+  await batch([{ to: ADDR_B, value: "0x5" }, { to: ADDR_B, value: "0x6" }]);
   await settle(150); rec("partialRevert");
 
   provider.batchBehaviour = "reject";
-  await batch([{ to: ADDR_B, value: "0x1" }, { to: ADDR_B, value: "0x2" }]).catch(() => {});
+  await batch([{ to: ADDR_B, value: "0x7" }, { to: ADDR_B, value: "0x8" }]).catch(() => {});
   await settle(150); rec("rejected");
 
   formo.cleanup?.();
