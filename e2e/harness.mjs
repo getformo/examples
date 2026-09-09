@@ -368,7 +368,9 @@ async function runApi(opts) {
   globalThis.window.ethereum = provider;
   announce6963(provider);
   const formo = await FormoAnalytics.init("wk_e2e", { tracking: true, flushAt: 1, flushInterval: 10, ...opts.sdk });
-  await settle(); rec("init");
+  // The first page hit is debounced 300ms inside the SDK. Let it drain here,
+  // so a slow runner never attributes it to a later step.
+  await settle(400); rec("init");
 
   provider.emit("connect", { chainId: "0x1" });
   provider.emit("accountsChanged", [ADDR_A]);
