@@ -4,14 +4,19 @@ permissions:
   contents: read
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+# A newer commit on the same pull request supersedes the old build matrix.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   changes:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Path detection is a lightweight job; keep the larger runners for builds.
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       matrix: ${{ steps.set.outputs.matrix }}
       any: ${{ steps.set.outputs.any }}
@@ -169,7 +174,6 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY=ci_test_key" > with-next-app-router/packages/nextjs/.env
 
-
       - name: Install dependencies
         working-directory: ${{ matrix.dir }}
         shell: bash
@@ -212,7 +216,8 @@ jobs:
   audit:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Audits read lockfiles and do not compile dependencies.
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
