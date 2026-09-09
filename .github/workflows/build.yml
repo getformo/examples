@@ -97,6 +97,7 @@ jobs:
       - id: set
         env:
           CHANGED: ${{ steps.filter.outputs.changes }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           # with-thirdweb is temporarily excluded: npm persistently 429s the
           # deprecated @thirdweb-dev/react-core@4.9.4 tarball for this runner
@@ -124,8 +125,8 @@ jobs:
             {"name":"with-turnkey","dir":"with-turnkey","pm":"pnpm","build":"build","node":"22"},
             {"name":"with-walletconnect","dir":"with-walletconnect","pm":"pnpm","build":"build","node":"22","audit":"critical"}
           ]'
-          MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" \
-            '{include: [ $full[] | select(.name as $n | ($changed | index($n)) != null) ]}')
+          MATRIX=$(jq -cn --argjson full "$FULL" --argjson changed "$CHANGED" --arg event "$EVENT_NAME" \
+            '{include: [ $full[] | select($event == "workflow_dispatch" or (.name as $n | ($changed | index($n)) != null)) ]}')
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
           echo "any=$(jq -n --argjson m "$MATRIX" '($m.include | length) > 0')" >> "$GITHUB_OUTPUT"
           echo "Selected: $MATRIX"
