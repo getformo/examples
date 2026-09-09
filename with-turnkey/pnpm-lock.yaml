@@ -24,8 +24,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.41.3
-        version: 1.41.3(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))
+        specifier: ^1.41.4
+        version: 1.41.4(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.8)
@@ -249,8 +249,8 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@formo/analytics@1.41.3':
-    resolution: {integrity: sha512-Zu43Z8dpgN8eTOEJoJqQHAbHKq4kZmfsRQx0GDGeUXoVWhQ2LDXt/onp+ql/QqVkgvxVVqK13ljrkbbki+l+4g==}
+  '@formo/analytics@1.41.4':
+    resolution: {integrity: sha512-njDj6xr1aJtfbpr31MoX8BsfFLPbzg2zQ8WaV/Qt58HIV6lPzmOQSI4t7cV79oFIq2yZENvyw5QCsm3IJKl+Jw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -3149,7 +3149,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@formo/analytics@1.41.3(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))':
+  '@formo/analytics@1.41.4(@types/react@19.2.18)(react@19.2.8)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
