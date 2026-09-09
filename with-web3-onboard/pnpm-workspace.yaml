@@ -33,7 +33,7 @@ minimumReleaseAgeExclude:
   - svelte@5.55.7
   - joi@17.13.4
   - hono@4.12.27
-  - sharp@0.35.0
+  - sharp@0.35.4
   - postcss@8.5.12
   - postcss@8.5.18
 overrides:
@@ -55,7 +55,7 @@ overrides:
   joi@<17.13.4: ^17.13.4
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  sharp@<0.35.4: ^0.35.4
   svelte@<4.2.19: ^4.2.19
   svelte@<=5.51.4: ^5.51.5
   svelte@<=5.53.4: ^5.53.5
