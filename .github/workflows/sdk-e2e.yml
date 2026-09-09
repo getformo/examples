@@ -66,6 +66,10 @@ jobs:
         working-directory: e2e
         run: node behaviours.mjs /tmp/sdk/node_modules/@formo/analytics
 
+      - name: Solana scenarios (Wallet Standard registry and store hand-off)
+        working-directory: e2e
+        run: node solana.mjs /tmp/sdk/node_modules/@formo/analytics
+
   browser:
     name: Browser over EIP-6963 (anvil)
     runs-on: blacksmith-4vcpu-ubuntu-2404
