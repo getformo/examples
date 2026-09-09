@@ -17,6 +17,7 @@ node sweep.mjs /tmp/sdk/node_modules/@formo/analytics
 node behaviours.mjs /tmp/sdk/node_modules/@formo/analytics      # add a filter word to run a subset
 anvil --port 8545 --chain-id 31337 &
 node browser/run.mjs /tmp/sdk/node_modules/@formo/analytics
+node solana.mjs /tmp/sdk/node_modules/@formo/analytics          # Wallet Standard + framework-kit store hand-off
 ```
 
 The browser layer earned its keep on its first run: against the then-published
