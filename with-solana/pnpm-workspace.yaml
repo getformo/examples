@@ -19,7 +19,7 @@ minimumReleaseAgeExclude:
   - js-yaml@4.3.1
   - "@formo/analytics"
   - postcss@8.5.10
-  - sharp@0.35.0
+  - sharp@0.35.4
   - postcss@8.5.12
   - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
@@ -35,7 +35,7 @@ overrides:
   'brace-expansion@>=4.0.0 <5.0.9': 5.0.9
   'js-yaml@>=4.0.0 <4.3.1': 4.3.1
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  sharp@<0.35.4: ^0.35.4
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

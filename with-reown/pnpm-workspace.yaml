@@ -19,7 +19,7 @@ minimumReleaseAgeExclude:
   - "@formo/analytics"
   - postcss@8.5.10
   - axios@1.18.0
-  - sharp@0.35.0
+  - sharp@0.35.4
   - postcss@8.5.12
   - postcss@8.5.18
 
@@ -61,7 +61,7 @@ overrides:
   axios@<1.18.0: ^1.18.0
   brace-expansion@<1.1.18: ^1.1.18
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  sharp@<0.35.4: ^0.35.4
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

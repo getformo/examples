@@ -23,7 +23,7 @@ minimumReleaseAgeExclude:
   - postcss@8.5.10
   - axios@1.18.0
   - hono@4.12.27
-  - sharp@0.35.0
+  - sharp@0.35.4
   - postcss@8.5.12
   - postcss@8.5.18
 
@@ -48,7 +48,7 @@ overrides:
   form-data@<4.0.6: ^4.0.6
   brace-expansion@<1.1.18: ^1.1.18
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  sharp@<0.35.4: ^0.35.4
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

@@ -20,7 +20,7 @@ minimumReleaseAgeExclude:
   - elliptic@6.6.2
   - '@stablelib/ed25519@2.0.3'
   - postcss@8.5.10
-  - sharp@0.35.0
+  - sharp@0.35.4
   - postcss@8.5.12
   - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
@@ -36,7 +36,7 @@ overrides:
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  sharp@<0.35.4: ^0.35.4
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
