@@ -17,11 +17,29 @@ Two kinds of test live here:
 
 ## Compatibility boundary
 
-Synpress 4.1.2 now resolves MetaMask 13.13.1, but that combination has known
-onboarding and notification-selector regressions. The harness therefore pins
-Synpress's internal packages to 0.0.13 and runs their compatible MetaMask
-11.9.1 build on Chrome 130. Playwright itself remains at security-patched
-1.55.1.
+The harness pins Synpress's internal packages to 0.0.13 and runs their
+compatible MetaMask 11.9.1 build on Chrome 130. Playwright itself remains at
+security-patched 1.55.1.
+
+Newer is not available, and the reason is worth writing down, because it also
+says which examples this layer can cover. Synpress 0.0.14 targets MetaMask
+13.13.1, which is Manifest V3. Tried on 2026-09-10:
+
+- Onboarding needs one extra step. MetaMask 13 ends on a "Your wallet is
+  ready!" screen with an "Open wallet" button that Synpress never clicks, so
+  the wallet stays locked and every prompt redirects to unlock. Clicking it,
+  once it is enabled, fixes that half.
+- The confirmations never appear. With the wallet unlocked and the extension
+  discovered over EIP-6963, `eth_requestAccounts` hangs and no notification
+  window opens. Reproduced on Chrome 130 and on Chrome for Testing 153, with
+  and without `--disable-background-networking`, with the extension's own tab
+  open and parked. Service workers were running in both cases.
+
+`with-metamask` therefore cannot be covered here: its `metaMask()` connector
+(wagmi connectors 8, `@metamask/connect-evm`) does not resolve against
+MetaMask 11.9.1, and MetaMask 13 does not surface confirmations under
+automation. The example itself is fine, and was confirmed by hand against a
+current MetaMask.
 
 Each test creates and destroys a fresh browser profile instead of copying a
 wallet cache. `prepare-metamask.mjs` downloads the exact official release and
