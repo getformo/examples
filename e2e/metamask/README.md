@@ -1,8 +1,19 @@
-# Real MetaMask (layer 3)
+# Real wallets in a browser
 
-Drives a real MetaMask extension against the published `@formo/analytics`.
-The harness lives in this repository, so none of its browser dependencies can
-enter an SDK release.
+Drives real wallets against the published `@formo/analytics`. The harness
+lives in this repository, so none of its browser dependencies can enter an SDK
+release.
+
+Two kinds of test live here:
+
+- `real-metamask.spec.ts` drives a real MetaMask extension against a harness
+  page of our own, so the SDK is the only thing under test.
+- `example-*.spec.ts` drive the **example apps** through their own UI, with the
+  SDK configured the way each app configures it. `with-next-app-router` uses
+  the real extension; the two Solana apps use a Wallet Standard wallet
+  registered in the page (`solana-wallet.ts`), which is how Phantom and
+  Solflare register themselves. The apps must already be served: see the
+  ports in each spec, or the `sdk-e2e` workflow, which builds and serves them.
 
 ## Compatibility boundary
 
@@ -38,6 +49,17 @@ node prepare-metamask.mjs
 CHROME_PATH=/path/to/chrome-130 \
   SDK_DIR=/path/to/node_modules/@formo/analytics \
   pnpm test
+```
+
+To run one of the example-app specs, build and serve that example first, then
+point the spec at it:
+
+```sh
+(cd ../../with-solana && NEXT_PUBLIC_FORMO_WRITE_KEY=e2e-write-key pnpm build && pnpm start -p 3008 &)
+CHROME_PATH=/path/to/chrome \
+  SDK_DIR=/path/to/node_modules/@formo/analytics \
+  SOLANA_EXAMPLE_URL=http://127.0.0.1:3008 \
+  pnpm exec playwright test tests/example-with-solana.spec.ts
 ```
 
 The extension must run in headed mode because Chrome 130 does not reliably

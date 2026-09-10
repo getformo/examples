@@ -102,7 +102,7 @@ jobs:
         run: node browser/run.mjs /tmp/sdk/node_modules/@formo/analytics
 
   real-metamask:
-    name: Real MetaMask (anvil)
+    name: Real wallets in a browser (MetaMask, Wallet Standard)
     runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -139,11 +139,34 @@ jobs:
       - name: Start anvil
         run: anvil --port 8545 --chain-id 31337 > /tmp/anvil.log 2>&1 &
 
+      # The example apps are driven through their own UI by the specs below.
+      # Each is built and served exactly as a user would run it, against the
+      # SDK version its own lockfile pins.
+      - name: Build and serve the example apps
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_PUBLIC_FORMO_WRITE_KEY: e2e-write-key
+          NEXT_PUBLIC_FORMO_ANALYTICS_WRITE_KEY: e2e-write-key
+          NEXT_PUBLIC_SOLANA_CLUSTER: devnet
+        run: |
+          serve() {  # <directory> <port> <text that proves the page rendered>
+            (cd "$1" && pnpm install --frozen-lockfile --ignore-scripts && pnpm exec next build) || { echo "::error::$1 failed to build"; exit 1; }
+            (cd "$1" && pnpm exec next start -p "$2" > "/tmp/$2.log" 2>&1 &)
+            for _ in $(seq 1 60); do curl -sf "http://127.0.0.1:$2/" | grep -q "$3" && return 0; sleep 1; done
+            echo "::error::$1 did not serve on $2"; cat "/tmp/$2.log"; exit 1
+          }
+          serve with-next-app-router/packages/nextjs 3007 "Connect Wallet"
+          serve with-solana 3008 "Select Wallet"
+          serve with-solana-framework-kit 3009 "Select Wallet"
+
       - name: Run
         working-directory: e2e/metamask
         env:
           CHROME_PATH: ${{ steps.metamask-chrome.outputs.chrome-path }}
           SDK_DIR: /tmp/sdk/node_modules/@formo/analytics
+          EXAMPLE_URL: http://127.0.0.1:3007
+          SOLANA_EXAMPLE_URL: http://127.0.0.1:3008
+          SOLANA_KIT_EXAMPLE_URL: http://127.0.0.1:3009
           # Chrome 130 injects MV2 extensions in headless mode but does not
           # reliably create their notification windows. xvfb-run provides an
           # isolated display for a headed browser without exposing any UI.
