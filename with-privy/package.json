@@ -9,7 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@formo/analytics": "^1.41.4",
+    "@formo/analytics": "^1.41.5",
     "@heroicons/react": "^2.2.0",
     "@privy-io/react-auth": "^3.37.4",
     "@privy-io/wagmi": "^4.0.15",
