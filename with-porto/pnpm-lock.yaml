@@ -19,8 +19,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.41.4
-        version: 1.41.4(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3))(wagmi@3.7.7(@tanstack/query-core@5.102.8)(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3)))
+        specifier: ^1.41.5
+        version: 1.41.5(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3))(wagmi@3.7.7(@tanstack/query-core@5.102.8)(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3)))
       '@tanstack/react-query':
         specifier: latest
         version: 5.102.8(react@19.2.8)
@@ -232,8 +232,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@formo/analytics@1.41.4':
-    resolution: {integrity: sha512-njDj6xr1aJtfbpr31MoX8BsfFLPbzg2zQ8WaV/Qt58HIV6lPzmOQSI4t7cV79oFIq2yZENvyw5QCsm3IJKl+Jw==}
+  '@formo/analytics@1.41.5':
+    resolution: {integrity: sha512-tVzjMTjNLecPRCK2teyn8bX2BiY62F2XmdCMwIG22Jt8J9h9oaUccBxbd490P/CPr8V6g8TYAfwP/TQ31WUC3w==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -1059,7 +1059,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.12':
     optional: true
 
-  '@formo/analytics@1.41.4(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3))(wagmi@3.7.7(@tanstack/query-core@5.102.8)(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3)))':
+  '@formo/analytics@1.41.5(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3))(wagmi@3.7.7(@tanstack/query-core@5.102.8)(@tanstack/react-query@5.102.8(react@19.2.8))(@types/react@19.2.18)(react@19.2.8)(typescript@6.0.3)(viem@2.56.3(typescript@6.0.3)(zod@4.4.3)))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@6.0.3)
