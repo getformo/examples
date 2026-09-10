@@ -106,6 +106,26 @@ test("the SDK sees a real MetaMask connect, sign, chain switch and transaction",
   await expectNotificationClosed(switchNotification);
   await expect.poll(() => events(page), { timeout: 20_000 }).toContain("chain@31337");
 
+  // identify(), the way an app does it when the address changes. Every
+  // example that identifies (with-metamask, with-next-page-router) calls it
+  // from a hook on the connected address, so this covers that path with a
+  // real wallet: the event carries the address the extension returned, and
+  // an identical repeat inside the dedup window is refused.
+  await page.evaluate(([a]) => (window as any).formo.identify({ address: a }), [address]);
+  await expect.poll(() => events(page), { timeout: 20_000 }).toContain("identify@-");
+  const identified = await page.evaluate(
+    () => (window as any).__sent.find((e: any) => e.type === "identify")?.address
+  );
+  expect(String(identified).toLowerCase(), "identify carries the connected address").toBe(
+    address.toLowerCase()
+  );
+  await page.evaluate(([a]) => (window as any).formo.identify({ address: a }), [address]);
+  await page.waitForTimeout(500);
+  expect(
+    (await events(page)).filter((e: string) => e.startsWith("identify")),
+    "the repeat is refused, not sent twice"
+  ).toHaveLength(1);
+
   // A real transaction on anvil. The account is funded by the test.
   const txP = page.evaluate(([a]) => (window as any).formo.providers[0].provider.request({ method: "eth_sendTransaction", params: [{ from: a, to: a, value: "0x1" }] }), [address]);
   const txNotification = await notificationPage(context, extensionId);
@@ -116,7 +136,7 @@ test("the SDK sees a real MetaMask connect, sign, chain switch and transaction",
 
   // Exactly one of each, no duplicates: the shape of every bug in this area.
   const all = await events(page);
-  for (const e of ["connect@1", "signature:requested@1", "signature:confirmed@1", "chain@31337", "transaction:started@31337", "transaction:broadcasted@31337", "transaction:confirmed@31337"]) {
+  for (const e of ["connect@1", "signature:requested@1", "signature:confirmed@1", "identify@-", "chain@31337", "transaction:started@31337", "transaction:broadcasted@31337", "transaction:confirmed@31337"]) {
     expect(all.filter((x: string) => x === e), e).toHaveLength(1);
   }
 });
