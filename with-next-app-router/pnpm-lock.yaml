@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  ua-parser-js: 1.0.41
   nanoid@<3.3.18: 3.3.18
   shell-quote@<=1.8.4: 1.10.0
   fast-uri@>=3.0.0 <3.1.5: 3.1.5
@@ -34,6 +35,9 @@ overrides:
   sharp@<0.35.4: ^0.35.4
   tar@<7.5.21: ^7.5.21
   uuid@<11.1.1: ^11.1.1
+
+patchedDependencies:
+  '@rainbow-me/rainbowkit@2.2.11': d1a927014412a4dc8384e524f3ce1cc05d255c562838f1b7055fccac65014528
 
 importers:
 
@@ -85,7 +89,7 @@ importers:
         version: 2.2.0(react@18.3.1)
       '@rainbow-me/rainbowkit':
         specifier: 2.2.11
-        version: 2.2.11(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
+        version: 2.2.11(patch_hash=d1a927014412a4dc8384e524f3ce1cc05d255c562838f1b7055fccac65014528)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
       '@tanstack/react-query':
         specifier: ~5.102.3
         version: 5.102.3(react@18.3.1)
@@ -2441,9 +2445,6 @@ packages:
   detect-browser@5.3.0:
     resolution: {integrity: sha512-53rsFbGdwMwlF7qvCt0ypLM5V5/Mbl0szB7GPN8y9NCcbknYOeVVXdrXEq+90IwAfrrzt6Hd+u2E2ntakICU8w==}
 
-  detect-europe-js@0.1.2:
-    resolution: {integrity: sha512-lgdERlL3u0aUdHocoouzT10d9I89VVhk0qNRmll7mXdGfJT1/wqZ2ZLA4oJAjeACPY5fT1wsbq2AT+GkuInsow==}
-
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
@@ -3352,9 +3353,6 @@ packages:
   is-shared-array-buffer@1.0.4:
     resolution: {integrity: sha512-ISWac8drv4ZGfwKl5slpHG9OwPNty4jOWPRIhBpxOoD+hqITiwuipOQ2bNthAzwA3B4fIjO4Nln74N0S9byq8A==}
     engines: {node: '>= 0.4'}
-
-  is-standalone-pwa@0.1.1:
-    resolution: {integrity: sha512-9Cbovsa52vNQCjdXOzeQq5CnCbAcRk05aU62K20WO372NrTv0NxibLFCK6lQ4/iZEFdEA3p3t2VNOn8AJ53F5g==}
 
   is-stream@1.1.0:
     resolution: {integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ==}
@@ -4791,11 +4789,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ua-is-frozen@0.1.2:
-    resolution: {integrity: sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw==}
-
-  ua-parser-js@2.0.10:
-    resolution: {integrity: sha512-t+3Ktbq0Ies2vaSezfOaWiolH4OigQIO1dk+1xDpOydB1COVPocVYOrEV5rqZ0kFY9XYG1v9LutCyMgYBpABcw==}
+  ua-parser-js@1.0.41:
+    resolution: {integrity: sha512-LbBDqdIC5s8iROCUjMbW1f5dJQTEFB1+KO9ogbvlb3nm9n4YHa5p4KTvFPWvh2Hs8gZMBuiB1/8+pdfe/tDPug==}
     hasBin: true
 
   ufo@1.6.4:
@@ -6300,7 +6295,7 @@ snapshots:
 
   '@paulmillr/qr@0.2.1': {}
 
-  '@rainbow-me/rainbowkit@2.2.11(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
+  '@rainbow-me/rainbowkit@2.2.11(patch_hash=d1a927014412a4dc8384e524f3ce1cc05d255c562838f1b7055fccac65014528)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))':
     dependencies:
       '@tanstack/react-query': 5.102.3(react@18.3.1)
       '@vanilla-extract/css': 1.20.1
@@ -6311,7 +6306,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-remove-scroll: 2.7.2(@types/react@18.3.31)(react@18.3.1)
-      ua-parser-js: 2.0.10
+      ua-parser-js: 1.0.41
       viem: 2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       wagmi: 2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
     transitivePeerDependencies:
@@ -9159,7 +9154,7 @@ snapshots:
 
   burner-connector@0.0.21(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
-      '@rainbow-me/rainbowkit': 2.2.11(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
+      '@rainbow-me/rainbowkit': 2.2.11(patch_hash=d1a927014412a4dc8384e524f3ce1cc05d255c562838f1b7055fccac65014528)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
       viem: 2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       wagmi: 2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
     transitivePeerDependencies:
@@ -9475,8 +9470,6 @@ snapshots:
   destr@2.0.5: {}
 
   detect-browser@5.3.0: {}
-
-  detect-europe-js@0.1.2: {}
 
   detect-libc@2.1.2: {}
 
@@ -10579,8 +10572,6 @@ snapshots:
   is-shared-array-buffer@1.0.4:
     dependencies:
       call-bound: 1.0.4
-
-  is-standalone-pwa@0.1.1: {}
 
   is-stream@1.1.0: {}
 
@@ -12114,13 +12105,7 @@ snapshots:
 
   typescript@5.5.3: {}
 
-  ua-is-frozen@0.1.2: {}
-
-  ua-parser-js@2.0.10:
-    dependencies:
-      detect-europe-js: 0.1.2
-      is-standalone-pwa: 0.1.1
-      ua-is-frozen: 0.1.2
+  ua-parser-js@1.0.41: {}
 
   ufo@1.6.4: {}
 

@@ -25,6 +25,9 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  # RainbowKit only uses UAParser's legacy OS API. Keep the MIT-licensed 1.x
+  # line instead of its AGPL-licensed 2.x dependency.
+  ua-parser-js: 1.0.41
   nanoid@<3.3.18: 3.3.18
   shell-quote@<=1.8.4: 1.10.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
@@ -52,3 +55,6 @@ allowBuilds:
   esbuild: true
   core-js: true
   core-js-pure: true
+
+patchedDependencies:
+  '@rainbow-me/rainbowkit@2.2.11': patches/@rainbow-me__rainbowkit@2.2.11.patch
