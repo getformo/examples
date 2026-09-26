@@ -35,6 +35,7 @@
     "usehooks-ts": "2.13.0",
     "viem": "2.55.19",
     "wagmi": "2.19.5",
+    "web-vitals": "6.2.2",
     "zustand": "~4.1.5"
   },
   "devDependencies": {

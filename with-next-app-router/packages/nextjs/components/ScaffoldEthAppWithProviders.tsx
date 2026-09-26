@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import * as webVitals from "web-vitals";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
@@ -69,6 +70,10 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
               chain: true,
             },
             apiHost: "/api/events",
+            // Core Web Vitals (LCP, INP, CLS, FCP, TTFB): opt in by passing the
+            // web-vitals library. Import it in a "use client" file like this one:
+            // a Server Component cannot pass the module to a Client Component.
+            webVitals,
             wagmi: {
               config: wagmiConfig,
               queryClient: queryClient,
