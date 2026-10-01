@@ -33,22 +33,33 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 overrides:
   nanoid@<3.3.18: 3.3.18
-  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
-  'fast-uri@>=4.0.0 <4.1.2': 4.1.2
+  'fast-uri@>=3.0.0 <3.1.8': ^3.1.8
+  'fast-uri@>=4.0.0 <4.1.5': ^4.1.5
   'elliptic@<=6.6.0': 6.6.1
-  axios@<1.16.1: ^1.16.1
-  'fastify@<5.8.5': 5.8.5
+  'axios@<1.20.0': ^1.20.0
+  'fastify@<5.12.5': ^5.12.5
   '@coinbase/wallet-sdk@>=4.0.0-beta.0 <4.3.0': 4.3.0
   'uuid@>=8.0.0 <11.1.1': 11.1.1
-  'ws@>=8.0.0 <8.21.0': 8.21.0
+  'ws@>=8.0.0 <8.21.1': ^8.21.1
   'ws@>=7.0.0 <7.5.11': 7.5.11
   bn.js@<4.12.3: ^4.12.3
   bn.js@>=5.0.0 <5.2.3: ^5.2.3
-  brace-expansion@<1.1.18: ^1.1.18
+  'brace-expansion@<1.1.21': ^1.1.21
   cookie@<0.7.0: ^0.7.0
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.0: ^0.35.0
+  'sharp@<0.35.4': ^0.35.4
   web3-core-method@<=1.10.3: ^1.10.4
+  'js-yaml@>=4.0.0 <4.3.2': ^4.3.2
+  'qs@>=6.0.0 <6.16.0': ^6.16.0
+  'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
+  '@grpc/grpc-js@>=1.0.0 <1.14.5': ^1.14.5
+  '@fastify/proxy-addr@>=5.0.0 <5.1.1': ^5.1.1
+  'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
+  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
+  'viem@>=2.0.0 <2.21.49': 2.21.49
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 nodeLinker: hoisted
