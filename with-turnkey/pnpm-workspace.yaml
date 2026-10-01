@@ -32,8 +32,7 @@ overrides:
   # and yields two incompatible TurnkeyBrowserClient types at the call site.
   '@turnkey/sdk-browser': '5.16.1'
   # Migrated from the package.json "pnpm" field, which pnpm 11 ignores.
-  # Raised from 8.18.3: as a bare 8.x rule this matched first and shadowed the
-  # 'ws@>=8.0.0 <8.21.0' security rule below, pinning ws to a vulnerable build.
+  # Floor at 8.21.1 for the ws memory-exhaustion DoS fixes.
   'ws@^8.0.0': ^8.21.1
   # Turnkey's current SDK combination is verified against Next 15.
   next: '^15.5.24'
