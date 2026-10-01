@@ -30,12 +30,21 @@ minimumReleaseAgeExclude:
 overrides:
   nanoid@<3.3.18: 3.3.18
   shell-quote@<=1.8.4: 1.10.0
-  'fast-uri@>=3.0.0 <3.1.5': 3.1.5
+  'fast-uri@>=3.0.0 <3.1.8': ^3.1.8
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # ws <8.21.0: memory-exhaustion DoS (GHSA-96hv-2xvq-fx4p), pulled in via viem.
   '@hono/node-server@<2.0.5': ^2.0.5
-  brace-expansion@>=2.0.0 <2.1.3: ^2.1.3
-  'ws@>=8.0.0 <8.21.0': 8.21.0
+  'brace-expansion@>=2.0.0 <2.1.7': ^2.1.7
+  'ws@>=8.0.0 <8.21.1': ^8.21.1
+  'undici@>=7.0.0 <7.29.1': 7.29.1
+  'hono@>=4.0.0 <4.13.7': ^4.13.7
+  'qs@>=6.0.0 <6.16.0': ^6.16.0
+  'undici@>=8.0.0 <8.10.2': 8.10.2
+  'undici@>=6.0.0 <6.28.1': 6.28.1
+  'ip-address@>=10.0.0 <10.7.1': ^10.7.1
+  'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
+  'proxy-addr@>=2.0.0 <2.0.8': ^2.0.8
+  'zod@>=4.0.0 <4.5.0': ^4.5.0
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

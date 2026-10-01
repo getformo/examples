@@ -5,12 +5,13 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  axios: 1.18.0
+  axios: 1.20.0
   esbuild: 0.25.0
   glob: 13.0.6
   playwright-core: 1.55.1
   tsup: 8.3.5
-  ws: 8.21.0
+  ws: 8.21.3
+  brace-expansion@>=5.0.0 <5.0.12: 5.0.12
 
 importers:
 
@@ -21,10 +22,10 @@ importers:
         version: 1.55.1
       '@synthetixio/synpress-cache':
         specifier: 0.0.13
-        version: 0.0.13(debug@4.4.3(supports-color@7.2.0))(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)
+        version: 0.0.13(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)
       '@synthetixio/synpress-metamask':
         specifier: 0.0.13
-        version: 0.0.13(@playwright/test@1.55.1)(debug@4.4.3(supports-color@7.2.0))(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)
+        version: 0.0.13(@playwright/test@1.55.1)(playwright-core@1.55.1)(typescript@5.9.3)
       playwright-core:
         specifier: 1.55.1
         version: 1.55.1
@@ -386,8 +387,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.18.0:
-    resolution: {integrity: sha512-E32NzpYKp++W7XRe52rHiXV2ehxmh3wbdgO7MHeFM+vqxLBYHzt0ElkiImtOBxtOmyp0yoC8C6uESVV84Y2/hw==}
+  axios@1.20.0:
+    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
 
   balanced-match@4.0.4:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
@@ -403,8 +404,8 @@ packages:
   bluebird@3.4.7:
     resolution: {integrity: sha512-iD3898SR7sWVRHbiQv+sHUtHnMvC1o3nW5rAcqnq3uOn07DSAppZYUkIGslDz6gXC7HfunPe7YVBgoEJASPcHA==}
 
-  brace-expansion@5.0.9:
-    resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
+  brace-expansion@5.0.12:
+    resolution: {integrity: sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==}
     engines: {node: 20 || >=22}
 
   buffer-indexof-polyfill@1.0.2:
@@ -939,8 +940,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+  ws@8.21.3:
+    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1130,9 +1131,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.5':
     optional: true
 
-  '@synthetixio/synpress-cache@0.0.13(debug@4.4.3(supports-color@7.2.0))(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)':
+  '@synthetixio/synpress-cache@0.0.13(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
-      axios: 1.18.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+      axios: 1.20.0(supports-color@7.2.0)
       chalk: 5.3.0
       commander: 12.0.0
       esbuild: 0.25.0
@@ -1160,12 +1161,12 @@ snapshots:
     dependencies:
       '@playwright/test': 1.55.1
 
-  '@synthetixio/synpress-metamask@0.0.13(@playwright/test@1.55.1)(debug@4.4.3(supports-color@7.2.0))(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)':
+  '@synthetixio/synpress-metamask@0.0.13(@playwright/test@1.55.1)(playwright-core@1.55.1)(typescript@5.9.3)':
     dependencies:
       '@playwright/test': 1.55.1
-      '@synthetixio/synpress-cache': 0.0.13(debug@4.4.3(supports-color@7.2.0))(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)
+      '@synthetixio/synpress-cache': 0.0.13(playwright-core@1.55.1)(supports-color@7.2.0)(typescript@5.9.3)
       '@synthetixio/synpress-core': 0.0.13(@playwright/test@1.55.1)
-      '@viem/anvil': 0.0.7(debug@4.4.3(supports-color@7.2.0))
+      '@viem/anvil': 0.0.7
       fs-extra: 11.2.0
       zod: 3.22.4
     transitivePeerDependencies:
@@ -1186,12 +1187,12 @@ snapshots:
 
   '@types/tinycolor2@1.4.6': {}
 
-  '@viem/anvil@0.0.7(debug@4.4.3(supports-color@7.2.0))':
+  '@viem/anvil@0.0.7':
     dependencies:
       execa: 7.2.0
       get-port: 6.1.2
-      http-proxy: 1.18.1(debug@4.4.3(supports-color@7.2.0))
-      ws: 8.21.0
+      http-proxy: 1.18.1
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -1211,9 +1212,9 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.18.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
+  axios@1.20.0(supports-color@7.2.0):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@7.2.0))
+      follow-redirects: 1.16.0
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@7.2.0)
       proxy-from-env: 2.1.0
@@ -1232,7 +1233,7 @@ snapshots:
 
   bluebird@3.4.7: {}
 
-  brace-expansion@5.0.9:
+  brace-expansion@5.0.12:
     dependencies:
       balanced-match: 4.0.4
 
@@ -1370,9 +1371,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.5
 
-  follow-redirects@1.16.0(debug@4.4.3(supports-color@7.2.0)):
-    optionalDependencies:
-      debug: 4.4.3(supports-color@7.2.0)
+  follow-redirects@1.16.0: {}
 
   form-data@4.0.6:
     dependencies:
@@ -1452,10 +1451,10 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  http-proxy@1.18.1(debug@4.4.3(supports-color@7.2.0)):
+  http-proxy@1.18.1:
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@7.2.0))
+      follow-redirects: 1.16.0
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -1524,7 +1523,7 @@ snapshots:
 
   minimatch@10.2.6:
     dependencies:
-      brace-expansion: 5.0.9
+      brace-expansion: 5.0.12
 
   minimist@1.2.8: {}
 
@@ -1772,7 +1771,7 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  ws@8.21.0: {}
+  ws@8.21.3: {}
 
   yaku@0.16.7: {}
 

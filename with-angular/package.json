@@ -12,12 +12,12 @@
     "test": "ng test"
   },
   "dependencies": {
-    "@angular/common": "^21.2.19",
-    "@angular/compiler": "^21.2.19",
-    "@angular/core": "^21.2.19",
-    "@angular/forms": "^21.2.19",
-    "@angular/platform-browser": "^21.2.19",
-    "@angular/router": "^21.2.19",
+    "@angular/common": "^21.2.24",
+    "@angular/compiler": "^21.2.24",
+    "@angular/core": "^21.2.24",
+    "@angular/forms": "^21.2.24",
+    "@angular/platform-browser": "^21.2.24",
+    "@angular/router": "^21.2.24",
     "@formo/analytics": "^1.42.0",
     "buffer": "^6.0.3",
     "rxjs": "~7.8.2",
@@ -25,9 +25,9 @@
     "viem": "^2.55.19"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.19",
-    "@angular/cli": "^21.2.19",
-    "@angular/compiler-cli": "^21.2.19",
+    "@angular/build": "^21.2.24",
+    "@angular/cli": "^21.2.24",
+    "@angular/compiler-cli": "^21.2.24",
     "@ngx-env/builder": "^21.0.1",
     "jsdom": "^30.0.1",
     "prettier": "^3.9.6",

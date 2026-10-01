@@ -43,16 +43,16 @@ overrides:
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'crypto-es@<2.1.0': 2.1.0
   hono@<4.12.27: ^4.12.27
-  axios@<1.18.0: ^1.18.0
+  'axios@<1.20.0': ^1.20.0
   'uuid@>=8.0.0 <11.1.1': 11.1.1
-  'ws@>=8.0.0 <8.21.0': 8.21.0
+  'ws@>=8.0.0 <8.21.1': ^8.21.1
   'ws@>=7.0.0 <7.5.11': 7.5.11
   form-data@<4.0.6: ^4.0.6
   'esbuild@>=0.17.0 <0.28.1': 0.28.1
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
-  brace-expansion@<1.1.18: ^1.1.18
-  joi@<17.13.4: ^17.13.4
+  'brace-expansion@<1.1.21': ^1.1.21
+  'joi@<17.13.8': ^17.13.8
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.4: ^0.35.4
@@ -60,6 +60,15 @@ overrides:
   svelte@<=5.51.4: ^5.51.5
   svelte@<=5.53.4: ^5.53.5
   svelte@<=5.55.6: ^5.55.7
+  'js-yaml@>=4.0.0 <4.3.2': ^4.3.2
+  'devalue@>=5.0.0 <5.9.3': ^5.9.3
+  'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
+  'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
+  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
+  'viem@>=2.0.0 <2.21.49': 2.21.49
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 # pnpm 11 blocks dependency build scripts by default (strictDepBuilds).

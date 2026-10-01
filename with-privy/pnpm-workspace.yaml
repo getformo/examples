@@ -39,16 +39,23 @@ overrides:
   'wagmi@>=3.0.0 <4.0.0': '3.6.1'
   '@wagmi/connectors@>=8.0.0 <9.0.0': '8.0.1'
   # Migrated from the package.json "pnpm" field, which pnpm 11 ignores.
-  axios: '^1.18.0'
-  'js-cookie@<3.0.6': 3.0.6
-  hono@<4.12.27: ^4.12.27
+  axios: '^1.20.0'
+  'js-cookie@<3.0.7': ^3.0.7
+  'hono@<4.13.7': ^4.13.7
   'uuid@>=8.0.0 <11.1.1': 11.1.1
-  'ws@>=8.0.0 <8.21.0': 8.21.0
+  'ws@>=8.0.0 <8.21.1': ^8.21.1
   'ws@>=7.0.0 <7.5.11': 7.5.11
   form-data@<4.0.6: ^4.0.6
-  brace-expansion@<1.1.18: ^1.1.18
+  'brace-expansion@<1.1.21': ^1.1.21
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.4: ^0.35.4
+  'js-yaml@>=4.0.0 <4.3.2': ^4.3.2
+  'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
+  'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
+  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
+  '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
