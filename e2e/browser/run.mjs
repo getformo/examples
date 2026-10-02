@@ -59,7 +59,11 @@ process.on("unhandledRejection", async (e) => { console.error(e); await teardown
 // A hung page must not hang CI: every await below is bounded by this.
 const deadline = setTimeout(() => { console.error("test:browser timed out after 90s"); process.exit(3); }, 90_000);
 deadline.unref();
-proc = spawn(chrome, ["--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "--no-first-run", "--disable-gpu", "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
+// --no-sandbox: GitHub-hosted Ubuntu 24.04 blocks the unprivileged user
+// namespaces Chrome's sandbox needs, so Chrome exits before printing the
+// DevTools URL and the run hangs until the deadline. Playwright (used by the
+// real-wallet job) passes the same flag by default.
+proc = spawn(chrome, ["--headless=new", "--no-sandbox", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "--no-first-run", "--disable-gpu", "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
 const wsUrl = await new Promise((resolve) => { proc.stderr.on("data", (d) => { const m = String(d).match(/ws:\/\/[^\s]+/); if (m) resolve(m[0]); }); });
 ws = new WebSocket(wsUrl);
 await new Promise((r) => (ws.onopen = r));

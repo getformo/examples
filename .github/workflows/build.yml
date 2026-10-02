@@ -15,8 +15,7 @@ concurrency:
 
 jobs:
   changes:
-    # Path detection is a lightweight job; keep the larger runners for builds.
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set.outputs.matrix }}
       any: ${{ steps.set.outputs.any }}
@@ -134,7 +133,7 @@ jobs:
   build:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
@@ -217,8 +216,7 @@ jobs:
   audit:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
-    # Audits read lockfiles and do not compile dependencies.
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
