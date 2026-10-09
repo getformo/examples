@@ -51,8 +51,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.42.0
-        version: 1.42.0(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(zod@4.6.5))
+        specifier: ^1.42.1
+        version: 1.42.1(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(zod@4.6.5))
     devDependencies:
       ansi-regex:
         specifier: ^6.3.0
@@ -477,8 +477,8 @@ packages:
   '@ethersproject/wordlists@5.7.0':
     resolution: {integrity: sha512-S2TFNJNfHWVHNE6cNDjbVlZ6MgE17MIxMbMg2zv3wn+3XSJGosL1m9ZVv3GXCf/2ymSsQ+hRI5IzoMJTG6aoVA==}
 
-  '@formo/analytics@1.42.0':
-    resolution: {integrity: sha512-+T2eYvpH3fkFZKrosPwl/EBO/ZHVWxR3KZ0dhq4fS/TGl58FNVhiJhQ/ORxm87za/M8TGTLr6FL0nZiy3J5jPQ==}
+  '@formo/analytics@1.42.1':
+    resolution: {integrity: sha512-AheEUUfvwasYBBxxVvVhalsfFMq0k6dhNfLEm5KJFuYORtHVSeR/gE02NUQjf3dhL6qv8fZ1faiOy+f1Kcz7pg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -5833,7 +5833,7 @@ snapshots:
       '@ethersproject/properties': 5.7.0
       '@ethersproject/strings': 5.7.0
 
-  '@formo/analytics@1.42.0(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(zod@4.6.5))':
+  '@formo/analytics@1.42.1(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)(typescript@5.5.3)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(wagmi@2.19.5(@tanstack/query-core@5.102.3)(@tanstack/react-query@5.102.3(react@18.3.1))(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.55.18(bufferutil@4.1.0)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@4.6.5))(zod@4.6.5))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.5.3)

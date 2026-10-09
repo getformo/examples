@@ -45,8 +45,8 @@ importers:
         specifier: ^21.2.24
         version: 21.2.25(@angular/common@21.2.25(@angular/core@21.2.25(@angular/compiler@21.2.25)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.25(@angular/compiler@21.2.25)(rxjs@7.8.2))(@angular/platform-browser@21.2.25(@angular/common@21.2.25(@angular/core@21.2.25(@angular/compiler@21.2.25)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.25(@angular/compiler@21.2.25)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@formo/analytics':
-        specifier: ^1.42.0
-        version: 1.42.0(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@4.6.5))
+        specifier: ^1.42.1
+        version: 1.42.1(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@4.6.5))
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
@@ -588,8 +588,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@formo/analytics@1.42.0':
-    resolution: {integrity: sha512-+T2eYvpH3fkFZKrosPwl/EBO/ZHVWxR3KZ0dhq4fS/TGl58FNVhiJhQ/ORxm87za/M8TGTLr6FL0nZiy3J5jPQ==}
+  '@formo/analytics@1.42.1':
+    resolution: {integrity: sha512-AheEUUfvwasYBBxxVvVhalsfFMq0k6dhNfLEm5KJFuYORtHVSeR/gE02NUQjf3dhL6qv8fZ1faiOy+f1Kcz7pg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -3692,7 +3692,7 @@ snapshots:
     optionalDependencies:
       '@noble/hashes': 1.8.0
 
-  '@formo/analytics@1.42.0(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@4.6.5))':
+  '@formo/analytics@1.42.1(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@4.6.5))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
