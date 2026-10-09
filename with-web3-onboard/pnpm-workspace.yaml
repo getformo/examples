@@ -38,7 +38,7 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 overrides:
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'crypto-es@<2.1.0': 2.1.0
@@ -55,7 +55,7 @@ overrides:
   'joi@<17.13.8': ^17.13.8
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.4: ^0.35.4
+  'sharp@<0.35.5': ^0.35.5
   svelte@<4.2.19: ^4.2.19
   svelte@<=5.51.4: ^5.51.5
   svelte@<=5.53.4: ^5.53.5
@@ -69,6 +69,7 @@ overrides:
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
   'viem@>=2.0.0 <2.21.49': 2.21.49
+  'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 # pnpm 11 blocks dependency build scripts by default (strictDepBuilds).
@@ -84,3 +85,10 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   es5-ext: true
+
+auditConfig:
+  ignoreGhsas:
+    # braces <=3.0.3 (GHSA-vfj7-8cjw-p6xm) has no fixed release. It is reached
+    # only through build tooling (micromatch / fast-glob / chokidar). Remove
+    # as soon as a fix is published.
+    - GHSA-vfj7-8cjw-p6xm

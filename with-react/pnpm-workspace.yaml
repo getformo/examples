@@ -24,7 +24,7 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 overrides:
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.8': ^3.1.8
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'nth-check@<2.0.1': 2.0.1
