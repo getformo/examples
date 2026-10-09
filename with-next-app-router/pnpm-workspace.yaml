@@ -60,7 +60,7 @@ overrides:
   # line instead of its AGPL-licensed 2.x dependency.
   ua-parser-js: 1.0.41
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.8': ^3.1.8
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # 1.54.0 imports @x402/{core,evm,svm} subpaths that aren't installable
@@ -93,7 +93,7 @@ overrides:
   # also requires Node >=20.19.0 and excludes Node 21, so package.json's
   # engines.node documents that narrower supported range. Node 18 reached EOL
   # in April 2025.
-  sharp@<0.35.4: ^0.35.4
+  'sharp@<0.35.5': ^0.35.5
   tar@<7.5.21: ^7.5.21
   uuid@<11.1.1: ^11.1.1
   'js-yaml@>=4.0.0 <4.3.2': ^4.3.2
@@ -102,6 +102,7 @@ overrides:
   '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
+  'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 nodeLinker: hoisted

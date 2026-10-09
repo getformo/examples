@@ -28,7 +28,7 @@ minimumReleaseAgeExclude:
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # Wagmi Core 3.6.x imports a bare `accounts` specifier that webpack cannot
@@ -47,10 +47,11 @@ overrides:
   form-data@<4.0.6: ^4.0.6
   'brace-expansion@<1.1.21': ^1.1.21
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.4: ^0.35.4
+  'sharp@<0.35.5': ^0.35.5
   'bn.js@>=5.0.0 <5.2.3': ^5.2.3
   'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
   'js-yaml@>=4.0.0 <4.3.2': ^4.3.2
+  'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
@@ -67,3 +68,10 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   protobufjs: true
+
+auditConfig:
+  ignoreGhsas:
+    # braces <=3.0.3 (GHSA-vfj7-8cjw-p6xm) has no fixed release. It is reached
+    # only through build tooling (micromatch / fast-glob / chokidar). Remove
+    # as soon as a fix is published.
+    - GHSA-vfj7-8cjw-p6xm

@@ -29,7 +29,7 @@ overrides:
   # line instead of its AGPL-licensed 2.x dependency.
   ua-parser-js: 1.0.41
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   'uuid@>=8.0.0 <11.1.1': 11.1.1
@@ -39,13 +39,14 @@ overrides:
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
   postcss@<8.5.18: ^8.5.18
-  sharp@<0.35.4: ^0.35.4
+  'sharp@<0.35.5': ^0.35.5
   'hono@>=4.0.0 <4.13.7': ^4.13.7
   'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
   'zod@>=4.0.0 <4.5.0': ^4.5.0
   '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
+  'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 
@@ -64,3 +65,10 @@ allowBuilds:
 
 patchedDependencies:
   '@rainbow-me/rainbowkit@2.2.11': patches/@rainbow-me__rainbowkit@2.2.11.patch
+
+auditConfig:
+  ignoreGhsas:
+    # braces <=3.0.3 (GHSA-vfj7-8cjw-p6xm) has no fixed release. It is reached
+    # only through build tooling (micromatch / fast-glob / chokidar). Remove
+    # as soon as a fix is published.
+    - GHSA-vfj7-8cjw-p6xm
