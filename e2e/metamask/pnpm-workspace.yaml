@@ -7,6 +7,8 @@ allowBuilds:
 # The compatible Synpress packages depend on vulnerable transitive versions.
 # Resolve those packages to patched releases in this isolated E2E workspace.
 overrides:
+  # GHSA-8r9p-f939-6h3c / GHSA-q3jh-wrc6-jgq8 (high), via axios and http-proxy.
+  'follow-redirects@<1.16.1': 1.16.1
   axios: 1.20.0
   esbuild: 0.25.0
   glob: 13.0.6
