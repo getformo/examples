@@ -5,9 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  follow-redirects@<1.16.1: 1.16.1
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<1.11.0: 1.11.0
   fast-uri@>=3.0.0 <3.1.5: 3.1.5
   fast-uri@>=4.0.0 <4.1.2: 4.1.2
   crypto-es@<2.1.0: 2.1.0
@@ -21,7 +19,6 @@ overrides:
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
   brace-expansion@<1.1.21: ^1.1.21
-  joi@<17.13.8: ^17.13.8
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18
   sharp@<0.35.5: ^0.35.5
@@ -33,12 +30,15 @@ overrides:
   devalue@>=5.0.0 <5.9.3: ^5.9.3
   brace-expansion@>=5.0.0 <5.0.12: ^5.0.12
   es-toolkit@>=1.0.0 <1.51.0: ^1.51.0
-  zod@>=4.0.0 <4.5.0: ^4.5.0
   '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
   viem@>=2.0.0 <2.21.49: 2.21.49
   source-map-js@>=1.0.0 <1.2.2: ^1.2.2
+  follow-redirects@<1.16.2: 1.16.2
+  shell-quote@<1.11.0: 1.11.0
+  joi@<17.13.9: ^17.13.9
+  zod@>=4.0.0 <4.6.6: ^4.6.6
 
 importers:
 
@@ -2535,8 +2535,8 @@ packages:
   flatted@3.4.3:
     resolution: {integrity: sha512-/zipXxyO6rGvuNGDiULY9MvEGSkb2gaG4GGH4ygMi0ZZzyMHdUZBmntJmx5x1G2VuPytCwGN4xsJP6cw+sK+vQ==}
 
-  follow-redirects@1.16.1:
-    resolution: {integrity: sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==}
+  follow-redirects@1.16.2:
+    resolution: {integrity: sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -2871,8 +2871,8 @@ packages:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
 
-  joi@17.13.8:
-    resolution: {integrity: sha512-iPKOGmiRw1jxf/JOPwxmCcUQAOdF359mdzYiP2DJ+TMX0YK2zjK3D+zYOaGjpumWxOFF/l2xVWjRVK5bGSLdEw==}
+  joi@17.13.9:
+    resolution: {integrity: sha512-llFCT2rVtfwgBCaIqxtjim+iHqrgss4ONiGSYiiGH9jnjWq90ppSRffqmqKvwpa8W+YfILyQV6XyGcegXX2T4g==}
 
   jose@6.2.4:
     resolution: {integrity: sha512-N8acGzVsQy6M/fjFcxtysNc4Q379TcM5dM/qKkNtsHFji88yANnXTr7BLeP75iPnFwBfQzM/jg2BZ9+HZrHCZA==}
@@ -4062,8 +4062,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
   zustand@5.0.0:
     resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
@@ -6398,7 +6398,7 @@ snapshots:
 
   '@web3-onboard/common@2.4.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
-      joi: 17.13.8
+      joi: 17.13.9
       viem: 2.21.49(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
     transitivePeerDependencies:
       - bufferutil
@@ -6412,7 +6412,7 @@ snapshots:
       bnc-sdk: 4.6.9
       bowser: 2.14.1
       eventemitter3: 4.0.7
-      joi: 17.13.8
+      joi: 17.13.9
       lodash.merge: 4.6.2
       lodash.partition: 4.6.0
       nanoid: 5.1.16
@@ -6433,7 +6433,7 @@ snapshots:
       bnc-sdk: 4.6.9
       bowser: 2.14.1
       eventemitter3: 4.0.7
-      joi: 17.13.8
+      joi: 17.13.9
       lodash.merge: 4.6.2
       lodash.partition: 4.6.0
       nanoid: 5.1.16
@@ -6451,7 +6451,7 @@ snapshots:
   '@web3-onboard/injected-wallets@2.11.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
       '@web3-onboard/common': 2.4.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      joi: 17.13.8
+      joi: 17.13.9
       lodash.uniqby: 4.7.0
     transitivePeerDependencies:
       - bufferutil
@@ -6488,7 +6488,7 @@ snapshots:
     dependencies:
       '@walletconnect/ethereum-provider': 2.23.10(@types/react@18.3.31)(bufferutil@4.1.0)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@18.3.1))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@web3-onboard/common': 2.4.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      joi: 17.13.8
+      joi: 17.13.9
       rxjs: 7.8.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -6687,7 +6687,7 @@ snapshots:
 
   axios@1.20.0:
     dependencies:
-      follow-redirects: 1.16.1
+      follow-redirects: 1.16.2
       form-data: 4.0.6
       https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
@@ -7309,8 +7309,8 @@ snapshots:
       '@babel/parser': 7.29.8
       eslint: 9.39.5(jiti@1.21.7)
       hermes-parser: 0.25.1
-      zod: 4.6.5
-      zod-validation-error: 4.0.2(zod@4.6.5)
+      zod: 4.6.6
+      zod-validation-error: 4.0.2(zod@4.6.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -7525,7 +7525,7 @@ snapshots:
 
   flatted@3.4.3: {}
 
-  follow-redirects@1.16.1:
+  follow-redirects@1.16.2:
     optional: true
 
   for-each@0.3.5:
@@ -7870,7 +7870,7 @@ snapshots:
 
   jiti@1.21.7: {}
 
-  joi@17.13.8:
+  joi@17.13.9:
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0
@@ -9260,16 +9260,16 @@ snapshots:
 
   zimmerframe@1.1.4: {}
 
-  zod-validation-error@4.0.2(zod@4.6.5):
+  zod-validation-error@4.0.2(zod@4.6.6):
     dependencies:
-      zod: 4.6.5
+      zod: 4.6.6
 
   zod@3.22.4: {}
 
   zod@3.25.76:
     optional: true
 
-  zod@4.6.5: {}
+  zod@4.6.6: {}
 
   zustand@5.0.0(@types/react@18.3.31)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1)):
     optionalDependencies:

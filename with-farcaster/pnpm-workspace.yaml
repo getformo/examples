@@ -12,6 +12,7 @@ minimumReleaseAgeExclude:
   - hono@4.12.27
 # Security: force patched transitive versions (Aikido CVE remediation).
 overrides:
+  'follow-redirects@<1.16.2': 1.16.2
   'nanoid@>=3.0.0 <3.3.18': ^3.3.18
   shell-quote@<=1.8.4: 1.10.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
@@ -25,7 +26,7 @@ overrides:
   vite@<=6.4.1: ^6.4.2
   vite@<=6.4.2: ^6.4.3
   'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
-  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  'zod@>=4.0.0 <4.6.6': ^4.6.6
   '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
@@ -45,3 +46,11 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   '@biomejs/biome': true
+
+auditConfig:
+  ignoreGhsas:
+    # zod <4.6.6 memory exhaustion on oversized input (GHSA-mrhx-c7xc-m3w5).
+    # The zod 4 copies are overridden to ^4.6.6 above. The remaining zod 3.x
+    # copies come through viem / abitype / wallet SDKs that pin zod 3, and the
+    # fix exists only in zod 4. Remove once those dependencies move to zod 4.
+    - GHSA-mrhx-c7xc-m3w5

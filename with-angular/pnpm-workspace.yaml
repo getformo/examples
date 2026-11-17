@@ -44,7 +44,7 @@ overrides:
   'ip-address@>=10.0.0 <10.7.1': ^10.7.1
   'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
   'proxy-addr@>=2.0.0 <2.0.8': ^2.0.8
-  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  'zod@>=4.0.0 <4.6.6': ^4.6.6
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true
 

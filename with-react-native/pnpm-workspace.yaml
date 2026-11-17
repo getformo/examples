@@ -48,7 +48,7 @@ minimumReleaseAgeExclude:
 # kept resolving 0.7.13 alongside 0.8.13 for as long as they sat there.
 overrides:
   nanoid@<3.3.18: 3.3.18
-  shell-quote@<=1.8.4: 1.10.0
+  'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
   'fast-uri@>=4.0.0 <4.1.2': 4.1.2
   # @wagmi/connectors 6.x depends on porto, whose 'porto/internal' subpath
