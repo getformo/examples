@@ -7,8 +7,9 @@ allowBuilds:
 # The compatible Synpress packages depend on vulnerable transitive versions.
 # Resolve those packages to patched releases in this isolated E2E workspace.
 overrides:
-  # GHSA-8r9p-f939-6h3c / GHSA-q3jh-wrc6-jgq8 (high), via axios and http-proxy.
-  'follow-redirects@<1.16.1': 1.16.1
+  # GHSA-8r9p-f939-6h3c / GHSA-q3jh-wrc6-jgq8 / GHSA-mrwp-f3q8-3g9p (high),
+  # via axios and http-proxy.
+  'follow-redirects@<1.16.2': 1.16.2
   axios: 1.20.0
   esbuild: 0.25.0
   glob: 13.0.6
@@ -16,3 +17,13 @@ overrides:
   tsup: 8.3.5
   ws: 8.21.3
   'brace-expansion@>=5.0.0 <5.0.12': 5.0.12
+
+# Advisories whose only fix is a new major of a transitive dependency that
+# Synpress pins. Forcing the major could break the harness, so they are ignored
+# with a reason instead. Remove each entry once Synpress moves to a fixed major.
+auditConfig:
+  ignoreGhsas:
+    # zod <4.6.6 memory exhaustion on oversized input. @synthetixio/synpress-cache
+    # pins zod 3.22.4 and the fix exists only in zod 4. Here zod validates the
+    # harness's own wallet-setup config, never untrusted input.
+    - GHSA-mrhx-c7xc-m3w5
