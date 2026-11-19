@@ -54,7 +54,7 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
   // privy_oauth_provider are always stripped; these are added on top.
   // Requires @formo/analytics-react-native >= 1.5.0.
   tracking: {
-    excludeQueryParams: ["token", "access_token", "code", "state"],
+    excludeQueryParams: ["token", "access_token"],
   },
 
   // sanitizeUrl is for what a list of names cannot do: drop a whole link.
@@ -65,8 +65,10 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
   // callback link would replace the campaign link as the referrer of every
   // later event. Dropping it keeps the campaign.
   // Requires @formo/analytics-react-native >= 1.4.0.
-  sanitizeUrl: (url) =>
-    /[?&](privy_oauth_code|code)=/.test(url) ? "" : url,
+  //
+  // Match only what identifies the callback. A broad name such as "code"
+  // would also drop promo-code and referral links, and their attribution.
+  sanitizeUrl: (url) => (/[?&]privy_oauth_code=/.test(url) ? "" : url),
 
   // Event batching configuration
   flushAt: 10, // Flush after 10 events
