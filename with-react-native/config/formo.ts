@@ -45,25 +45,28 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
     crashes: true,
   },
 
-  // Filter the URLs the SDK stores or reports (deep links, the launch URL,
-  // the saved referrer, and the `url` property of events). Return the URL to
-  // use, or "" to drop it.
+  // Keep sensitive values in deep links out of analytics. The SDK reads deep
+  // links and the launch URL for attribution, reports them in Deep Link
+  // Opened / Application Opened, and saves the last one as the referrer.
   //
-  // The usual reason is a sign-in redirect: an OAuth provider returns to the
-  // app through a deep link that carries a one-time code. Without a filter
-  // that link is reported in Deep Link Opened, and it replaces the campaign
-  // link as the referrer of every later event.
-  //
-  // Requires @formo/analytics-react-native >= 1.4.0.
-  sanitizeUrl: (url) => {
-    // Drop OAuth callbacks. The link is ignored and the campaign that came
-    // before it stays.
-    if (/[?&](code|state|privy_oauth_code|privy_oauth_state)=/.test(url)) {
-      return "";
-    }
-    // Keep other links, without parameters that must stay private.
-    return url.replace(/([?&])(token|access_token)=[^&#]*&?/g, "$1");
+  // tracking.excludeQueryParams strips query parameters by name (the same
+  // option as the web SDK). privy_oauth_code, privy_oauth_state and
+  // privy_oauth_provider are always stripped; these are added on top.
+  // Requires @formo/analytics-react-native >= 1.5.0.
+  tracking: {
+    excludeQueryParams: ["token", "access_token", "code", "state"],
   },
+
+  // sanitizeUrl is for what a list of names cannot do: drop a whole link.
+  // Return the URL to use, or "" to drop it. It receives the URL as it
+  // arrived, before the parameters above are stripped.
+  //
+  // The usual case is a sign-in redirect. Even with its code stripped, the
+  // callback link would replace the campaign link as the referrer of every
+  // later event. Dropping it keeps the campaign.
+  // Requires @formo/analytics-react-native >= 1.4.0.
+  sanitizeUrl: (url) =>
+    /[?&](privy_oauth_code|code)=/.test(url) ? "" : url,
 
   // Event batching configuration
   flushAt: 10, // Flush after 10 events
