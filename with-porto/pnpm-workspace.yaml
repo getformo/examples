@@ -29,7 +29,7 @@ overrides:
   postcss@<8.5.18: ^8.5.18
   'sharp@<0.35.5': ^0.35.5
   'ws@>=8.0.0 <8.21.1': ^8.21.1
-  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  'zod@>=4.0.0 <4.6.6': ^4.6.6
   'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
 # Block git/http/file-protocol subdependencies (pnpm 11 default; set explicitly).
 blockExoticSubdeps: true

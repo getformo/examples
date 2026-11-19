@@ -38,7 +38,7 @@ minimumReleaseAgeExclude:
   - postcss@8.5.18
 overrides:
   # GHSA-8r9p-f939-6h3c / GHSA-q3jh-wrc6-jgq8 (high), via axios and http-proxy.
-  'follow-redirects@<1.16.1': 1.16.1
+  'follow-redirects@<1.16.2': 1.16.2
   nanoid@<3.3.18: 3.3.18
   'shell-quote@<1.11.0': 1.11.0
   'fast-uri@>=3.0.0 <3.1.5': 3.1.5
@@ -54,7 +54,7 @@ overrides:
   '@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0': ^0.33.1
   '@metamask/sdk@>=0.16.0 <=0.33.0': ^0.33.1
   'brace-expansion@<1.1.21': ^1.1.21
-  'joi@<17.13.8': ^17.13.8
+  'joi@<17.13.9': ^17.13.9
   nanoid@>=4.0.0 <5.0.9: ^5.0.9
   postcss@<8.5.18: ^8.5.18
   'sharp@<0.35.5': ^0.35.5
@@ -66,7 +66,7 @@ overrides:
   'devalue@>=5.0.0 <5.9.3': ^5.9.3
   'brace-expansion@>=5.0.0 <5.0.12': ^5.0.12
   'es-toolkit@>=1.0.0 <1.51.0': ^1.51.0
-  'zod@>=4.0.0 <4.5.0': ^4.5.0
+  'zod@>=4.0.0 <4.6.6': ^4.6.6
   '@walletconnect/sign-client@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/utils@>=2.0.0 <2.23.10': 2.23.10
   '@walletconnect/core@>=2.0.0 <2.23.10': 2.23.10
@@ -94,3 +94,8 @@ auditConfig:
     # only through build tooling (micromatch / fast-glob / chokidar). Remove
     # as soon as a fix is published.
     - GHSA-vfj7-8cjw-p6xm
+    # zod <4.6.6 memory exhaustion on oversized input (GHSA-mrhx-c7xc-m3w5).
+    # The zod 4 copies are overridden to ^4.6.6 above. The remaining zod 3.x
+    # copies come through viem / abitype / wallet SDKs that pin zod 3, and the
+    # fix exists only in zod 4. Remove once those dependencies move to zod 4.
+    - GHSA-mrhx-c7xc-m3w5

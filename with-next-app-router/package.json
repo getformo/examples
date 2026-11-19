@@ -37,6 +37,6 @@
     "node": ">=20.19.0 <21 || >=22"
   },
   "dependencies": {
-    "@formo/analytics": "^1.42.1"
+    "@formo/analytics": "^1.43.0"
   }
 }
