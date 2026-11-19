@@ -45,6 +45,26 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
     crashes: true,
   },
 
+  // Filter the URLs the SDK stores or reports (deep links, the launch URL,
+  // the saved referrer, and the `url` property of events). Return the URL to
+  // use, or "" to drop it.
+  //
+  // The usual reason is a sign-in redirect: an OAuth provider returns to the
+  // app through a deep link that carries a one-time code. Without a filter
+  // that link is reported in Deep Link Opened, and it replaces the campaign
+  // link as the referrer of every later event.
+  //
+  // Requires @formo/analytics-react-native >= 1.4.0.
+  sanitizeUrl: (url) => {
+    // Drop OAuth callbacks. The link is ignored and the campaign that came
+    // before it stays.
+    if (/[?&](code|state|privy_oauth_code|privy_oauth_state)=/.test(url)) {
+      return "";
+    }
+    // Keep other links, without parameters that must stay private.
+    return url.replace(/([?&])(token|access_token)=[^&#]*&?/g, "$1");
+  },
+
   // Event batching configuration
   flushAt: 10, // Flush after 10 events
   flushInterval: 15000, // Flush every 15 seconds

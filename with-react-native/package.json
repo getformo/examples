@@ -36,7 +36,7 @@
     "expo-status-bar": "~57.0.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-native": "0.87.0",
+    "react-native": "0.86.2",
     "react-native-get-random-values": "^1.11.0",
     "react-native-modal": "14.0.0-rc.1",
     "react-native-play-install-referrer": "^1.1.9",
