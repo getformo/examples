@@ -45,6 +45,29 @@ export const baseFormoOptions: Omit<Options, "wagmi"> = {
     crashes: true,
   },
 
+  // Keep sensitive values in deep links out of analytics. The SDK reads deep
+  // links and the launch URL for attribution, reports them in Deep Link
+  // Opened / Application Opened, and saves the last one as the referrer.
+  //
+  // tracking.excludeQueryParams strips query parameters by name (the same
+  // option as the web SDK). privy_oauth_code, privy_oauth_state and
+  // privy_oauth_provider are always stripped; these are added on top.
+  // Requires @formo/analytics-react-native >= 1.5.0.
+  tracking: {
+    excludeQueryParams: ["token", "access_token", "code", "state"],
+  },
+
+  // sanitizeUrl is for what a list of names cannot do: drop a whole link.
+  // Return the URL to use, or "" to drop it. It receives the URL as it
+  // arrived, before the parameters above are stripped.
+  //
+  // The usual case is a sign-in redirect. Even with its code stripped, the
+  // callback link would replace the campaign link as the referrer of every
+  // later event. Dropping it keeps the campaign.
+  // Requires @formo/analytics-react-native >= 1.4.0.
+  sanitizeUrl: (url) =>
+    /[?&](privy_oauth_code|code)=/.test(url) ? "" : url,
+
   // Event batching configuration
   flushAt: 10, // Flush after 10 events
   flushInterval: 15000, // Flush every 15 seconds
