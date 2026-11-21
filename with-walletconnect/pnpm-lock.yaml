@@ -35,8 +35,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.43.0
-        version: 1.43.0(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@3.25.76))
+        specifier: ^1.43.1
+        version: 1.43.1(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@3.25.76))
       '@walletconnect/ethereum-provider':
         specifier: ^2.21.8
         version: 2.23.10(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(zod@3.25.76)
@@ -327,8 +327,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@formo/analytics@1.43.0':
-    resolution: {integrity: sha512-aFd8VumGBQFx+LxhC/QMUui6XQp3JJJOTFVoZVZ+KdfxZloNaMfQf4zVEJucBWn5XQLZb8xwvXwNE5P4MB8hnw==}
+  '@formo/analytics@1.43.1':
+    resolution: {integrity: sha512-rz4b5nPCVSiMPS01jfecZB96fugaFzHf8KLR9DFfailsyh9t2v9MGyd5sq13aMuJ3iSD15ddqRnZLbpMp+s7bw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -2189,7 +2189,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.12':
     optional: true
 
-  '@formo/analytics@1.43.0(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@3.25.76))':
+  '@formo/analytics@1.43.1(@types/react@18.3.31)(react@18.3.1)(typescript@5.9.3)(viem@2.55.19(typescript@5.9.3)(zod@3.25.76))':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@5.9.3)
