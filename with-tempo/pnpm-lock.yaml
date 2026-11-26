@@ -22,8 +22,8 @@ importers:
   .:
     dependencies:
       '@formo/analytics':
-        specifier: ^1.43.1
-        version: 1.43.1(@tanstack/react-query@5.104.3(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)(typescript@6.0.3)(viem@2.57.7(typescript@6.0.3)(zod@4.6.6))(wagmi@3.7.7)
+        specifier: ^1.43.2
+        version: 1.43.2(@tanstack/react-query@5.104.3(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)(typescript@6.0.3)(viem@2.57.7(typescript@6.0.3)(zod@4.6.6))(wagmi@3.7.7)
       '@tanstack/react-query':
         specifier: latest
         version: 5.104.3(react@19.3.1)
@@ -235,8 +235,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@formo/analytics@1.43.1':
-    resolution: {integrity: sha512-rz4b5nPCVSiMPS01jfecZB96fugaFzHf8KLR9DFfailsyh9t2v9MGyd5sq13aMuJ3iSD15ddqRnZLbpMp+s7bw==}
+  '@formo/analytics@1.43.2':
+    resolution: {integrity: sha512-jB0n09vmcCuWgemdxDHVM01XD7QP1AFTY7oN3fohaU4RdmaMQ0CNiJVYLg2K2hRG2K0aNbiH2Nmx9/W1DoCNTw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
@@ -1129,7 +1129,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.12':
     optional: true
 
-  '@formo/analytics@1.43.1(@tanstack/react-query@5.104.3(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)(typescript@6.0.3)(viem@2.57.7(typescript@6.0.3)(zod@4.6.6))(wagmi@3.7.7)':
+  '@formo/analytics@1.43.2(@tanstack/react-query@5.104.3(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)(typescript@6.0.3)(viem@2.57.7(typescript@6.0.3)(zod@4.6.6))(wagmi@3.7.7)':
     dependencies:
       ethereum-cryptography: 3.2.0
       mipd: 0.0.7(typescript@6.0.3)
